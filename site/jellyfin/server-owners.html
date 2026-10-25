@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>For server owners | KidsWatch | Preview</title>
+    <meta name="description" content="Preview KidsWatch for Jellyfin: parent approvals, planned setup, and known player limits.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#f6f5f9">
+    <link rel="canonical" href="https://kidswatchtv.com/jellyfin/server-owners">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KidsWatch for Jellyfin">
+    <meta property="og:title" content="For server owners | KidsWatch | Preview">
+    <meta property="og:description" content="Preview KidsWatch for Jellyfin: parent approvals, planned setup, and known player limits.">
+    <meta property="og:url" content="https://kidswatchtv.com/jellyfin/server-owners">
+    <link rel="icon" href="/jellyfin/assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jellyfin/style.css">
+    <script src="/jellyfin/app.js" defer>
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="wrap">
+      <header class="site-header header">
+        <a class="brand" href="/jellyfin/">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>KidsWatch<small>for Jellyfin · Preview</small>
+          </span>
+        </a>
+        <nav class="site-nav nav" aria-label="Main">
+          <a href="/jellyfin/">Overview</a>
+          <a href="/jellyfin/server-owners" aria-current="page">For server owners</a>
+          <a href="/jellyfin/parents">For parents</a>
+          <a href="/">Other editions</a>
+        </nav>
+        <button class="theme" type="button" data-theme-toggle hidden aria-pressed="false">Dark theme</button>
+      </header>
+      <div class="preview-banner">
+        <strong>Jellyfin edition · Preview</strong>
+        <span>Example screens. No server connection.</span>
+      </div>
+      <main id="main">
+        <section class="hero" aria-labelledby="owner-title">
+          <div class="wide-copy">
+            <p class="eyebrow">For the person behind the server</p>
+            <h1 id="owner-title">Your server.<br>A little less family admin.</h1>
+            <p class="lead">Give parents the everyday controls while you keep the keys, libraries, and final say.</p>
+            <aside class="callout" data-runtime-limit="hero"><p><strong>Companion controls, not a safety lock.</strong> In our Jellyfin 12.3 lab, known direct video links still fetched blocked titles, even after playback was turned off. There is no guaranteed cutoff for any client. <a href="#players">Read the known limits</a>.</p></aside>
+            <div class="buttons">
+              <a class="btn primary big-btn" href="#install">Planned setup</a>
+              <a class="btn big-btn" href="#workflow">How it fits together</a>
+            </div>
+            <p class="fine">Jellyfin edition preview. The controls below use fictional data; no public build is available yet.</p>
+          </div>
+          <figure>
+            <div class="panel owner-preview" data-owner>
+              <div class="preview-label">Interactive owner preview · Fictional</div>
+              <div class="panel-head">
+                <strong>Your family, your server</strong>
+                <span class="badge accent">Owner setup</span>
+              </div>
+              <div class="readiness">
+                <div>
+                  <span>Server connection</span>
+                  <strong>Example connected</strong>
+                </div>
+                <div>
+                  <span>Movie &amp; TV libraries</span>
+                  <strong>Example checked</strong>
+                </div>
+                <div>
+                  <span>Player stop test</span>
+                  <strong class="muted">Still required</strong>
+                </div>
+              </div>
+              <div class="request">
+                <strong>Rowan · New child request</strong>
+                <p>Jamie’s parent access is already approved. Rowan’s restricted local user is waiting for child approval.</p>
+                <span class="badge" data-child-state>Waiting for owner</span>
+                <p>
+                  <button class="btn primary" type="button" data-approve disabled>Approve example child</button>
+                </p>
+              </div>
+              <label class="inline-check">
+                <input type="checkbox" checked data-trusted disabled>Trust approved parents for future children</label>
+              <p class="demo-status" role="status" data-owner-status>Trusted parents can activate future verified children. This pending request still needs approval.</p>
+              <button class="reset" type="button" data-owner-reset disabled>Reset owner example</button>
+            </div>
+            <figcaption class="demo-caption">Example workflow only. No accounts are created or approved here. Parent approval and child activation are separate checks.</figcaption>
+          </figure>
+        </section>
+        <nav class="jump" aria-label="On this page">
+          <a href="#workflow">Owner setup</a>
+          <a href="#players">Player limits</a>
+          <a href="#install">Planned setup</a>
+          <a href="#manual">Setup steps</a>
+          <a href="#questions">Questions</a>
+        </nav>
+        <section class="section" id="workflow" data-runtime-limit="owner-checklist">
+          <div class="section-head">
+            <p class="kicker">The setup flow</p>
+            <h2>Connect privately.<br>Invite deliberately.</h2>
+            <p>KidsWatch runs beside Jellyfin. Parents use KidsWatch for rules; children watch in their own Jellyfin client.</p>
+          </div>
+          <div class="two-col">
+            <article>
+              <ol class="steps">
+                <li>
+                  <h3>Connect your server</h3>
+                  <p>Use a dedicated owner-created admin integration key, stored in Vaultwarden and mounted as a protected runtime secret. It is privileged server access, so it stays on the backend.</p>
+                </li>
+                <li>
+                  <h3>Choose libraries and test a player</h3>
+                  <p>Select the movie and TV libraries KidsWatch can manage. Review the known Jellyfin 12.3 bypass with parents: blocked titles still fetched video through known direct video links, and turning playback off did not block playback setup or direct streaming. Policy readback is not proof of secure blocking. Set the same household timezone on both services.</p>
+                </li>
+                <li>
+                  <h3>Invite an existing adult identity</h3>
+                  <p>Choose an eligible local Jellyfin adult user and share a private, expiring parent invitation. They sign in and request access; you approve the family role. The link alone grants no access.</p>
+                </li>
+              </ol>
+            </article>
+            <article>
+              <ol class="steps" start="4">
+                <li>
+                  <h3>Choose the child approval policy</h3>
+                  <p>With trusted parents on, approved parents can activate future children after restrictions are verified. With trust off, a new child stays disabled until you approve. Changing trust does not approve old requests.</p>
+                </li>
+                <li>
+                  <h3>Let parents make the rules</h3>
+                  <p>Parents add a child, set age and title choices, daily minutes, and watch hours. KidsWatch creates a local child user and checks restrictions before device setup.</p>
+                </li>
+                <li>
+                  <h3>Keep readiness visible</h3>
+                  <p>Show the known server bypass separately from unavailable-server or unsupported-player warnings. Keep readiness at companion controls only: native policies and stop requests do not guarantee title security or a cutoff for any client.</p>
+                </li>
+              </ol>
+            </article>
+          </div>
+        </section>
+        <section class="section prose" id="players" data-runtime-limit="players">
+          <div class="section-head">
+            <p class="kicker">An honest stopping point</p>
+            <h2>A known playback gap, beyond the player.</h2>
+            <p>Our isolated Jellyfin 12.3 lab found a server-side bypass. It is a known limit for every client, not just a risk on unsupported devices.</p>
+          </div>
+          <div class="callout">
+            <p>
+              <strong>What the lab showed:</strong> Known direct video links still fetched video from blocked titles. Turning the user’s playback setting off also failed to block playback setup and direct streaming. Buffered video may continue. Native controls are a best-effort companion: no strict title security and no guaranteed cutoff for any client.</p>
+          </div>
+          <ul class="checks">
+            <li>Jellyfin Web 12.3.0: an isolated foreground H.264 direct-play test in Chromium 154 showed a visible message and a Stop that closed the player. This is one observed cooperative path; it does not close the known server bypass or guarantee a cutoff.</li>
+            <li>Android TV: source support for stop and messages; both player engines and actual devices still need runtime tests.</li>
+            <li>Swiftfin: source support for stop; do not promise a friendly message without testing the installed version.</li>
+            <li>Roku: treat remote stop and messages as unsupported for this preview’s promise.</li>
+            <li>Downloads, disconnected players, casting, and saved adult accounts can bypass the intended experience. Test and restrict those paths before family use.</li>
+          </ul>
+          <p class="fine">The Web note is a recorded lab observation for that exact configuration. The other client notes are source expectations only. No client is certified for strict enforcement. Review recorded observations for the exact Web or device version before making a compatibility claim. Even a successful stop on a tested player would not close the known direct-link bypass. Shared TVs should not leave adult or admin accounts available for easy switching.</p>
+        </section>
+        <section class="section prose" id="install">
+          <div class="section-head">
+            <p class="kicker">Planned setup · Preview</p>
+            <h2>A careful start, in plain language.</h2>
+            <p>The Jellyfin edition is a preview. There is no public download, release image, or installation script yet. These steps describe the planned setup, not an installer you can run today.</p>
+          </div>
+          <ol class="steps install-steps" id="manual" data-runtime-limit="manual">
+            <li><h3>Back up and keep it separate</h3><p>Before a future installation, back up Jellyfin and use separate KidsWatch storage. Begin with fictional children on a test server so you can check the behavior and undo changes.</p></li>
+            <li><h3>Connect your server privately</h3><p>The server owner will configure protected HTTPS access, choose libraries, and keep the privileged integration key on the backend. Parents will never need that key.</p></li>
+            <li><h3>Choose the household settings</h3><p>Match the household timezone, set the child approval policy, and verify owner notifications before inviting parents. Check each child's local user and restrictions before signing in a device.</p></li>
+            <li><h3>Test the devices your family uses</h3><p>Try title choices, watch hours, daily minutes, pause, reconnecting, and shared TVs. Record what actually happened on each device. An accepted stop request does not prove that viewing ended.</p><div class="callout"><p><strong>Companion controls, not a safety lock.</strong> Our Jellyfin 12.3 lab fetched blocked titles through known direct video links, even with playback turned off. Buffered video may continue. There is no secure title blocking or guaranteed cutoff for any client.</p></div></li>
+            <li><h3>Keep a way back</h3><p>Keep the matching backup and setup notes. Stop KidsWatch before restoring an earlier configuration, and review only the child users it created. Check device sign-in again after a restore.</p></li>
+          </ol>
+          <p class="fine">Detailed installation instructions will accompany a reviewed release. This website does not connect to Jellyfin or change your server.</p>
+        </section>
+        <section class="section prose" id="questions">
+          <div class="section-head">
+            <p class="kicker">Good to know</p>
+            <h2>Before you bring the family in</h2>
+          </div>
+          <details class="details">
+            <summary>Does each child need an email address?</summary>
+            <p>No. KidsWatch creates a restricted local Jellyfin user for each child. There is no external child signup or Plex share to accept.</p>
+          </details>
+          <details class="details">
+            <summary>Does a parent need the admin integration key?</summary>
+            <p>No. Parents sign in with their existing Jellyfin identity, then need a KidsWatch family approval. The owner’s privileged key stays on the backend.</p>
+          </details>
+          <details class="details">
+            <summary>Is a public Jellyfin build available?</summary>
+            <p>Not yet. The Jellyfin edition is a preview. This page illustrates the planned setup and controls; it does not offer a public build or download.</p>
+          </details>
+          <details class="details">
+            <summary>Does a successful health check mean limits work?</summary>
+            <p>No. Our Jellyfin 12.3 lab saved the playback-off setting but still fetched direct video, including blocked titles. A connected server and saved policies do not prove secure title blocking or a cutoff. Test actual child playback, and describe the result as companion controls only.</p>
+          </details>
+        </section>
+      </main>
+      <footer class="site-footer footer">
+        <nav aria-label="Footer">
+          <a href="/">Other editions</a>
+          <a href="/jellyfin/">Home</a>
+          <a href="/jellyfin/server-owners">For server owners</a>
+          <a href="/jellyfin/parents">For parents</a>
+          <a href="/jellyfin/server-owners#install">Planned setup</a>
+        </nav>
+        <p>A Pughouse Labs project. Jellyfin edition preview; no public build is available yet.</p>
+        <p>KidsWatch is an independent project and is not affiliated with or endorsed by the Jellyfin project.</p>
+        <p>This website counts visits with Cloudflare Web Analytics, which does not use cookies. Interactive previews use fictional data and stay in this browser tab.</p>
+      </footer>
+    </div>
+  </body>
+</html>

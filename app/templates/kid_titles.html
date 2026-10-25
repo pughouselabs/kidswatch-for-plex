@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}{{ kid.name }}'s movies and shows · KidsWatch for Plex{% endblock %}
+{% block body %}
+{% include "_kid_header.html" %}
+{% if error %}
+<div class="notice stop">{{ icon('alert') }}<p>Plex isn't answering right now ({{ error }}). Try again in a minute.</p></div>
+{% else %}
+<p class="muted">
+  {% if kid.mode == 'picked' %}Only titles you allow show up for {{ kid.name }}.
+  {% else %}<strong>{{ rules.AGE_LEVELS[kid.age_level].label }} level:</strong> {{ rules.AGE_LEVELS[kid.age_level].summary|ratings }}{% endif %}
+  Choose a poster to read about a movie or show.
+  {% if kid.status != 'active' %}Your choices apply after {{ kid.name }} is approved.{% endif %}
+</p>
+
+<div class="toolbar">
+  <label class="search"><span class="visually-hidden">Search titles</span>{{ icon('search') }}<input class="input" type="search" enterkeyhint="search" autocomplete="off" placeholder="{{ 'Title, genre or rating' if rows|selectattr('genres')|list else 'Title or rating, like PG-13' }}" data-search></label>
+  <div class="segmented" role="group" aria-label="Type">
+    <button type="button" data-type="all" aria-pressed="true">All</button>
+    <button type="button" data-type="movie" aria-pressed="false">Movies</button>
+    <button type="button" data-type="show" aria-pressed="false">Shows</button>
+  </div>
+  <select class="select" data-state aria-label="Which titles">
+    <option value="all">All titles</option>
+    <option value="visible" {% if request.query_params.get('show') == 'visible' %}selected{% endif %}>Can watch</option>
+    <option value="hidden">Hidden</option>
+    <option value="allow">Allowed by you</option>
+    <option value="block">Blocked by you</option>
+    <option value="new" {% if request.query_params.get('show') == 'new' %}selected{% endif %}>New since your last look</option>
+  </select>
+</div>
+<div class="grid-meta">
+  <span data-count aria-live="polite">{{ counts.visible }} of {{ counts.all }} can watch</span>
+  <span class="row">
+    <select class="select select-sm" data-sort aria-label="Sort">
+      <option value="title">A to Z</option>
+      <option value="added">Recently added</option>
+      <option value="year">Newest release</option>
+    </select>
+    <span data-sync-text data-status-url="/kids/{{ kid.id }}/status.json">{{ st.sync_text }}</span>
+    <details class="menu menu-right">
+      <summary class="btn btn-sm">Change all {{ icon('down') }}</summary>
+      <div class="menu-list">
+        <button type="button" data-bulk="allow">{{ icon('check') }}Allow all shown</button>
+        <button type="button" data-bulk="block">{{ icon('ban') }}Block all shown</button>
+        <button type="button" data-bulk="">{{ icon('history') }}Reset all shown</button>
+      </div>
+    </details>
+  </span>
+</div>
+
+<ul class="title-grid" data-grid data-post="/kids/{{ kid.id }}/titles" data-batch="/kids/{{ kid.id }}/titles/batch" data-detail="/kids/{{ kid.id }}/titles/" data-csrf="{{ csrf }}" data-child="{{ kid.name }}" data-reset-label="{{ 'hidden by default' if kid.mode == 'picked' else kid.name ~ "'s age level" }}">
+  {% for r in rows %}
+  <li class="tile {{ 'on' if r.visible else 'off' }}" data-key="{{ r.key }}" data-type="{{ r.type }}" data-base="{{ 1 if r.base else 0 }}"
+      data-choice="{{ r.choice or '' }}" data-title="{{ r.title|lower }}" data-new="{{ 1 if r.new else 0 }}"
+      data-added="{{ r.added }}" data-year="{{ r.year or 0 }}" data-genres="{{ r.genres }}" data-rating="{{ (r.rating or '')|lower }}">
+    <button class="poster" type="button" data-details>
+      <span class="visually-hidden">Details for {{ r.title }}</span>
+      <img src="/poster/{{ r.key }}" alt="" loading="lazy" width="150" height="225">
+      {% if r.new %}<span class="flag badge new">New</span>{% endif %}
+      <span class="state" aria-hidden="true">{{ icon('check', 'yes') }}{{ icon('x', 'no') }}</span>
+    </button>
+    <div class="tile-body">
+      <span class="tile-title">{{ r.title }}</span>
+      <span class="visually-hidden" data-title-state>{{ 'Can watch' if r.visible else 'Hidden' }}</span>
+      <span class="tile-meta">{% if r.year %}{{ r.year }} · {% endif %}<span class="nowrap">{{ r.rating }}</span> · {{ 'Show' if r.type == 'show' else 'Movie' }}</span>
+      <button class="your-pick" type="button" data-reset aria-label="Your pick · Undo for {{ r.title }}. Reset to {{ 'hidden by default' if kid.mode == 'picked' else kid.name ~ "'s age level" }}" {% if not r.choice %}hidden{% endif %}>Your pick · Undo<span class="visually-hidden"> for {{ r.title }}</span></button>
+      <div class="tile-actions single">
+        <button class="pick wide" type="button" data-toggle aria-label="{{ 'Block' if r.visible else 'Allow' }} {{ r.title }} for {{ kid.name }}"><span class="when-on">{{ icon('ban') }}Block</span><span class="when-off">{{ icon('check') }}Allow</span></button>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+<div class="empty" data-empty hidden>{{ icon('search', 'xl') }}<h2>No movies or shows match</h2><p>Try another title, genre, or rating, or clear the filters to see everything.</p>
+  <button class="btn btn-quiet" type="button" data-clear>{{ icon('x') }}Clear search and filters</button>
+  {% if media_request_url %}
+  <a class="btn" href="{{ media_request_url }}/search" target="_blank" rel="noopener" data-ask-link data-ask-external hidden>{{ icon('external') }}<span data-ask-text>Request it</span><span class="visually-hidden"> (opens in a new tab)</span></a></div>
+  {% else %}
+  <a class="btn" href="/requests?kind=title&amp;kid={{ kid.id }}#new" data-ask-link hidden>{{ icon('send') }}<span data-ask-text>Ask {{ owner_name }} to add it</span></a></div>
+  {% endif %}
+
+<dialog class="sheet" data-sheet aria-labelledby="sheet-title">
+  <div class="sheet-head"><button class="btn btn-quiet btn-sm" type="button" data-close aria-label="Close">{{ icon('x') }}</button></div>
+  <div class="sheet-body">
+    <img alt="" data-sheet-img width="150" height="225">
+    <div>
+      <h2 id="sheet-title" data-sheet-title></h2>
+      <div class="muted small" data-sheet-meta></div>
+      <div class="chips mt-sm" data-sheet-genres role="group" aria-label="Show more in this genre" hidden></div>
+      <div class="summary" data-sheet-summary></div>
+      <p class="hint" data-sheet-state></p>
+      <div class="form-actions mt">
+        <button class="btn btn-primary" type="button" data-sheet-toggle>Allow</button>
+        <button class="btn btn-quiet" type="button" data-sheet-reset hidden>Reset pick</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+{% endif %}
+{% endblock %}

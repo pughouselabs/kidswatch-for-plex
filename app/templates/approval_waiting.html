@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Parent site access · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card" data-wait-url="/waiting/status.json" data-wait-status="{{ waiting_status }}" data-wait-accepted="0">
+  <div class="card-header"><h1>{{ 'Waiting for ' ~ owner_name if waiting_status == 'open' else 'Parent site access' }}</h1></div>
+  <div class="card-body">
+    <div role="status" aria-live="polite">
+    {% if waiting_status == 'open' %}
+      <p>Your request was sent. This page will update when it is approved.</p>
+    {% elif waiting_status == 'declined' %}
+      <p>Your request was declined. Contact {{ owner_name }} if you need help.</p>
+      {% if asked.owner_note %}<p>{{ asked.owner_note }}</p>{% endif %}
+    {% elif waiting_status == 'needs_share' %}
+      <p>Accept {{ owner_name }}'s Plex library invitation first, then check access again.</p>
+      <p><a class="btn" href="https://app.plex.tv/desktop/#!/settings/manage-library-access">Open Plex invitations</a></p>
+    {% else %}
+      <p>Ask {{ owner_name }} for access to manage your family in KidsWatch.</p>
+    {% endif %}
+    </div>
+    {% if waiting_status == 'none' %}
+    <form method="post" action="/waiting">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div class="field"><label class="label" for="message">Anything {{ owner_name }} should know? (optional)</label>
+        <textarea class="input" id="message" name="message" maxlength="500"></textarea></div>
+      <div class="form-actions mt"><button class="btn btn-primary">Request access</button></div>
+    </form>
+    {% endif %}
+    <p><a class="btn" href="/waiting">Check access</a></p>
+    <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Sign out</button></form>
+  </div>
+</section>
+{% endblock %}

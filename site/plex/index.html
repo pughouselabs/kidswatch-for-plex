@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KidsWatch for Plex | Your kids' own Plex, with you in charge</title>
+  <meta name="description" content="A free, self-hosted app for families who share a Plex server. Give each child their own Plex account, choose what they watch, set screen time and bedtime, and pause it all from your phone.">
+  <meta name="theme-color" content="#f7f4f0">
+  <link rel="canonical" href="https://kidswatchtv.com/plex/">
+  <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/titles-demo.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="KidsWatch for Plex">
+  <meta property="og:title" content="KidsWatch for Plex | Your kids' own Plex, with you in charge">
+  <meta property="og:description" content="Give each child their own Plex account. Choose what they watch, set screen time and bedtime, and pause it all from your phone.">
+  <meta property="og:url" content="https://kidswatchtv.com/plex/">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.6-3 8.1-7 9.5-4-1.4-7-4.9-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V7M17 16v-8"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.8c1.8.7 3 2.4 3.5 5.2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5"/><path d="M12 8v4l3 2"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13l2.5-8h11L20 13v6H4z"/><path d="M4 13h5l1 2h4l1-2h5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.4-3.6 4.4-5 8-5s6.6 1.4 8 5"/></symbol>
+</svg>
+<a class="skip" href="#main">Skip to content</a>
+<div class="page">
+  <header class="site-header">
+    <a class="brand" href="/plex/" aria-current="page"><img src="/icon.svg?v=4" alt="" width="32" height="32">KidsWatch <span>for Plex</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/plex/server-owners">For server owners</a>
+      <a href="/plex/parents">For parents</a>
+      <a href="/plex/server-owners#install">Install</a>
+      <a href="/">Other editions</a>
+      <a class="wide" href="https://github.com/pughouselabs/kidswatch-for-plex">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>Free, open source and self-hosted</p>
+        <h1 id="hero-title">Your kids' own Plex, with you in charge</h1>
+        <p class="lead">Give each child their own Plex account. Choose what they watch, set screen time and bedtime, and pause it all from your phone.</p>
+        <div class="cta">
+          <a class="btn btn-primary btn-lg" href="/plex/server-owners">I run a Plex server</a>
+          <a class="btn btn-lg" href="/plex/parents">I'm a parent</a>
+        </div>
+        <p class="fine">KidsWatch for Plex is installed by whoever runs your family's Plex server. Parents sign in with the Plex account they already watch with. Run the server? <a href="/plex/server-owners#install">See how to install it</a>.</p>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-bar"><span>9:41</span><i></i></div>
+          <div class="kid"><span class="avatar">R</span><div><strong>Rowan</strong><span>Kids level</span></div></div>
+          <div class="card">
+            <div class="card-title"><svg class="icon"><use href="#i-clock"/></svg>Today</div>
+            <div class="today-head"><span class="big">47 min</span><span class="of-limit">of 2 hr</span></div>
+            <progress class="meter" max="100" value="39"></progress>
+            <div class="muted small">1 hr 13 min left · Ends 8:00 PM</div>
+            <div class="status"><span class="badge live">Watching</span><span>Maple Club on the TV</span></div>
+            <div class="btns"><span class="btn btn-sm"><svg class="icon"><use href="#i-pause"/></svg>Pause</span><span class="btn btn-sm"><svg class="icon"><use href="#i-plus"/></svg>Add time</span></div>
+          </div>
+          <div class="card row">
+            <span class="num">128</span><span class="muted small">titles Rowan can watch</span><span class="badge new">3 new</span>
+          </div>
+        </div>
+        <div class="toast"><svg class="icon"><use href="#i-check"/></svg><span>Rowan is paused until 6:30 PM.</span><b>Undo</b></div>
+      </div>
+    </section>
+
+    <section class="section" id="what" aria-labelledby="what-title">
+      <div class="head">
+        <p class="kicker">What it does</p>
+        <h2 id="what-title">Set it up once, then adjust from your phone</h2>
+        <p>Everything works on the Plex apps your kids already use. You make the rules in KidsWatch, and the server keeps them.</p>
+      </div>
+
+      <article class="feature">
+        <div class="copy">
+          <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-film"/></svg></span>
+          <h3>Choose exactly what they can watch</h3>
+          <p>Use an allow list or block list for individual movies and shows, or switch to "Only titles I allow" for the strictest setup. Allows stop at PG-13 movies and TV-14 shows; R, NC-17, TV-MA and unrated titles stay hidden.</p>
+          <ul class="checks">
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Little kids, Kids and Teens levels, based on official ratings</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Always allow or always block a title for finer control than its age rating</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Search by title, genre or rating</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>New titles on the server are marked New for you to review</li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="panel titles" data-level-demo>
+            <div class="seg" aria-hidden="true"><span data-level="little">Little kids</span><span class="on" data-level="kids">Kids</span><span data-level="teens">Teens</span></div>
+            <div class="search" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg><span>Title, genre or rating</span></div>
+            <div class="demo-controls" data-title-controls hidden>
+              <label class="demo-picked"><input type="checkbox" data-only-allowed>Only titles I allow</label>
+            </div>
+            <div id="level-demo-titles">
+              <ul class="tiles" aria-label="Example titles at the Kids level">
+                <li data-rating="G" data-type="movie"><span class="poster"><span class="tile-art tone-1"><strong class="tile-title">Toy Story</strong><span class="tile-rating"><span class="sr-only">Rated </span>G</span></span><span class="mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span></span><span class="tile-meta">Movie · <span data-status>Allowed</span></span></li>
+                <li data-rating="TV-Y" data-type="show"><span class="poster"><span class="tile-art tone-2"><strong class="tile-title">Sesame Street</strong><span class="tile-rating"><span class="sr-only">Rated </span>TV-Y</span></span><span class="mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span></span><span class="tile-meta">Show · <span data-status>Allowed</span></span></li>
+                <li data-rating="PG" data-type="movie"><span class="poster"><span class="tile-art tone-3"><strong class="tile-title">Frozen</strong><span class="tile-rating"><span class="sr-only">Rated </span>PG</span></span><span class="mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span></span><span class="tile-meta">Movie · <span data-status>Allowed</span></span></li>
+                <li data-rating="TV-Y7" data-type="show"><span class="poster"><span class="tile-art tone-4"><strong class="tile-title">SpongeBob SquarePants</strong><span class="tile-rating"><span class="sr-only">Rated </span>TV-Y7</span></span><span class="mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span></span><span class="tile-meta">Show · <span data-status>Allowed</span></span></li>
+                <li class="off" data-rating="PG-13" data-type="movie"><span class="poster"><span class="tile-art tone-5"><strong class="tile-title">Jurassic Park</strong><span class="tile-rating"><span class="sr-only">Rated </span>PG-13</span></span><span class="mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></span></span><span class="tile-meta">Movie · <span data-status>Blocked</span></span></li>
+                <li class="off" data-rating="TV-14" data-type="show"><span class="poster"><span class="tile-art tone-6"><strong class="tile-title">Wednesday</strong><span class="tile-rating"><span class="sr-only">Rated </span>TV-14</span></span><span class="mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></span></span><span class="tile-meta">Show · <span data-status>Blocked</span></span></li>
+              </ul>
+              <p class="demo-note">In the app, you'll see the real cover art from your own Plex library.</p>
+            </div>
+            <p id="level-demo-help" class="demo-help">Tap a title to allow or block it.</p>
+            <p class="sr-only" aria-live="polite" data-level-status></p>
+          </div>
+          <p class="demo-note">Titles are shown only as rating examples. KidsWatch for Plex is not affiliated with their owners.</p>
+        </div>
+      </article>
+
+      <article class="feature flip">
+        <div class="copy">
+          <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg></span>
+          <h3>Screen time that keeps itself</h3>
+          <p>Set daily minutes and watch hours for school days and weekends. Time only counts while a video is playing. When it runs out, the video stops with a friendly message on the TV.</p>
+          <ul class="checks">
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Quick starts for the school year, summer or weekends only</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Friday as a weekend, Sunday as a school night, and school breaks</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>See exactly how the next 7 days play out</li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="panel week" aria-hidden="true">
+            <div class="card-title"><svg class="icon"><use href="#i-calendar"/></svg>Next 7 days</div>
+            <ul class="days">
+              <li class="today"><div><strong>Today</strong> <span>Tuesday</span><small>7:00 AM to 8:00 PM</small></div><b>2 hr</b></li>
+              <li><div><strong>Wednesday</strong><small>7:00 AM to 8:00 PM</small></div><b>2 hr</b></li>
+              <li><div><strong>Friday</strong> <em class="badge info">Weekend rules</em><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
+              <li><div><strong>Saturday</strong><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
+            </ul>
+          </div>
+          <div class="tv"><div class="tv-screen"><div class="tv-dialog"><strong class="tv-dialog-title">Playback Error</strong><p>"alex" asked to stop your playback from this server: That's all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
+          <p class="tv-caption">Example of the message Plex shows when time runs out. Plex adds the server owner's name.</p>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="copy">
+          <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pause"/></svg></span>
+          <h3>One tap when plans change</h3>
+          <p>Pause for dinner, add 15 minutes to finish an episode, push bedtime back for movie night, or use weekend rules on a sick day. Tapped the wrong thing? Undo is right there.</p>
+          <ul class="checks">
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Pause for 30 minutes, an hour, until tomorrow, or until you resume</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Videos stop within a minute, with a short message for your child</li>
+            <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Extra time and later bedtimes reset on their own the next day</li>
+          </ul>
+        </div>
+        <div class="stage" aria-hidden="true">
+          <div class="panel menu-demo">
+            <div class="btns"><span class="btn btn-sm"><svg class="icon"><use href="#i-pause"/></svg>Pause</span><span class="btn btn-sm pressed"><svg class="icon"><use href="#i-plus"/></svg>Add time</span></div>
+            <div class="menu">
+              <span class="hl"><svg class="icon"><use href="#i-plus"/></svg>15 minutes today</span>
+              <span><svg class="icon"><use href="#i-plus"/></svg>30 minutes today</span>
+              <span><svg class="icon"><use href="#i-plus"/></svg>1 hour today</span>
+              <i></i>
+              <span><svg class="icon"><use href="#i-moon"/></svg>Bedtime 30 minutes later</span>
+              <span><svg class="icon"><use href="#i-moon"/></svg>Bedtime 1 hour later</span>
+              <i></i>
+              <span><svg class="icon"><use href="#i-calendar"/></svg>Weekend rules today</span>
+            </div>
+          </div>
+          <div class="toast on-stage"><svg class="icon"><use href="#i-check"/></svg><span>Added 15 minutes for today.</span><b>Undo</b></div>
+        </div>
+      </article>
+
+      <article class="feature flip">
+        <div class="copy">
+          <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>
+          <h3>See what they watched</h3>
+          <p>A 7-day chart compares each day with the limit, and the watch history lists every show and the device it played on. Spot something you don't like? Block it right from the list.</p>
+        </div>
+        <div class="stage" aria-hidden="true">
+          <div class="panel">
+            <div class="card-title"><svg class="icon"><use href="#i-chart"/></svg>Last 7 days<span class="muted">9 hr 50 min total</span></div>
+            <svg class="chart" viewBox="0 0 336 148">
+              <rect class="bar" x="10" y="103.3" width="28" height="16.7" rx="4"></rect>
+              <rect class="bar over" x="58" y="42.2" width="28" height="77.8" rx="4"></rect>
+              <rect class="bar" x="106" y="71.1" width="28" height="48.9" rx="4"></rect>
+              <rect class="bar" x="154" y="86.7" width="28" height="33.3" rx="4"></rect>
+              <rect class="bar" x="202" y="47.8" width="28" height="72.2" rx="4"></rect>
+              <rect class="bar" x="250" y="67.2" width="28" height="52.8" rx="4"></rect>
+              <rect class="bar today" x="298" y="93.9" width="28" height="26.1" rx="4"></rect>
+              <line class="limit" x1="6" x2="138" y1="53.3" y2="53.3"></line>
+              <line class="limit" x1="150" x2="234" y1="20" y2="20"></line>
+              <line class="limit" x1="246" x2="330" y1="53.3" y2="53.3"></line>
+              <text class="val" x="24" y="97" text-anchor="middle">30m</text>
+              <text class="val" x="72" y="36" text-anchor="middle">2h 20m</text>
+              <text class="val" x="120" y="65" text-anchor="middle">1h 28m</text>
+              <text class="val" x="168" y="80" text-anchor="middle">1h</text>
+              <text class="val" x="216" y="41" text-anchor="middle">2h 10m</text>
+              <text class="val" x="264" y="61" text-anchor="middle">1h 35m</text>
+              <text class="val" x="312" y="88" text-anchor="middle">47m</text>
+              <text class="axis" x="24" y="140" text-anchor="middle">Wed</text>
+              <text class="axis" x="72" y="140" text-anchor="middle">Thu</text>
+              <text class="axis" x="120" y="140" text-anchor="middle">Fri</text>
+              <text class="axis" x="168" y="140" text-anchor="middle">Sat</text>
+              <text class="axis" x="216" y="140" text-anchor="middle">Sun</text>
+              <text class="axis" x="264" y="140" text-anchor="middle">Mon</text>
+              <text class="axis today" x="312" y="140" text-anchor="middle">Today</text>
+            </svg>
+            <ul class="history">
+              <li><img class="thumb" src="/lp/maple-club.svg" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Maple Club: The Treehouse Vote</strong><small>4:10 PM · 23 min · TV</small></div><span class="btn btn-sm"><svg class="icon"><use href="#i-ban"/></svg>Block</span></li>
+              <li><img class="thumb" src="/lp/pebble-trail.svg" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Pebble Trail</strong><small>Sat · 1 hr 40 min · Tablet</small></div><span class="btn btn-sm"><svg class="icon"><use href="#i-ban"/></svg>Block</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="little-title">
+      <div class="head">
+        <p class="kicker">And the little things</p>
+        <h2 id="little-title">Made for real family life</h2>
+      </div>
+      <ul class="grid">
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"/></svg></span><h3>Share the job</h3><p>Ask the server owner to add a co-parent or grandparent who can help manage a child.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg></span><h3>Siblings in one step</h3><p>Start a new child with a brother's or sister's rules, or copy rules across any time.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"/></svg></span><h3>Every screen</h3><p>Rules follow your child's Plex account on the TV, tablet, phone or browser.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span><h3>Safe by default</h3><p>Downloads stay off, and the free online movies and Live TV from Plex are switched off on kids' accounts.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-history"/></svg></span><h3>Who changed what</h3><p>Every change is listed with who made it and when, so co-parents stay in sync.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-inbox"/></svg></span><h3>Ask the server owner</h3><p>Get a new movie or show added, ask for more access, or suggest a feature.</p></li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="steps-title">
+      <div class="head">
+        <p class="kicker">Getting started</p>
+        <h2 id="steps-title">Ready in three steps</h2>
+      </div>
+      <ol class="steps">
+        <li><span class="step" aria-hidden="true">1</span><h3>The server owner installs it</h3><p>It runs in Docker next to their Plex server. Your family's movies and shows stay where they are.</p></li>
+        <li><span class="step" aria-hidden="true">2</span><h3>Parents add each child</h3><p>Sign in with Plex, give each child a free Plex account, connect it with a one-time link, and pick their titles and screen time.</p></li>
+        <li><span class="step" aria-hidden="true">3</span><h3>The server owner approves</h3><p>Their titles appear in Plex, ready on any TV, tablet or phone they sign in to.</p></li>
+      </ol>
+    </section>
+
+    <section class="section" aria-labelledby="who-title">
+      <div class="head">
+        <p class="kicker">Where to next</p>
+        <h2 id="who-title">Pick the page that fits you</h2>
+      </div>
+      <ul class="audiences">
+        <li>
+          <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"/></svg></span>
+          <h3>For Plex server owners</h3>
+          <p>You run the Plex server your family and friends watch from. See what you need, how it works, and how private it is.</p>
+          <a class="btn btn-primary" href="/plex/server-owners">Read the server owner guide</a>
+        </li>
+        <li>
+          <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg></span>
+          <h3>For parents</h3>
+          <p>You watch on someone else's Plex server. See what you get, what your kids will see, and how to ask your server owner to set it up.</p>
+          <a class="btn btn-primary" href="/plex/parents">Read the parent guide</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="final" aria-labelledby="release-title">
+      <p class="kicker">Free and open source</p>
+      <h2 id="release-title">Open source on GitHub</h2>
+      <p>KidsWatch for Plex is free and open source. The source code is on GitHub under the MIT license.</p>
+      <div class="cta center">
+        <a class="btn btn-primary btn-lg" href="https://github.com/pughouselabs/kidswatch-for-plex">GitHub</a>
+      </div>
+      <p class="license">MIT license. Needs your own Plex Media Server, with Plex Pass on the server owner's account.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <nav aria-label="Footer">
+      <a href="/plex/">Plex edition</a>
+      <a href="/">Other editions</a>
+      <a href="/plex/server-owners">For server owners</a>
+      <a href="/plex/parents">For parents</a>
+      <a href="/plex/server-owners#install">Install</a>
+      <a href="https://github.com/pughouselabs/kidswatch-for-plex">GitHub</a>
+    </nav>
+    <p>A Pughouse Labs project. Free and open source under the MIT license.</p>
+    <p>Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
+    <p>This website counts visits with Cloudflare Web Analytics, which does not use cookies. The KidsWatch app itself has no analytics.</p>
+  </footer>
+</div>
+</body>
+</html>

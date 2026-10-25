@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Pug concept 3: Little screen scout</title>
+  <desc id="desc">A tall, blocky tan pug sits in profile on the right, looking left at a plum television with a check-mark antenna.</desc>
+  <g stroke="#34313F" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <!-- A low TV balances the taller, upright sitting pug. -->
+    <path d="m81 205 19 20 39-42" fill="none"/>
+    <rect x="31" y="233" width="191" height="145" rx="24" fill="#8A6896"/>
+    <rect x="51" y="254" width="151" height="102" rx="12" fill="#FFF4DF" stroke="none"/>
+    <path d="m110 276 36 29-36 29z" fill="#8A6896" stroke="none"/>
+    <path d="m62 381-8 20m136-20 8 20" fill="none"/>
+    <!-- A curled tail and bent back leg make the seated pose explicit. -->
+    <path d="M420 326c52-13 66 36 35 48-21 8-33-9-23-20" fill="none"/>
+    <path d="M301 277h88c21 30 34 76 34 122v16H283c-6-45-2-99 18-138z" fill="#E9C795"/>
+    <path d="M376 355c24 0 35 17 35 45m-102-55-7 59m37-57-2 57" fill="none"/>
+    <path d="M297 402c-21 0-27 24-6 24h48c20 0 21-24 2-24zm90 0c-19 0-20 24-1 24h34c20 0 21-24 2-24z" fill="#FFF4DF"/>
+    <!-- A rounded rectangular head, one folded ear, and a short dark muzzle. -->
+    <path d="M270 167c0-31 21-51 53-51h52c32 0 53 22 53 53v72c0 38-27 67-68 67h-23c-40 0-67-27-67-64z" fill="#E9C795"/>
+    <path d="M385 128c12-10 43-2 49 14 6 14-2 33-17 56-7 11-17 10-20-4l-15-50c-2-7-1-12 3-16z" fill="#34313F" stroke="none"/>
+    <path d="M284 155q15-9 32-3" fill="none" stroke-width="8"/>
+    <ellipse cx="299" cy="205" rx="24" ry="29" fill="#34313F" stroke="none"/>
+    <circle cx="288" cy="203" r="7" fill="#FFF4DF" stroke="none"/>
+    <path d="M276 229c-25 0-43 17-43 36s20 36 45 36h26c15 0 25-10 25-24 0-25-26-48-53-48z" fill="#34313F" stroke="none"/>
+    <path d="m246 250 11 5-6 8m12 17q16 10 27-2" fill="none" stroke="#FFF4DF" stroke-width="7"/>
+  </g>
+</svg>

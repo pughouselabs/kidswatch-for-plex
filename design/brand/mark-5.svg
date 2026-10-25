@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 5. Block: a solid screen with folded pug ears; the face is cut out as negative space -->
+  <defs>
+    <mask id="kw5-face" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path d="M5 30C6.5 25.5 9.5 21.5 15 18.5M59 30C57.5 25.5 54.5 21.5 49 18.5" fill="none" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="22" cy="31" r="5" fill="#000"/>
+      <circle cx="42" cy="31" r="5" fill="#000"/>
+      <path d="M28 25.5C30.5 24 33.5 24 36 25.5" fill="none" stroke="#000" stroke-width="2.8" stroke-linecap="round"/>
+      <ellipse cx="32" cy="40" rx="5" ry="3.4" fill="#000"/>
+      <path d="M23.5 45.5c3 3 6 3 8.5 0 2.5 3 5.5 3 8.5 0" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <path mask="url(#kw5-face)" fill="currentColor" d="M18 13H46A12 12 0 0 1 58 25V43A12 12 0 0 1 46 55H18A12 12 0 0 1 6 43V25A12 12 0 0 1 18 13Z"/>
+  <path fill="currentColor" d="M19 12.5C11 10.5 4.5 14 2.5 21C2 24.5 2.5 28 4 31C6 26.5 9 22.5 14 19.5ZM45 12.5C53 10.5 59.5 14 61.5 21C62 24.5 61.5 28 60 31C58 26.5 55 22.5 50 19.5Z"/>
+  <path fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" d="M20 55.5V59M44 55.5V59"/>
+</svg>

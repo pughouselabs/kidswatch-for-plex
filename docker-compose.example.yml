@@ -1,0 +1,44 @@
+services:
+  kidswatch:
+    build: .
+    image: kidswatch:local
+    container_name: kidswatch
+    restart: unless-stopped
+    user: "1000:1000"
+    env_file: .env
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
+        bind:
+          create_host_path: false
+      # Replace this host path with your own Plex server's existing file.
+      - type: bind
+        source: /path/to/plex/Preferences.xml
+        target: /plex-prefs/Preferences.xml
+        read_only: true
+        bind:
+          create_host_path: false
+      # Optional notification URL file lives here; mount the directory read-only.
+      - type: bind
+        source: ./secrets
+        target: /run/secrets
+        read_only: true
+        bind:
+          create_host_path: false
+      # Optional Tautulli integration: uncomment and set both settings in .env.
+      # - type: bind
+      #   source: /path/to/tautulli/config.ini
+      #   target: /tautulli/config.ini
+      #   read_only: true
+      #   bind:
+      #     create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true

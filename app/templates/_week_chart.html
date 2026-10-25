@@ -1,0 +1,15 @@
+<svg class="chart" viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-label="Screen time for the last 7 days" aria-describedby="week-chart-values">
+  {% for b in chart.bars %}
+  <g>
+    <title>{{ b.title }}</title>
+    <rect class="bar {{ b.cls }} {{ 'today' if b.today and b.cls != 'over' }}" x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="4"></rect>
+    {% if b.ly is not none %}<line class="limit" x1="{{ b.lx1 }}" x2="{{ b.lx2 }}" y1="{{ b.ly }}" y2="{{ b.ly }}"></line>{% endif %}
+    {% if b.value %}<text class="val" x="{{ b.cx }}" y="{{ b.vy }}" text-anchor="middle">{{ b.value }}</text>{% endif %}
+    <text class="axis {{ 'today' if b.today }}" x="{{ b.cx }}" y="{{ chart.height - 4 }}" text-anchor="middle">{{ 'Today' if b.today else b.label }}</text>
+  </g>
+  {% endfor %}
+</svg>
+<div class="legend"><span><i class="today"></i>Today</span><span><i class="within"></i>Earlier</span><span><i class="over"></i>Over the limit</span><span><i class="limit"></i>Daily limit</span></div>
+<ul class="visually-hidden" id="week-chart-values">
+  {% for b in chart.bars %}<li>{{ b.title }}{% if b.cls == 'over' %}, over the limit{% endif %}</li>{% endfor %}
+</ul>

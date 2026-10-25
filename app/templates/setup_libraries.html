@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Choose libraries · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+{% if library_warning %}<div class="notice stop" role="alert"><p>{{ library_warning }}</p></div>{% endif %}
+{% if error %}<section class="notice stop error-summary" id="form-errors" tabindex="-1" aria-labelledby="setup-error-title" data-error-summary>
+  <div><h2 id="setup-error-title">Please check this</h2><p id="libraries-error">{{ error }}</p></div>
+</section>{% endif %}
+<section class="card">
+  <div class="card-header"><h1 id="libraries-heading">Choose libraries for children</h1></div>
+  <form method="post" action="/setup/libraries" class="card-body">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <p id="libraries-hint">Choose which libraries parents can use for their children's picks. Only movie and TV libraries appear.</p>
+    <div class="choice-list mt" role="group" aria-labelledby="libraries-heading" aria-describedby="libraries-hint{% if error %} libraries-error{% endif %}">
+      {% for key, title in libraries.items() %}
+      <label class="choice"><input type="checkbox" name="sections" value="{{ key }}" {% if key in selected %}checked{% endif %}{% if error %} aria-invalid="true" aria-describedby="libraries-error"{% endif %}>
+        <span class="title">{{ title }}</span></label>
+      {% else %}<p>No movie or TV libraries are available. Check the Plex connection on your server, then refresh this page.</p>{% endfor %}
+    </div>
+    <p class="hint mt">Your choices are saved when you finish setup. Library access and titles update within a few minutes. Until then, the current library policy stays in use.</p>
+    <div class="field mt"><span class="label">Time zone</span><span>{{ timezone }}</span><p class="hint">Managed by your installation. Change PK_TZ in your server's deployment settings and restart KidsWatch to change it.</p></div>
+    <div class="form-actions mt"><button class="btn btn-primary"{% if not libraries %} disabled{% endif %}>Continue</button><a class="btn btn-quiet" href="/setup">Back</a></div>
+  </form>
+</section>
+{% endblock %}

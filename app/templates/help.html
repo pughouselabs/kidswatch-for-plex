@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}Help · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<div class="page-header"><div><h1>Help</h1><p class="sub">Set up Plex, choose titles, and manage screen time.</p></div></div>
+<section class="card"><div class="card-body faq">
+  <details open><summary>How do I set up my child?</summary>
+    <ol>
+      <li>Choose <strong>Add a child</strong> on My kids.</li>
+      <li>Make your child a free account at <a href="https://www.plex.tv/sign-up/" target="_blank" rel="noopener">plex.tv/sign-up</a> with an email you check, and keep the password yourself.</li>
+      <li>On your child's page, copy the sign-in link and open it in a private (incognito) window, or scan the QR code with your child's tablet or phone. Sign in as your child. That sends your request to {{ owner_name }}.</li>
+      <li>Once {{ owner_name }} approves, your child's movies and shows appear in Plex within a minute or two.</li>
+    </ol></details>
+  <details><summary>How does my child watch on our TV?</summary>
+    <p>Your child signs in to the Plex app with their own account. If you have Plex Pass, invite your child's account into your own <a href="https://support.plex.tv/articles/203815766-what-is-plex-home/" target="_blank" rel="noopener">Plex Home</a> and put a PIN on your profile, so each of you picks a profile on the TV. Without Plex Pass, sign the TV's Plex app in to your child's account, or use a tablet or streaming stick just for them.</p>
+    <p>Limits only apply to your child's account. If your child watches on your account, they see what you see.</p></details>
+  <details><summary>How do I choose what my child can watch?</summary>
+    <p>Pick an age level in Settings. On the Titles tab, tap <strong>Allow</strong> on a hidden title to add it (up to PG-13 or TV-14), or <strong>Block</strong> on a title to hide it. "Your pick · Undo" puts a title back to the age level. Tap a poster to read what a title is about. "Only titles I allow" hides everything except what you allow.</p>
+    <p>To handle a whole rating at once, type it in the search (for example <strong>PG-13</strong>), then use <strong>Change all</strong> to allow or block every title shown.</p>
+    <p>R, TV-MA and unrated titles never show up for kids. New titles on the server are sorted in automatically within about 15 minutes, and marked <strong>New</strong> so you can review them.</p></details>
+  <details><summary>How do screen time and watch hours work?</summary>
+    <p>Screen time counts minutes while a video is playing. When time runs out, or outside the watch hours you set, the video stops with a short message. Choose "No watching" for days with no Plex at all.</p>
+    <p>From <strong>Add time</strong> on the Overview you can add 15, 30 or 60 minutes for today, make bedtime 30 or 60 minutes later just for tonight, or use <strong>Weekend rules today</strong> for a sick day, snow day or holiday. The Schedule tab has quick presets for the school year and summer.</p></details>
+  <details><summary>What does my child see when a video stops?</summary>
+    <p>The video closes and Plex shows a short message on the screen:</p>
+    <ul>
+      <li>Out of time: <q>That's all the screen time for today. See you tomorrow.</q></li>
+      <li>Outside watch hours: <q>Watch time is 7:00 AM to 8:00 PM. See you then.</q> (with your hours)</li>
+      <li>Paused: <q>A parent paused Plex until 8:30 PM.</q></li>
+    </ul>
+    <p>The Activity tab lists every stopped video and why.</p></details>
+  <details><summary>Can I see who changed what?</summary>
+    <p>Yes. The Activity tab has <strong>Recent changes</strong>: who paused, added time, changed the schedule, or allowed or blocked a title, and when. The Schedule tab shows how the next 7 days will go.</p></details>
+  <details><summary>Can another parent or a grandparent help manage my child?</summary>
+    <p>Yes, as a co-parent. They need their own Plex account on this server. Open your child's Settings and choose <strong>Ask {{ owner_name }} to add them</strong>. Co-parents can change everything except removing the child.</p></details>
+  <details><summary>What happens when I pause watching?</summary>
+    <p>Pause stops anything playing within a minute and blocks new videos for 30 minutes, an hour, until tomorrow morning, or until you resume. With two or more children, My kids has a Pause everyone button. Pressed the wrong one? The message that pops up after Pause or Add time has an <strong>Undo</strong> button for a few seconds.</p></details>
+  <details><summary>Can my child get around the limits?</summary>
+    <p>Downloads are always off for kids' accounts, so videos can't be watched offline. Plex's own free movies and Live TV are switched off on the account when you connect it, because they have no age limits. Keep the account password to yourself so these settings stay off.</p></details>
+  <details><summary>How do I keep my account safe?</summary>
+    <p>KidsWatch for Plex never sends you a sign-in link by text or email. Only sign in after you open <strong>{{ site_host }}</strong> yourself. If someone sends you a Plex sign-in link for this site, don't use it, and tell {{ owner_name }}. The link for connecting your child's account is the one exception: you make that yourself on your child's page.</p></details>
+  <details><summary>Can I put KidsWatch for Plex on my phone's home screen?</summary>
+    <p>Yes. On iPhone, open the site in Safari, tap Share, then <strong>Add to Home Screen</strong>. On Android, open it in Chrome, tap the menu, then <strong>Add to Home screen</strong> or <strong>Install app</strong>. It opens like an app, with its own icon.</p></details>
+  {% if media_request_url %}
+  <details><summary>How do I get a movie or show that isn't on Plex yet?</summary>
+    <p>Request it on <a href="{{ media_request_url }}" target="_blank" rel="noopener">{{ media_request_host }}</a>. Sign in with your Plex account, search for the title and choose <strong>Request</strong>. It's added to Plex automatically. New titles are then sorted into your child's titles by their rating within about 15 minutes, marked <strong>New</strong> on the Titles tab.</p>
+    <p>Searched your child's Titles tab and found nothing? The <strong>Request</strong> button under the search opens that same search on the request site.</p></details>
+  {% endif %}
+  <details><summary>How do I ask {{ owner_name }} for something, or suggest a feature?</summary>
+    <p>Use <a href="/requests">Requests</a> to {% if not media_request_url %}ask for a movie or show, {% endif %}<a href="/requests?kind=feature#new">suggest a feature</a>, <a href="/requests?kind=more_access#new">ask for more access</a> (another library, a co-parent who can also manage your child, or more children) or report a problem. {{ owner_name }} gets a phone alert, and you'll see the answer on Requests. A number next to Requests in the menu means {{ owner_name }} replied.</p></details>
+</div></section>
+{% endblock %}

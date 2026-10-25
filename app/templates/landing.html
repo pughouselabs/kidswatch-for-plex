@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block header_signin %}<a class="btn btn-quiet btn-sm" href="/help">Help</a><a class="btn btn-primary btn-sm" href="/login">Sign in</a>{% endblock %}
+{% block body %}
+<link rel="stylesheet" href="/static/landing.css?v=4">
+{# Product tour for signed-out visitors. The previews are built from the app's own parts and are decorative. #}
+<div class="lp">
+
+<section class="lp-hero">
+  <div class="lp-hero-text">
+    <p class="lp-eyebrow">{{ icon('shield') }}Private to families on this Plex server</p>
+    <h1>Your kids’ own Plex, with you in charge</h1>
+    <p class="lead">Give each child their own Plex account. Choose what they watch, set screen time and bedtime, and pause it all from your phone.</p>
+    <div class="lp-cta">
+      <a class="btn btn-primary btn-lg" href="/login">Sign in with Plex</a>
+      <a class="btn btn-lg lp-ghost" href="#what">See what it does</a>
+    </div>
+    <p class="fine">Use the Plex account you already watch with. Only families that {{ owner_name }} shares this Plex server with can sign in.</p>
+  </div>
+
+  <div class="lp-hero-art" aria-hidden="true">
+    <div class="lp-phone">
+      <div class="lp-phone-bar"><span>9:41</span><i></i></div>
+      <div class="lp-kid"><span class="avatar c1">R</span><div><strong>Rowan</strong><span>Kids level</span></div></div>
+      <div class="lp-card">
+        <div class="lp-card-title">{{ icon('clock') }}Today</div>
+        <div class="today-head"><span class="big">47 min</span><span class="of-limit">of 2 hr</span></div>
+        <progress class="meter" max="100" value="39"></progress>
+        <div class="muted small">1 hr 13 min left · Ends 8:00 PM</div>
+        <div class="lp-status"><span class="badge live">Watching</span><span>Maple Club on the TV</span></div>
+        <div class="lp-btns"><span class="btn btn-sm">{{ icon('pause') }}Pause</span><span class="btn btn-sm">{{ icon('plus') }}Add time</span></div>
+      </div>
+      <div class="lp-card lp-row">
+        <span class="lp-num">128</span><span class="muted small">titles Rowan can watch</span><span class="badge new">3 new</span>
+      </div>
+    </div>
+    <div class="lp-toast">{{ icon('check') }}<span>Rowan is paused until 6:30 PM.</span><b>Undo</b></div>
+  </div>
+</section>
+
+<section class="lp-section" id="what">
+  <div class="lp-head">
+    <p class="lp-kicker">What it does</p>
+    <h2>Set it up once, then adjust from your phone</h2>
+    <p>Everything works on the Plex apps your kids already use. You make the rules here, and the server keeps them.</p>
+  </div>
+
+  <article class="lp-feature">
+    <div class="lp-copy">
+      <span class="lp-icon">{{ icon('film') }}</span>
+      <h3>Choose exactly what they can watch</h3>
+      <p>Use an allow list or block list for individual movies and shows, or switch to "Only titles I allow" for the strictest setup. Allows stop at PG-13 movies and TV-14 shows; R, NC-17, TV-MA and unrated titles stay hidden.</p>
+      <ul class="lp-checks">
+        <li>{{ icon('check') }}Little kids, Kids and Teens levels, based on official ratings</li>
+        <li>{{ icon('check') }}Search by title, genre or rating</li>
+        <li>{{ icon('check') }}New titles on the server are marked New for you to review</li>
+      </ul>
+    </div>
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-panel lp-titles">
+        <div class="lp-seg"><span>Little kids</span><span class="on">Kids</span><span>Teens</span></div>
+        <div class="lp-search">{{ icon('search') }}<span>Title, genre or rating</span></div>
+        <ul class="lp-tiles">
+          <li class="on"><span class="lp-poster"><img src="/static/lp/maple-club.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">TV-Y7 · Show</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/cloud-garden.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"><em class="badge new">New</em></span><span class="lp-tile-meta">PG · Movie</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/paper-harbor.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Movie</span></li>
+          <li class="off"><span class="lp-poster"><img src="/static/lp/mountain-puzzle.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG-13 · Blocked</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/pebble-trail.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">G · Movie</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/winter-picnic.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Your pick</span></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="lp-feature flip">
+    <div class="lp-copy">
+      <span class="lp-icon">{{ icon('clock') }}</span>
+      <h3>Screen time that keeps itself</h3>
+      <p>Set daily minutes and watch hours for school days and weekends. Time only counts while a video is playing. When it runs out, the video stops with a friendly message on the TV.</p>
+      <ul class="lp-checks">
+        <li>{{ icon('check') }}Quick starts for the school year, summer or weekends only</li>
+        <li>{{ icon('check') }}Friday as a weekend, Sunday as a school night, and school breaks</li>
+        <li>{{ icon('check') }}See exactly how the next 7 days play out</li>
+      </ul>
+    </div>
+    <div class="lp-stage">
+      <div class="lp-panel lp-week" aria-hidden="true">
+        <div class="lp-card-title">{{ icon('calendar') }}Next 7 days</div>
+        <ul class="lp-days">
+          <li class="today"><div><strong>Today</strong> <span>Tuesday</span><small>7:00 AM to 8:00 PM</small></div><b>2 hr</b></li>
+          <li><div><strong>Wednesday</strong><small>7:00 AM to 8:00 PM</small></div><b>2 hr</b></li>
+          <li><div><strong>Friday</strong> <em class="badge info">Weekend rules</em><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
+          <li><div><strong>Saturday</strong><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
+        </ul>
+      </div>
+      <div class="lp-tv"><div class="lp-tv-screen"><div class="lp-tv-dialog"><strong class="lp-tv-dialog-title">Playback Error</strong><p>"alex" asked to stop your playback from this server: That's all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
+      <p class="lp-tv-caption">Example of the message Plex shows when time runs out. Plex adds the server owner's name.</p>
+    </div>
+  </article>
+
+  <article class="lp-feature">
+    <div class="lp-copy">
+      <span class="lp-icon">{{ icon('pause') }}</span>
+      <h3>One tap when plans change</h3>
+      <p>Pause for dinner, add 15 minutes to finish an episode, push bedtime back for movie night, or use weekend rules on a sick day. Tapped the wrong thing? Undo is right there.</p>
+      <ul class="lp-checks">
+        <li>{{ icon('check') }}Pause for 30 minutes, an hour, until tomorrow, or until you resume</li>
+        <li>{{ icon('check') }}Videos stop within a minute, with a short message for your child</li>
+        <li>{{ icon('check') }}Extra time and later bedtimes reset on their own the next day</li>
+      </ul>
+    </div>
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-panel lp-menu-demo">
+        <div class="lp-btns"><span class="btn btn-sm">{{ icon('pause') }}Pause {{ icon('down') }}</span><span class="btn btn-sm lp-pressed">{{ icon('plus') }}Add time {{ icon('down') }}</span></div>
+        <div class="lp-menu">
+          <span class="hl">{{ icon('plus') }}15 minutes today</span>
+          <span>{{ icon('plus') }}30 minutes today</span>
+          <span>{{ icon('plus') }}1 hour today</span>
+          <i></i>
+          <span>{{ icon('moon') }}Bedtime 30 minutes later</span>
+          <span>{{ icon('moon') }}Bedtime 1 hour later</span>
+          <i></i>
+          <span>{{ icon('calendar') }}Weekend rules today</span>
+        </div>
+      </div>
+      <div class="lp-toast lp-toast-stage">{{ icon('check') }}<span>Added 15 minutes for today.</span><b>Undo</b></div>
+    </div>
+  </article>
+
+  <article class="lp-feature flip">
+    <div class="lp-copy">
+      <span class="lp-icon">{{ icon('chart') }}</span>
+      <h3>See what they watched</h3>
+      <p>A 7-day chart compares each day with the limit, and the watch history lists every show and the device it played on. Spot something you don’t like? Block it right from the list.</p>
+    </div>
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-panel">
+        <div class="lp-card-title">{{ icon('chart') }}Last 7 days<span class="muted small">9 hr 50 min total</span></div>
+        <svg class="chart" viewBox="0 0 336 148">
+          <rect class="bar" x="10" y="103.3" width="28" height="16.7" rx="4"></rect>
+          <rect class="bar over" x="58" y="42.2" width="28" height="77.8" rx="4"></rect>
+          <rect class="bar" x="106" y="71.1" width="28" height="48.9" rx="4"></rect>
+          <rect class="bar" x="154" y="86.7" width="28" height="33.3" rx="4"></rect>
+          <rect class="bar" x="202" y="47.8" width="28" height="72.2" rx="4"></rect>
+          <rect class="bar" x="250" y="67.2" width="28" height="52.8" rx="4"></rect>
+          <rect class="bar today" x="298" y="93.9" width="28" height="26.1" rx="4"></rect>
+          <line class="limit" x1="6" x2="138" y1="53.3" y2="53.3"></line>
+          <line class="limit" x1="150" x2="234" y1="20" y2="20"></line>
+          <line class="limit" x1="246" x2="330" y1="53.3" y2="53.3"></line>
+          <text class="val" x="24" y="97" text-anchor="middle">30m</text>
+          <text class="val" x="72" y="36" text-anchor="middle">2h 20m</text>
+          <text class="val" x="120" y="65" text-anchor="middle">1h 28m</text>
+          <text class="val" x="168" y="80" text-anchor="middle">1h</text>
+          <text class="val" x="216" y="41" text-anchor="middle">2h 10m</text>
+          <text class="val" x="264" y="61" text-anchor="middle">1h 35m</text>
+          <text class="val" x="312" y="88" text-anchor="middle">47m</text>
+          <text class="axis" x="24" y="140" text-anchor="middle">Wed</text>
+          <text class="axis" x="72" y="140" text-anchor="middle">Thu</text>
+          <text class="axis" x="120" y="140" text-anchor="middle">Fri</text>
+          <text class="axis" x="168" y="140" text-anchor="middle">Sat</text>
+          <text class="axis" x="216" y="140" text-anchor="middle">Sun</text>
+          <text class="axis" x="264" y="140" text-anchor="middle">Mon</text>
+          <text class="axis today" x="312" y="140" text-anchor="middle">Today</text>
+        </svg>
+        <ul class="lp-history">
+          <li><img class="lp-thumb" src="/static/lp/maple-club.svg?v=1" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Maple Club: First Snow</strong><small>4:10 PM · 23 min · Living Room TV</small></div><span class="btn btn-sm">{{ icon('ban') }}Block</span></li>
+          <li><img class="lp-thumb" src="/static/lp/pebble-trail.svg?v=1" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Pebble Trail</strong><small>Sat · 1 hr 40 min · iPad</small></div><span class="btn btn-sm">{{ icon('ban') }}Block</span></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="lp-section">
+  <div class="lp-head">
+    <p class="lp-kicker">And the little things</p>
+    <h2>Made for real family life</h2>
+  </div>
+  <ul class="lp-grid">
+    <li><span class="lp-icon">{{ icon('users') }}</span><h3>Share the job</h3><p>Ask {{ owner_name }} to add a co-parent or grandparent who can help manage a child.</p></li>
+    <li><span class="lp-icon">{{ icon('copy') }}</span><h3>Siblings in one step</h3><p>Start a new child with a brother’s or sister’s rules, or copy rules across any time.</p></li>
+    <li><span class="lp-icon">{{ icon('tv') }}</span><h3>Every screen</h3><p>Rules follow your child’s Plex account on the TV, tablet, phone or browser.</p></li>
+    <li><span class="lp-icon">{{ icon('shield') }}</span><h3>Safe by default</h3><p>Downloads stay off, and Plex’s own free movies and Live TV are switched off.</p></li>
+    <li><span class="lp-icon">{{ icon('history') }}</span><h3>Who changed what</h3><p>Every change is listed with who made it and when, so co-parents stay in sync.</p></li>
+    <li><span class="lp-icon">{{ icon('inbox') }}</span><h3>Ask {{ owner_name }}</h3><p>Get a new movie or show added, ask for more access, or suggest a feature.</p></li>
+  </ul>
+</section>
+
+<section class="lp-section">
+  <div class="lp-head">
+    <p class="lp-kicker">Getting started</p>
+    <h2>Ready in three steps</h2>
+  </div>
+  <ol class="lp-steps">
+    <li><span class="lp-step">1</span><h3>Sign in with Plex</h3><p>Use the Plex account you already watch with.</p></li>
+    <li><span class="lp-step">2</span><h3>Add your child</h3><p>Give them a free Plex account, connect it with a one-time link, and pick their titles and screen time.</p></li>
+    <li><span class="lp-step">3</span><h3>{{ owner_name }} approves</h3><p>Their titles appear in Plex, ready on any TV, tablet or phone they sign in to.</p></li>
+  </ol>
+</section>
+
+<section class="lp-final">
+  <h2>Ready to set up your kids?</h2>
+  <p>Have your Plex sign-in handy, plus an email address for each child’s free Plex account. The site walks you through the rest.</p>
+  <div class="lp-cta center">
+    <a class="btn btn-primary btn-lg" href="/login">Sign in with Plex</a>
+    <a class="btn btn-lg lp-ghost" href="/help">Read the help page</a>
+  </div>
+</section>
+
+<p class="lp-project">A small, self-hosted project. <a href="https://github.com/pughouselabs/kidswatch-for-plex">Source code</a> · MIT license</p>
+
+</div>
+{% endblock %}

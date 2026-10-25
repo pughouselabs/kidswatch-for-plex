@@ -1,0 +1,47 @@
+{% from "_macros.html" import icon %}
+<section class="card highlight" id="connect" data-wait-url="/kids/{{ kid.id }}/status.json" data-wait-status="{{ kid.status }}" data-wait-accepted="{{ 1 if kid.plex_accepted else 0 }}">
+  <div class="card-header"><h2>{{ icon('link') }}{% if kid.status == 'draft' %}Connect {{ kid.name }}'s Plex account{% else %}Finish connecting {{ kid.name }}{% endif %}</h2></div>
+  <div class="card-body">
+    {% if kid.status != 'draft' %}
+    <div class="notice warn">{{ icon('alert') }}<p>One step left: accept the Plex invitation sent to {{ kid.name }}'s email, or use the link below to sign in as {{ kid.name }} again.</p></div>
+    {% endif %}
+    <p><a href="/kids/{{ kid.id }}#connect">Refresh connection instructions</a></p>
+    <ol class="steps">
+      {% if kid.status == 'draft' %}
+      <li><div class="email-tip-step">
+        <div class="step-title">Make a free Plex account for {{ kid.name }}</div>
+        <div class="step-text">Sign up at <a href="https://www.plex.tv/sign-up/" target="_blank" rel="noopener">plex.tv/sign-up</a> with an email you check. Keep the password to yourself.</div>
+        {% if email_tip is defined %}
+        {% set tip = email_tip(kid.name) %}
+        <aside class="email-tip" aria-labelledby="email-tip-title">
+          <h3 id="email-tip-title">Use your own email with a tag.</h3>
+          <p id="email-tip-example">Add <code>{{ tip.tag }}</code> right before the @ in your own email address. For example, <code>jane@gmail.com</code> becomes <code>{{ tip.example_address }}</code>. Mail still lands in your inbox, so you keep control of your child's account and password.</p>
+          <label class="label" for="email-tip-address">{{ 'Example email address' if tip.example else 'Suggested email address' }}</label>
+          <div class="copy-row">
+            <input class="input" id="email-tip-address" type="text" readonly value="{{ tip.address }}" spellcheck="false" autocapitalize="off"{% if tip.example %} aria-describedby="email-tip-example"{% endif %}>
+            <button class="btn" type="button" data-copy="#email-tip-address" data-copy-message="Email address copied" hidden>{{ icon('copy') }}Copy</button>
+          </div>
+          <p class="hint">If your email provider does not support this, use any address you check.</p>
+        </aside>
+        {% endif %}
+      </div></li>
+      {% endif %}
+      <li><div>
+        <div class="step-title">Sign in as {{ kid.name }} in a private window</div>
+        <div class="step-text">{% if link %}Copy this link, open a private (incognito) window, paste it, and sign in with {{ kid.name }}'s Plex account.{% else %}Get a sign-in link, open it in a private (incognito) window, and sign in with {{ kid.name }}'s Plex account.{% endif %}</div>
+        {% if link %}
+        <div class="copy-row"><input class="input" readonly value="{{ link }}" aria-label="Plex sign-in link" id="link-box"><button class="btn" type="button" data-copy="#link-box">{{ icon('copy') }}Copy link</button></div>
+        <div class="hint">This link works once and expires in 30 minutes. Using a private window keeps your own account signed in here.</div>
+        <div class="qr-row">
+          <img class="qr" src="/kids/{{ kid.id }}/connect-qr.svg" alt="QR code of the sign-in link" width="148" height="148">
+          <p class="hint">Or scan this with {{ kid.name }}'s tablet or phone and sign in there.</p>
+        </div>
+        {% else %}
+        <form method="post" action="/kids/{{ kid.id }}/connect" class="form-actions"><input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="btn btn-primary">{{ icon('link') }}Get sign-in link</button></form>
+        {% endif %}
+      </div></li>
+    </ol>
+    {% if kid.status == 'draft' %}<p class="hint mt">{% if user.role == 'owner' or trusted_parents %}{{ kid.name }}'s titles show up right away.{% else %}Your request goes to {{ owner_name }} automatically. This page updates when the account is approved.{% endif %}</p>{% endif %}
+  </div>
+</section>

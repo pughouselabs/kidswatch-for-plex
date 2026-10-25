@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error, icon, avatar, kid_avatar %}
+{% block title %}{{ {'requests': 'Requests', 'kids': 'Kids', 'people': 'Parents', 'activity': 'Security'}.get(tab, 'Requests') }} · Admin · KidsWatch for Plex{% endblock %}
+{% block body %}
+<div class="page-header">
+  <div><h1>Admin</h1><p class="sub">Approve requests and choose who can use KidsWatch for Plex.</p></div>
+  <span class="badge {{ 'ok' if keeper.ok else 'stop' }}">Screen-time checks {{ 'running' if keeper.ok else 'not running' }}</span>
+</div>
+{% if keeper.error %}<div class="notice stop">{{ icon('alert') }}<p>Last screen-time check failed: {{ keeper.error }}</p></div>{% endif %}
+{% if library_warning %}<div class="notice stop" role="alert"><p>{{ library_warning }} <a href="/setup/libraries">Review library choices</a></p></div>{% endif %}
+<div class="form-actions">
+  <a class="btn" href="/setup">Owner setup</a>
+  <a class="btn" href="/admin/invites/new">Invite parents</a>
+  <a class="btn" href="/admin/requests">Parent access requests</a>
+</div>
+<div class="stats admin-stats">
+  <div class="stat"><div class="value">{{ stats.open }}</div><div class="label">Open requests</div></div>
+  <div class="stat"><div class="value">{{ stats.waiting }}</div><div class="label">Kids waiting for approval</div></div>
+  <div class="stat"><div class="value">{{ stats.active }}</div><div class="label">Approved kids</div></div>
+  <div class="stat"><div class="value">{{ stats.watching }}</div><div class="label">Watching now</div></div>
+</div>
+<nav class="tabs" aria-label="Admin">
+  <a href="/admin?tab=requests" {% if tab == 'requests' %}aria-current="page"{% endif %}>{{ icon('inbox') }}Requests{% if open_reqs %}<span class="count">{{ open_reqs|length }}</span>{% endif %}</a>
+  <a href="/admin?tab=kids" {% if tab == 'kids' %}aria-current="page"{% endif %}>{{ icon('users') }}Kids</a>
+  <a href="/admin?tab=people" {% if tab == 'people' %}aria-current="page"{% endif %}>{{ icon('user') }}Parents</a>
+  <a href="/admin?tab=activity" {% if tab == 'activity' %}aria-current="page"{% endif %}>{{ icon('shield') }}Security</a>
+</nav>
+
+{% if tab == 'requests' %}
+<section class="card">
+  <div class="card-header"><h2>{{ icon('inbox') }}Open requests</h2></div>
+  <div class="card-body">
+  {% if open_reqs %}
+  <ul class="list">
+    {% for r in open_reqs %}
+    <li><div class="main">
+      <div class="row wrap"><strong>{{ r.p_title or r.p_user or 'Someone' }}</strong>
+        <span class="badge plain">{{ KIND_LABELS.get(r.kind, r.kind) }}</span>
+        <span class="muted small">{{ r.created_at|local_time }}</span></div>
+      <p class="mt-sm">{{ r.message }}</p>
+      {% if r.kind == 'more_access' and r.kid_name and r.kid_status not in ('removed', 'declined') %}
+      <p><a href="/admin?tab=kids#kid-parents-{{ r.kid_id }}">Manage {{ r.kid_name }}'s parents</a></p>
+      <p class="hint">Grant access first, then mark this request done.</p>
+      {% endif %}
+      {% if r.kind == 'access' %}
+      <a class="btn btn-primary" href="/admin/requests/{{ r.id }}">Review parent access</a>
+      {% else %}
+      <form method="post" action="/admin/requests/{{ r.id }}" class="form-actions" id="request-{{ r.id }}" tabindex="-1">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input class="input" name="note" maxlength="500" placeholder="Reply (optional)" aria-label="Reply">
+        <div class="chips" role="group" aria-label="Quick replies">
+          {% for text in (["Added to Plex.", "It's on my list.", "I can't add this right now."] if r.kind == 'title' else ["Done.", "It's on my list.", "I can't make this change right now."]) %}
+          <button type="button" class="chip" data-fill="{{ text }}">{{ text }}</button>{% endfor %}
+        </div>
+        {% if r.kind == 'add_child' %}
+          <button class="btn btn-primary" name="action" value="approve">{{ icon('check') }}Approve</button>
+        {% else %}
+          <button class="btn btn-primary" name="action" value="done">{{ icon('check') }}Mark done</button>
+        {% endif %}
+        <button class="btn" name="action" value="decline">Decline</button>
+      </form>
+      {% endif %}
+    </div></li>
+    {% endfor %}
+  </ul>
+  {% else %}<div class="empty">{{ icon('check', 'xl') }}<h2>No open requests</h2><p>New requests appear here. You also get a phone notification.</p></div>{% endif %}
+  </div>
+</section>
+<section class="card mt">
+  <div class="card-header"><h2>{{ icon('check') }}Recently answered</h2></div>
+  <div class="card-body">
+  {% if done_reqs %}
+  <ul class="list">
+    {% for r in done_reqs %}
+    <li><div class="main"><div class="row wrap"><span class="badge {{ r.status }}">{{ r.status|capitalize }}</span><strong>{{ r.p_title or r.p_user }}</strong><span class="muted small">{{ r.resolved_at|local_time }}</span></div>
+      <div class="mt-sm">{{ r.message }}</div>{% if r.owner_note %}<div class="reply">You said: {{ r.owner_note }}</div>{% endif %}</div></li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="muted">No requests answered yet.</p>{% endif %}
+  </div>
+</section>
+
+{% elif tab == 'kids' %}
+<section class="card">
+  {% if kids %}
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Child</th><th>Parents</th><th>Status</th><th>Today</th><th>Titles</th></tr></thead>
+    <tbody>
+    {% for kid, st in kids %}
+    <tr id="kid-parents-{{ kid.id }}">
+      <td><a class="row" href="/kids/{{ kid.id }}">{{ kid_avatar(kid, 'sm') }}<span><strong>{{ kid.name }}</strong><br><span class="muted small">{{ kid.plex_username or 'not connected' }}</span></span></a></td>
+      <td data-label="Parents"><div>
+        <div>{{ kid.p_title or kid.p_user or 'You' }}</div>
+        {% for cp in co[kid.id] %}
+        <form method="post" action="/admin/kids/{{ kid.id }}/co-parents" class="row small">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="parent" value="{{ cp.plex_id }}">
+          <span>{{ cp.title or cp.username }}</span><button class="btn btn-quiet btn-sm" name="action" value="remove" aria-label="Remove {{ cp.title or cp.username }}">{{ icon('x') }}</button>
+        </form>
+        {% endfor %}
+        {% set choices = enabled_parents|rejectattr('plex_id', 'equalto', kid.parent_id)|list %}
+        {% if choices and kid.status not in ('removed', 'declined') %}
+        <form method="post" action="/admin/kids/{{ kid.id }}/co-parents" class="row wrap mt-sm">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <select class="select select-sm" name="parent" id="coparent-{{ kid.id }}" {{ field_error(flashes, 'coparent-' ~ kid.id, ['Pick a parent who can use the site'], attrs=true) }} required aria-label="Add a co-parent for {{ kid.name }}">
+            <option value="" selected disabled>Choose a co-parent</option>
+            {% for p in choices %}<option value="{{ p.plex_id }}">{{ p.title or p.username }}</option>{% endfor %}
+          </select>
+          {{ field_error(flashes, 'coparent-' ~ kid.id, ['Pick a parent who can use the site']) }}<button class="btn btn-sm">{{ icon('plus') }}Add</button>
+        </form>
+        {% endif %}
+        {% for r in open_reqs if r.kind == 'more_access' and r.kid_id == kid.id %}
+        <p class="small mt-sm"><a href="/admin?tab=requests#request-{{ r.id }}">Return to request from {{ r.p_title or r.p_user }}</a></p>
+        {% endfor %}
+      </div></td>
+      <td data-label="Status"><span><span class="badge {{ kid.status }}">{{ st.status_text }}</span>{% if kid.sync_state == 'error' %}<br><details class="small"><summary>Plex sync retrying</summary><p>{{ kid.sync_error }}</p></details>{% endif %}</span></td>
+      <td class="num" data-label="Today"><span>{% if kid.status == 'active' %}{{ st.used_text }}{% if st.limit_text != 'No limit' %} / {{ st.limit_text }}{% endif %}<br><span class="muted small">{{ st.state_text }}</span>{% else %}<span class="muted">-</span>{% endif %}</span></td>
+      <td class="num" data-label="Titles">{{ kid.titles_count if kid.titles_count is not none and kid.status == 'active' else '-' }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<div class="empty">{{ icon('users', 'xl') }}<h2>No kids yet</h2><p>Parents add children from their My kids page.</p></div>{% endif %}
+</section>
+
+{% elif tab == 'people' %}
+<section class="card">
+  <div class="card-header"><div><h2>{{ icon('users') }}Who can use this site</h2><p class="muted small">Everyone you share Plex with. Changes save right away.</p></div></div>
+  {% if shared_error %}<div class="card-body"><p class="muted">{{ shared_error }}</p></div>{% endif %}
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Person</th><th>Last signed in</th><th>Can use the site</th></tr></thead>
+    <tbody>
+    {% for s, row in people %}
+    <tr>
+      <td><div class="row">{{ avatar(s.title or s.username, s.id, 'sm') }}<span><strong>{{ s.title or s.username }}</strong>{% if s.title and s.username and s.title != s.username %}<br><span class="muted small">{{ s.username }}</span>{% endif %}</span></div></td>
+      <td class="muted small" data-label="Last signed in">{{ row.last_login|local_time if row and row.last_login else 'Never' }}</td>
+      <td data-label="Can use the site"><form method="post" action="/admin/parents/{{ s.id }}"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="enabled" value="{{ '0' if row and row.enabled else '1' }}">
+        <label class="switch"><input type="checkbox" {% if row and row.enabled %}checked{% endif %} data-autosubmit id="parent-{{ s.id }}" aria-label="Let {{ s.title or s.username }} use the site"><span></span></label>
+        <noscript><button class="btn btn-sm">{{ 'Turn off' if row and row.enabled else 'Turn on' }}</button></noscript>
+      </form></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+{% else %}
+<section class="card">
+  <div class="card-header"><h2>{{ icon('shield') }}Security</h2></div>
+  <div class="card-body">
+    <p>You get a phone alert with a code when someone signs in as you. If you didn't request it, sign everyone out. You and the parents will need to sign in again.</p>
+    <form method="post" action="/admin/sign-out-all" class="form-actions"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="btn btn-danger">{{ icon('logout') }}Sign everyone out</button></form>
+  </div>
+</section>
+<section class="card mt">
+  <div class="card-header"><h2>{{ icon('history') }}Activity log</h2></div>
+  <div class="card-body">
+    {% set LOG = {'titles_synced': 'updated the title list', 'titles_sync_failed': "couldn't update the title list",
+       'title_allow': 'allowed a title', 'title_block': 'blocked a title', 'title_reset': 'put a title back to the age level',
+       'titles_batch': 'changed several titles', 'applied': 'updated library access', 'apply_failed': "couldn't update library access",
+       'approved': 'approved a child', 'declined': 'declined a child', 'removed': 'removed a child', 'connected': 'connected a Plex account',
+       'invited': 'sent a Plex invite', 'share_drift': 'found a changed Plex share and put the limits back', 'share_removed_unsafe': 'took back a share Plex made without limits', 'invite_accepted': 'accepted the Plex invite', 'signed_in': 'signed in',
+       'kid_added': 'added a child', 'settings_saved': 'saved settings', 'schedule_saved': 'saved a schedule',
+       'co_parent_added': 'added a co-parent', 'co_parent_removed': 'removed a co-parent', 'owner_code_sent': 'sent a sign-in code',
+       'owner_code_locked': 'locked sign-in codes after wrong tries', 'signed_out_everyone': 'signed everyone out',
+       'pause_all': 'paused everyone', 'resume_all': 'let everyone watch again', 'request_cancelled': 'canceled a request',
+       'control_pause': 'paused a child', 'control_pause_timed': 'paused a child for a while', 'control_resume': 'let a child watch again',
+       'control_bonus': 'added time', 'control_reset_bonus': 'removed extra time', 'control_later': 'made bedtime later',
+       'control_reset_later': 'removed a later bedtime', 'control_dayoff': 'gave a child weekend rules today', 'rules_copied': "copied one child's rules to another", 'control_reset_dayoff': 'put a child back on school-day rules', 'parent_enabled': 'gave a parent site access', 'parent_disabled': 'removed a parent’s site access'} %}
+    <ul class="list log">
+      {% for a in audit %}
+      {% set what = LOG.get(a.action, a.action|replace('_', ' ')) %}{% if a.info.title %}{% set what = what|replace('a title', a.info.title) %}{% endif %}
+      <li><div class="main"><div><strong>{{ 'KidsWatch for Plex' if a.actor == 'system' else ('You' if a.actor == user.username else names.get(a.actor, a.actor)) }}</strong> {{ what }}</div>
+        <div class="meta">{% if a.info.kid in kid_names %}{{ kid_names[a.info.kid] }} · {% endif %}{{ a.at|local_time }}{% if a.detail %} · <details class="log-detail"><summary>Details</summary><code>{{ a.detail }}</code></details>{% endif %}</div></div></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

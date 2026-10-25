@@ -1,0 +1,3 @@
+# Test-only tools (not shipped in the container)
+pytest==9.1.1
+html5lib==1.1

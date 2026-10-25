@@ -1,0 +1,5 @@
+{
+  "public": ["site", "site-redirect"],
+  "git_clean": true,
+  "checks": []
+}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block container_class %}narrow{% endblock %}
+{% block title %}Waiting for approval · KidsWatch for Plex{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>{{ icon('user') }}Ask for site access, {{ user.name.split(' ')[0] }}</h1></div>
+  <div class="card-body">
+    <p>{{ owner_name }} hasn't turned on KidsWatch for Plex for your account yet.</p>
+    {% if asked and asked.status == 'open' %}
+      <div class="notice info">{{ icon('check') }}<p>Request sent. You can sign in once {{ owner_name }} approves it.</p></div>
+    {% elif asked and asked.status == 'declined' %}
+      <div class="notice warn">{{ icon('info') }}<p>{{ owner_name }} declined the last request. Ask them directly if you have questions.</p></div>
+    {% else %}
+    <form method="post" action="/waiting">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div class="field"><label class="label" for="message">Anything {{ owner_name }} should know? (optional)</label>
+        <textarea class="input" id="message" name="message" maxlength="500" placeholder="For example: I'd like to set up an account for my daughter."></textarea></div>
+      <div class="form-actions mt"><button class="btn btn-primary">{{ icon('send') }}Ask {{ owner_name }} for access</button></div>
+    </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

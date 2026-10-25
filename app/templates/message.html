@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}{{ title }} · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block footer_ask %}{% endblock %}
+{% block body %}
+<section class="card"><div class="empty">
+  {{ icon('info', 'xl') }}
+  <h1>{{ title }}</h1>
+  <p>{{ body }}</p>
+  {% if link %}<a class="btn btn-primary" href="{{ link[0] }}">{{ link[1] }}</a>{% endif %}
+</div></section>
+{% endblock %}

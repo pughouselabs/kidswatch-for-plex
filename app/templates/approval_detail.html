@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Review parent access · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>{{ 'Decline this request?' if decline and asked.status == 'open' else 'Review parent access' }}</h1></div>
+  <div class="card-body">
+    <p class="title">Parent: {{ asked.username }}</p>
+    <p>{{ asked.message }}</p>
+    {% if changed %}<p class="notice warn" role="alert">This request changed. Review the latest details.</p>{% endif %}
+    {% if asked.status == 'open' %}
+      {% if decline %}
+      <p>Declining keeps this parent from using KidsWatch.</p>
+      <form method="post" action="/admin/requests/{{ asked.id }}/decision">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="version" value="{{ version }}">
+        <div class="field"><label class="label" for="note">Reply to the parent (optional)</label>
+          <textarea class="input" id="note" name="note" maxlength="500"></textarea></div>
+        <div class="form-actions mt"><button class="btn btn-danger" name="action" value="decline">Decline request</button>
+          <a class="btn" href="/admin/requests/{{ asked.id }}">Keep reviewing</a></div>
+      </form>
+      {% else %}
+      <p>Approving this parent lets them add and connect their own children while Approved parents can add their own children is on.</p>
+      <form method="post" action="/admin/requests/{{ asked.id }}/decision">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="version" value="{{ version }}">
+        <div class="form-actions"><button class="btn btn-primary" name="action" value="approve">Approve parent</button>
+          <a class="btn" href="/admin/requests/{{ asked.id }}?decline=true">Decline</a></div>
+      </form>
+      {% endif %}
+    {% else %}
+      <div role="status" aria-live="polite"><h2>{{ 'Parent approved' if asked.status == 'approved' else 'Request declined' if asked.status == 'declined' else 'Request already reviewed' }}</h2>
+        <p>This request has already been {{ 'approved' if asked.status == 'approved' else 'declined' if asked.status == 'declined' else 'closed' }}.</p></div>
+      {% if asked.owner_note %}<p>{{ asked.owner_note }}</p>{% endif %}
+      {% if asked.status == 'approved' %}<p>Playback may already have occurred. To undo access, use the parent's site-access control in <a href="/admin?tab=people">Admin People</a>.</p>{% endif %}
+    {% endif %}
+    <p><a class="btn btn-quiet" href="/admin/requests">Back to parent requests</a></p>
+  </div>
+</section>
+{% endblock %}

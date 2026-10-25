@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{% if unavailable %}Invitation unavailable{% else %}You're invited{% endif %} · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>{% if unavailable %}Invitation unavailable{% elif signed_in %}Ask {{ owner_name }} for access{% else %}You're invited to KidsWatch for Plex{% endif %}</h1></div>
+  <div class="card-body">
+    {% if unavailable %}
+      <p>This invitation may have expired or been revoked. Ask the person who sent it for a new one.</p>
+      <a class="btn btn-primary" href="/login">Sign in with Plex</a>
+    {% else %}
+      {% if error %}<p class="notice warn" role="alert">{{ error }}</p>{% endif %}
+      {% if signed_in %}
+        <p>Signed in as {{ user.name }} ({{ user.username }}).</p>
+        <p>This requests KidsWatch access. The server owner still needs to approve it.</p>
+        {% if not error %}<form method="post" action="/join/{{ token }}">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="btn btn-primary">Request access</button>
+        </form>{% endif %}
+        {% if error %}<div class="form-actions"><a class="btn" href="/join/{{ token }}">Check again</a><a class="btn" href="/home">My kids</a></div>{% endif %}
+        <p><a class="btn btn-quiet" href="https://app.plex.tv/desktop/#!/settings/manage-library-access" target="_blank" rel="noopener noreferrer">Open Plex invitations (new tab)</a></p>
+      {% else %}
+        <p>{{ owner_name }} invited your family to choose titles and set screen time.</p>
+        <p>Use your own adult Plex account to get started.</p>
+        <div class="form-actions"><a class="btn btn-primary" href="{{ login_url }}">Sign in with Plex</a><a class="btn" href="/help">How it works</a></div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

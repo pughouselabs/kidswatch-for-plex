@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, avatar, kid_avatar %}
+{% block title %}Connect {{ kid.name }} · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card"><div class="empty">
+  {{ kid_avatar(kid, 'lg') }}
+  <h1 class="mt">Connect {{ kid.name }}'s Plex account</h1>
+  <p>{{ parent }} made this link. On the next screen, sign in with <strong>{{ kid.name }}'s</strong> Plex account, not your own.</p>
+  <a class="btn btn-primary btn-lg" href="/link/{{ token }}/start">Sign in as {{ kid.name }}</a>
+  <p class="hint mt">If Plex skips the sign-in and uses your own account, open this link in a private (incognito) window instead.</p>
+</div></section>
+{% endblock %}

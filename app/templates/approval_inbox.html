@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Parent access requests · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<h1>Parent access requests</h1>
+<p>Review who can manage their family in KidsWatch.</p>
+{% if trusted %}<p>Approved parents can add and connect their own children. You will be notified and can pause or remove a child in Admin.</p>
+{% else %}<p>Per-child approval is on. Connected children need a separate review.</p>{% endif %}
+<section class="card" aria-labelledby="parent-requests-title">
+  <div class="card-header"><h2 id="parent-requests-title">Parents</h2></div>
+  <div class="card-body">
+    {% if requests %}<ul class="list">
+    {% for asked in requests %}
+      <li><div class="main"><div class="title"><a href="/admin/requests/{{ asked.id }}">{{ asked.username }}</a></div>
+        <div class="meta">{{ 'Waiting for review' if asked.status == 'open' else ('Declined' if asked.status == 'declined' else 'Approved' if asked.status == 'approved' else 'Closed') }}</div></div></li>
+    {% endfor %}
+    </ul>{% else %}<p>No parent access requests.</p>{% endif %}
+  </div>
+</section>
+{% if pending_children %}
+<section class="card spaced" aria-labelledby="strict-requests-title">
+  <div class="card-header"><h2 id="strict-requests-title">{{ 'Earlier child requests' if trusted else 'Per-child approval requests' }}</h2></div>
+  <div class="card-body"><p>{{ pending_children }} connected {{ 'child is' if pending_children == 1 else 'children are' }} still waiting for a separate review. Changing the trust setting keeps these requests pending.</p>
+    <a class="btn" href="/admin?tab=requests">Review child requests in Admin</a></div>
+</section>
+{% endif %}
+<p><a class="btn btn-quiet" href="/admin">Back to Admin</a></p>
+{% endblock %}

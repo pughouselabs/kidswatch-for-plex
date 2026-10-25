@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Your invitation · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>{% if invite.revoked_at %}Invitation revoked{% elif invite.claimed_at %}Invitation claimed{% elif expired %}Invitation expired{% else %}Your invitation is ready{% endif %}</h1></div>
+  <div class="card-body">
+    {% if invite.revoked_at %}<p role="status">Anyone with this link can no longer request access with it.</p>
+    {% elif invite.claimed_at %}<p role="status">The parent requested access. Your approval is still required.</p>
+    {% elif expired %}<p role="status">This invitation expired on {{ expires }}. Create a new invitation to share another link.</p>
+    {% else %}
+      <p>Share this privately. It expires on {{ expires }}.</p>
+      {% if invite_url %}
+      <label class="label" for="invite-link">Invitation link</label>
+      <div class="copy-row"><input class="input" id="invite-link" readonly value="{{ invite_url }}"><button type="button" class="btn" data-copy="#invite-link" data-copy-label="Invitation link copied.">Copy link</button></div>
+      <div class="qr-row">{{ qr }}<p>Scan to open this KidsWatch invitation. This does not sign in a TV.</p></div>
+      <details class="mt"><summary>Show larger QR code</summary>{{ qr_large }}<p>KidsWatch invitation</p></details>
+      <div class="field mt"><label class="label" for="invite-message">Ready-to-send message</label><textarea class="input" id="invite-message" rows="7" readonly>{{ message }}</textarea></div>
+      <p>Select the message to copy it, or use the button below.</p>
+      <button type="button" class="btn" data-copy="#invite-message" data-copy-label="Invitation message copied.">Copy message</button>
+      <p class="small muted">The private link is shown only when created. Save your message before leaving this page.</p>
+      {% else %}<p>The private link was shown only when this invitation was created. If you lost it, revoke this invitation and create a new one.</p>{% endif %}
+    {% endif %}
+    <div class="form-actions mt">
+      {% if not invite.revoked_at and not invite.claimed_at %}<a class="btn" href="/admin/invites/{{ invite.id }}/revoke">Revoke invitation</a>{% endif %}
+      <a class="btn" href="/admin/invites/new">Invite parents</a><a class="btn" href="/admin">Done</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

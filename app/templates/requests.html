@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error, icon %}
+{% block title %}Requests · KidsWatch for Plex{% endblock %}
+{% block footer_ask %}{% endblock %}
+{% block body %}
+<div class="page-header"><div><h1>Requests</h1><p class="sub">{% if media_request_url %}Request a movie or show, suggest a change, or ask {{ owner_name }} for access. Replies appear here.{% else %}Ask {{ owner_name }} for a movie, a show, or a change to your access. Replies appear here.{% endif %}</p></div></div>
+{% if media_request_url %}
+<section class="card media-ask" aria-labelledby="media-ask-title">
+  <span class="media-ask-icon" aria-hidden="true">{{ icon('film') }}</span>
+  <div class="media-ask-text">
+    <h2 id="media-ask-title">Request a movie or show</h2>
+    <p>Request it on <strong>{{ media_request_host }}</strong>. Sign in with your Plex account, search for the title and choose Request. It's added to Plex automatically, then sorted into your kids' titles by its rating.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ media_request_url }}" target="_blank" rel="noopener">{{ icon('external') }}Request a movie or show<span class="visually-hidden"> (opens in a new tab)</span></a>
+</section>
+{% endif %}
+<div class="grid two">
+  <form method="post" action="/requests" class="card" id="new" data-request-draft="{{ user.id }}"{% if draft_sent %} data-draft-sent="{{ draft_sent }}"{% endif %}>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="card-header"><h2>{{ icon('send') }}New request</h2></div>
+    <div class="card-body">
+      <div class="notice info" data-draft-notice hidden><div><p>An unsent request is saved in this tab.</p><div class="form-actions"><button class="btn btn-sm" type="button" data-draft-restore>Restore draft</button><button class="btn btn-quiet btn-sm" type="button" data-draft-discard>Discard draft</button></div></div></div>
+      <div class="field"><span class="label" id="kind-label">What do you need?</span>
+        <div class="choice-list compact" role="radiogroup" id="request-kind" tabindex="-1" aria-labelledby="kind-label" {{ field_error(flashes, 'request-kind', ['Choose what you need'], attrs=true) }}>
+          {% set child = kids[0].name if kids else 'my child' %}
+          {% set examples = {'title': 'Could you add Maple Club season 3?', 'feature': 'It would help to get a weekly summary of screen time.',
+                             'more_access': 'Please let my partner help manage ' ~ child ~ '. Their Plex username is ...',
+                             'problem': ("A video didn't stop at bedtime last night." if not kids else child ~ "'s video didn't stop at bedtime last night."),
+                             'other': 'I have a question about setting up Plex on our TV.'} %}
+          {% for key, label in form_kinds.items() %}
+          <label class="choice"><input type="radio" name="kind" value="{{ key }}" data-example="{{ examples.get(key, '') }}" {% if key == kind %}checked{% endif %}><span><span class="title">{{ label }}</span><span class="desc">{{ REQUEST_HINTS[key] }}</span></span></label>
+          {% endfor %}
+        </div>
+      </div>
+      {{ field_error(flashes, 'request-kind', ['Choose what you need']) }}
+      {% if kids %}
+      <div class="field"><label class="label" for="kid">For which child?</label>
+        <select class="select" id="kid" name="kid"><option value="">No specific child</option>
+          {% for k in kids %}<option value="{{ k.id }}" {% if k.id == kid_id %}selected{% endif %}>{{ k.name }}</option>{% endfor %}</select></div>
+      {% endif %}
+      <div class="field"><label class="label" for="message">Message</label>
+        <textarea class="input" id="message" name="message" maxlength="1000" required placeholder="For example: {{ examples.get(kind, examples.title) }}" data-message {{ field_error(flashes, 'message', ['Choose what you need'], attrs=true) }}>{{ prefill }}</textarea>{{ field_error(flashes, 'message', ['Choose what you need']) }}</div>
+    </div>
+    <div class="card-footer form-actions"><button class="btn btn-primary">{{ icon('send') }}Send to {{ owner_name }}</button></div>
+  </form>
+  <section class="card">
+    <div class="card-header"><h2>{{ icon('inbox') }}Your requests</h2></div>
+    <div class="card-body">
+      {% if reqs %}
+      <ul class="list">
+        {% for r in reqs %}
+        <li><div class="main">
+          <div class="row wrap"><span class="badge {{ r.status }}">{{ r.status|capitalize }}</span><span class="muted small">{{ KIND_LABELS.get(r.kind, r.kind) }} · {{ r.created_at|local_time }}{% if r.kid_name %} · {{ r.kid_name }}{% endif %}</span></div>
+          <div class="mt-sm">{{ r.message }}</div>
+          {% if r.owner_note %}<div class="reply"><strong>{{ owner_name }}:</strong> {{ r.owner_note }}</div>{% endif %}
+          {% if r.status == 'open' and r.kind != 'add_child' %}
+          <form method="post" action="/requests/{{ r.id }}/cancel" class="mt-sm"><input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="btn btn-quiet btn-sm">{{ icon('x') }}Cancel request</button></form>
+          {% endif %}
+        </div></li>
+        {% endfor %}
+      </ul>
+      {% else %}<div class="empty">{{ icon('inbox', 'xl') }}<p>No requests yet. Send one using the form and check here for a reply.</p></div>{% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

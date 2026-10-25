@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, quick_block %}
+{% block title %}{{ kid.name }} · KidsWatch for Plex{% endblock %}
+{% block body %}
+{% include "_kid_header.html" %}
+{% if kid.status in ('draft', 'requested') %}
+{% set step = 1 if kid.status == 'draft' else 2 %}
+<ol class="stepper" aria-label="Setup progress">
+  {% set steps = ['Added', 'Connect account', 'Ready to watch'] if kid.status == 'draft' and (trusted_parents or user.role == 'owner') else ['Added', 'Connect account', owner_name ~ ' approves', 'Ready to watch'] %}
+  {% for label in steps %}
+  <li class="{{ 'done' if loop.index0 < step else ('current' if loop.index0 == step else '') }}"{% if loop.index0 == step %} aria-current="step"{% endif %}>
+    <span class="dot">{% if loop.index0 < step %}{{ icon('check') }}{% else %}{{ loop.index }}{% endif %}</span><span class="label">{{ label }}</span></li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% if needs_link %}{% include "_connect.html" %}{% endif %}
+
+{% if kid.status == 'declined' %}
+<div class="notice warn">{{ icon('info') }}<div><p class="notice-title">{{ kid.name }}'s request was declined</p><p><a href="/requests">Read the reply or send a question</a>.</p></div></div>
+{% endif %}
+{% if kid.status == 'requested' %}
+<div class="notice info"{% if not needs_link %} data-wait-url="/kids/{{ kid.id }}/status.json" data-wait-status="{{ kid.status }}" data-wait-accepted="{{ 1 if kid.plex_accepted else 0 }}"{% endif %}>{{ icon('info') }}<div><p class="notice-title">Waiting for {{ owner_name }} to approve</p><p>{{ kid.name }}'s Plex account is connected. Movies and shows will appear after approval. You can set a schedule and choose titles now.</p><p><a href="/kids/{{ kid.id }}">Check approval</a></p></div></div>
+{% endif %}
+
+{% if kid.status == 'active' %}
+<div class="columns">
+  <div class="stack">
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('clock') }}Today</h2><a class="btn btn-quiet btn-sm" href="/kids/{{ kid.id }}/schedule">Schedule</a></div>
+      <div class="card-body">{% set back = '/kids/' ~ kid.id %}{% include "_today.html" %}
+        {% if not st.keeper_ok %}<div class="notice stop mt">{{ icon('alert') }}<p>Screen-time limits aren't being enforced right now. {{ owner_name }} has been notified.</p></div>{% endif %}
+      </div>
+    </section>
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('chart') }}Last 7 days</h2><span class="muted small">{{ chart.total }} total{% if chart.average %} · {{ chart.average }} a day{% endif %}</span></div>
+      <div class="card-body">{% include "_week_chart.html" %}</div>
+    </section>
+  </div>
+  <div class="stack">
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('film') }}Titles</h2><a class="btn btn-quiet btn-sm" href="/kids/{{ kid.id }}/titles">All titles</a></div>
+      <div class="card-body">
+        <div class="today-head"><span class="big">{{ kid.titles_count if kid.titles_count is not none else '…' }}</span><span class="muted">titles {{ kid.name }} can watch</span></div>
+        <p class="muted mt-sm">{{ level_text }}{% if allow_n or block_n %}, plus {{ allow_n }} allowed and {{ block_n }} blocked by you{% endif %}.</p>
+        <p class="mt-sm"><a href="/kids/{{ kid.id }}/titles?show=visible">See what {{ kid.name }} can watch</a></p>
+        {% if new_titles %}<div class="notice info mt">{{ icon('star') }}<p><strong>{{ new_titles }} new title{{ 's' if new_titles != 1 }}</strong> arrived since you last looked. <a href="/kids/{{ kid.id }}/titles?show=new">Review them</a></p></div>{% endif %}
+        <p class="muted small" data-sync-text data-status-url="/kids/{{ kid.id }}/status.json">{{ st.sync_text }}</p>
+      </div>
+    </section>
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('history') }}Recently watched</h2><a class="btn btn-quiet btn-sm" href="/kids/{{ kid.id }}/activity">All activity</a></div>
+      <div class="card-body">
+        {% if history_error %}<p class="muted">{{ history_error }}</p>
+        {% elif recent %}
+        <ul class="list" data-post="/kids/{{ kid.id }}/titles" data-csrf="{{ csrf }}">
+          {% for h in recent %}
+          <li>{% if h.poster %}<img class="thumb" src="/poster/{{ h.poster }}" alt="" loading="lazy" width="40" height="60">{% endif %}
+            <div class="main"><div class="title">{{ h.title }}</div><div class="meta"><span class="nowrap">{{ h.date|local_time }} ·</span> <span class="nowrap">{{ h.seconds|minutes }}{% if h.player %} ·{% endif %}</span>{% if h.player %} <span class="nowrap">{{ h.player }}</span>{% endif %}</div></div>{{ quick_block(kid, h, picks) }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}<div class="empty">{{ icon('film', 'xl') }}<p>No watch history yet. Videos appear here a minute or two after {{ kid.name }} stops watching.</p></div>{% endif %}
+      </div>
+    </section>
+  </div>
+</div>
+{% elif kid.status in ('draft', 'requested') %}
+<div class="grid two {{ 'mt' if needs_link }}">
+  <a class="card" href="/kids/{{ kid.id }}/schedule"><div class="card-body row"><span class="feature-icon">{{ icon('clock', 'lg') }}</span><div><h2>Set the schedule</h2><p class="muted small">Daily screen time and watch hours.</p></div></div></a>
+  <a class="card" href="/kids/{{ kid.id }}/titles"><div class="card-body row"><span class="feature-icon">{{ icon('film', 'lg') }}</span><div><h2>Pick titles</h2><p class="muted small">Choose which movies and shows appear in Plex.</p></div></div></a>
+</div>
+{% endif %}
+{% endblock %}

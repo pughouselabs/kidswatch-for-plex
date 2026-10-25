@@ -1,0 +1,56 @@
+{% from "_macros.html" import icon %}
+{# Today's screen time and quick controls. Needs: kid, st, back #}
+<div class="today" data-status-url="/kids/{{ kid.id }}/status.json">
+  <div class="today-head"><span class="big" data-field="used_text">{{ st.used_text }}</span><span class="of-limit" data-field="of_limit">{{ st.of_limit }}</span></div>
+  <progress class="meter {{ 'over' if st.over }}" max="100" value="{{ st.percent }}" data-field="percent" aria-label="Screen time used today"></progress>
+  <div class="muted small hours-line" data-field="summary_line">{{ st.summary_line }}{% if st.bonus %} · includes {{ st.bonus }} min extra{% endif %}</div>
+  <div class="status-line" data-field="state" data-state="{{ st.state }}">
+    {% set badges = {'watching': ('live', 'Watching'), 'paused': ('warn', 'Paused'), 'hours': ('info', 'Closed'), 'limit': ('stop', "Time's up"), 'idle': ('plain', 'Idle')} %}
+    {% set b = badges.get(st.state, ('plain', '')) %}
+    <span class="badge {{ b[0] }}" data-state-badge>{{ b[1] }}</span><span data-state-text>{{ st.state_text }}</span>
+  </div>
+  <form class="limit-add" method="post" action="/kids/{{ kid.id }}/control" data-limit-add {% if st.state != 'limit' %}hidden{% endif %}>
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ back }}">
+    <button class="btn btn-primary btn-sm" name="action" value="bonus:15">{{ icon('plus') }}Add 15 minutes</button>
+  </form>
+  <form class="limit-add" method="post" action="/kids/{{ kid.id }}/control" data-later-add {% if not (st.state == 'hours' and st.evening) %}hidden{% endif %}>
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ back }}">
+    <button class="btn btn-primary btn-sm" name="action" value="later:30">{{ icon('moon') }}30 more minutes tonight</button>
+  </form>
+  <div class="quick">
+    {% if st.paused %}
+    <form method="post" action="/kids/{{ kid.id }}/control">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ back }}">
+      <button class="btn btn-primary" name="action" value="resume">{{ icon('play') }}Resume</button>
+    </form>
+    {% else %}
+    <details class="menu">
+      <summary class="btn">{{ icon('pause') }}Pause {{ icon('down') }}</summary>
+      <form class="menu-list" method="post" action="/kids/{{ kid.id }}/control">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ back }}">
+        <button name="action" value="pause:30">{{ icon('clock') }}For 30 minutes</button>
+        <button name="action" value="pause:60">{{ icon('clock') }}For 1 hour</button>
+        <button name="action" value="pause:tomorrow">{{ icon('moon') }}Until tomorrow</button>
+        <button name="action" value="pause">{{ icon('pause') }}Until I resume</button>
+      </form>
+    </details>
+    {% endif %}
+    <details class="menu">
+      <summary class="btn">{{ icon('plus') }}Add time {{ icon('down') }}</summary>
+      <form class="menu-list" method="post" action="/kids/{{ kid.id }}/control">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ back }}">
+        <button name="action" value="bonus:15">{{ icon('plus') }}15 minutes today</button>
+        <button name="action" value="bonus:30">{{ icon('plus') }}30 minutes today</button>
+        <button name="action" value="bonus:60">{{ icon('plus') }}1 hour today</button>
+        {% if st.bonus %}<button name="action" value="reset_bonus">{{ icon('x') }}Remove today's extra time</button>{% endif %}
+        <div class="menu-sep" role="separator"></div>
+        <button name="action" value="later:30">{{ icon('moon') }}Bedtime 30 minutes later</button>
+        <button name="action" value="later:60">{{ icon('moon') }}Bedtime 1 hour later</button>
+        {% if st.later %}<button name="action" value="reset_later">{{ icon('x') }}Back to the usual bedtime</button>{% endif %}
+        {% if st.school_day or st.day_off %}<div class="menu-sep" role="separator"></div>{% endif %}
+        {% if st.school_day %}<button name="action" value="dayoff">{{ icon('calendar') }}Weekend rules today</button>
+        {% elif st.day_off %}<button name="action" value="reset_dayoff">{{ icon('x') }}Back to school-day rules</button>{% endif %}
+      </form>
+    </details>
+  </div>
+</div>

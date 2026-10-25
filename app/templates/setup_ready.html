@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Setup complete · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+{% if library_warning %}<div class="notice stop" role="alert"><p>{{ library_warning }} <a href="/setup/libraries">Review library choices</a></p></div>{% endif %}
+<section class="card">
+  <div class="card-header"><h1>{{ 'Library access needs attention' if library_warning else 'KidsWatch is ready' }}</h1></div>
+  <div class="card-body">
+    <h2>Libraries</h2><ul>{% for title in libraries %}<li>{{ title }}</li>{% endfor %}</ul>
+    <p>Library access and titles update within a few minutes after saving library choices.</p>
+    <p>Notifications: Confirmed during setup</p>
+    <p>Approved parents can add their own children: {{ 'On' if trusted else 'Off' }}</p>
+    <p>Playback stop: Not tested by setup</p>
+    <p>Test a playback stop before your family relies on screen-time limits. Use the real-client checklist in your installation's docs/live-checklist.md.</p>
+    <div class="form-actions mt"><a class="btn btn-primary" href="/admin">Open Admin</a><a class="btn btn-quiet" href="/setup/libraries">Review setup settings</a></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 2. Window: a solid pug head silhouette with a screen cut out where the face would be -->
+  <defs>
+    <mask id="kw2-ears" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path d="M5.5 33C8 28.5 10.5 25 16 21.5M58.5 33C56 28.5 53.5 25 48 21.5" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <path mask="url(#kw2-ears)" fill="currentColor" fill-rule="evenodd" d="M32 12C48 12 57 20 57 34C57 48 47 57.5 32 57.5S7 48 7 34C7 20 16 12 32 12ZM21 27H43A7 7 0 0 1 50 34V43A7 7 0 0 1 43 50H21A7 7 0 0 1 14 43V34A7 7 0 0 1 21 27Z"/>
+  <path fill="currentColor" d="M21 13C12 11.5 5 14.5 2.5 21C1.5 25 2.5 29.5 5.5 33C8 28.5 10.5 25 15 22.5ZM43 13C52 11.5 59 14.5 61.5 21C62.5 25 61.5 29.5 58.5 33C56 28.5 53.5 25 49 22.5Z"/>
+  <circle cx="24" cy="35" r="3.8" fill="currentColor"/>
+  <circle cx="40" cy="35" r="3.8" fill="currentColor"/>
+  <path fill="currentColor" d="M32 39.5c3 0 5 .9 5 2.3 0 1.9-2.5 3.4-5 3.4s-5-1.5-5-3.4c0-1.4 2-2.3 5-2.3Z"/>
+</svg>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Check notifications · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+{% if error %}<section class="notice stop error-summary" id="form-errors" tabindex="-1" aria-labelledby="setup-error-title" data-error-summary>
+  <div><h2 id="setup-error-title">Please check this</h2><p id="notification-error">{{ error }}</p></div>
+</section>{% endif %}
+<section class="card">
+  <div class="card-header"><h1>Choose how you get requests</h1></div>
+  <form method="post" action="/setup/notifications" class="card-body">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="revision" value="{{ revision }}">
+    <p>Get parent access requests and notices when parents connect children.</p>
+    {% if configured %}
+    <label class="choice mt"><input type="radio" name="method" value="configured" checked><span><span class="title">Configured phone notifications</span><span class="desc">Your installation's private notification receiver.</span></span></label>
+    <div class="form-actions mt"><button class="btn" name="action" value="test">Send test notification</button></div>
+    {% else %}
+    <p class="notice">Finish private notification setup on your server.</p>
+    <p>Provision the private receiver using your server's protected configuration, then restart KidsWatch. <a href="/help">Setup instructions</a></p>
+    {% endif %}
+    <div class="mt" role="status" aria-live="polite">{% if notice %}<p>{{ notice }}</p>{% elif tested %}<p>A test was sent. Confirm it arrived on your private device.</p>{% endif %}</div>
+    <label class="choice mt"><input type="checkbox" name="confirmed" value="1" {% if not tested %}disabled{% endif %} aria-describedby="receipt-hint{% if error %} notification-error{% endif %}">
+      <span><span class="title">I received the test on my private device</span><span class="desc" id="receipt-hint">Send a test first. Delivery to the receiver alone does not confirm it reached your device.</span></span></label>
+    <label class="choice mt"><input type="checkbox" name="trusted" value="1" {% if trusted %}checked{% endif %} aria-describedby="trust-hint">
+      <span><span class="title">Approved parents can add their own children</span><span class="desc" id="trust-hint">Parents you approve can connect children without asking you again. You will be notified and can pause or remove a child in Admin.</span></span></label>
+    <p class="hint mt">Turn this off to ask you to approve each child. Changes apply to new connections. Children already waiting for approval still need your review; active children keep their access.</p>
+    <div class="form-actions mt"><button class="btn btn-primary" name="action" value="finish" {% if not tested %}disabled{% endif %}>Finish setup</button><a class="btn btn-quiet" href="/setup/libraries">Back</a></div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parental controls for Jellyfin | KidsWatch | Preview</title>
+    <meta name="description" content="Preview KidsWatch for Jellyfin. Explore family content choices, screen time, and parent controls for a Jellyfin server.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#f6f5f9">
+    <link rel="canonical" href="https://kidswatchtv.com/jellyfin/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KidsWatch for Jellyfin">
+    <meta property="og:title" content="Parental controls for Jellyfin | KidsWatch | Preview">
+    <meta property="og:description" content="Preview KidsWatch for Jellyfin. Explore family content choices, screen time, and parent controls for a Jellyfin server.">
+    <meta property="og:url" content="https://kidswatchtv.com/jellyfin/">
+    <link rel="icon" href="/jellyfin/assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jellyfin/style.css">
+    <script src="/jellyfin/app.js" defer>
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="wrap">
+      <header class="site-header header">
+        <a class="brand" href="/jellyfin/">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>KidsWatch<small>for Jellyfin · Preview</small>
+          </span>
+        </a>
+        <nav class="site-nav nav" aria-label="Main">
+          <a href="/jellyfin/" aria-current="page">Overview</a>
+          <a href="/jellyfin/server-owners">For server owners</a>
+          <a href="/jellyfin/parents">For parents</a>
+          <a href="/">Other editions</a>
+        </nav>
+        <button class="theme" type="button" data-theme-toggle hidden aria-pressed="false">Dark theme</button>
+      </header>
+      <div class="preview-banner">
+        <strong>Jellyfin edition · Preview</strong>
+        <span>Example screens. No server connection.</span>
+      </div>
+      <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+          <div>
+            <p class="eyebrow">Self-hosted. Family rules. Your server.</p>
+            <h1 id="hero-title">Their own Jellyfin.<br>Family routines, together.</h1>
+            <p class="lead">Plan their viewing, set screen-time rules, and request a pause from your phone. A little help with the everyday routine.</p>
+            <aside class="callout" data-runtime-limit="hero"><p><strong>Companion controls, not a safety lock.</strong> In our Jellyfin 12.3 lab, known direct video links still fetched blocked titles, even after playback was turned off. There is no guaranteed cutoff for any client. <a href="/jellyfin/server-owners#players">Read the known limits</a>.</p></aside>
+            <div class="buttons">
+              <a class="btn primary big-btn" href="/jellyfin/server-owners">I run a Jellyfin server</a>
+              <a class="btn big-btn" href="/jellyfin/parents">I’m a parent</a>
+            </div>
+            <p class="fine">KidsWatch creates each child’s local Jellyfin user. No child email, outside signup, or separate cloud account.</p>
+          </div>
+          <figure class="hero-stage" aria-label="Interactive example parent dashboard">
+            <div class="dashboard" data-dashboard>
+              <div class="phone-top">
+                <span>KIDSWATCH</span>
+                <span>EXAMPLE FAMILY</span>
+              </div>
+              <div class="kid">
+                <span class="avatar" aria-hidden="true">R</span>
+                <div>
+                  <strong>Rowan</strong>
+                  <small>Kids level · Fictional child</small>
+                </div>
+              </div>
+              <div class="today">
+                <div class="panel-head">
+                  <strong>Today</strong>
+                  <span class="badge accent">School day</span>
+                </div>
+                <div class="today-head">
+                  <span class="minutes">47 min</span>
+                  <span class="muted small">of <span data-total>120</span> min</span>
+                </div>
+                <progress class="meter" max="120" value="47" aria-label="Example minutes watched" data-progress>47 of 120 minutes</progress>
+                <p class="muted small">
+                  <span data-remaining>73</span> min left · Ends <span data-bedtime>8:00 PM</span>
+                </p>
+                <div class="watching">
+                  <span class="badge info" data-watch-state>Watching</span>
+                  <span>Sesame Street · Example TV</span>
+                </div>
+                <div class="buttons">
+                  <button class="btn" type="button" data-pause disabled>Ⅱ Pause</button>
+                  <button class="btn" type="button" data-bonus disabled>+ 15 min</button>
+                </div>
+              </div>
+              <p class="demo-status" role="status" data-dashboard-status>Try Pause or add time. This example does not control a player.</p>
+              <details class="mini-activity">
+                <summary>Try bedtime &amp; see activity</summary>
+                <div class="buttons">
+                  <button class="btn" type="button" data-bedtime-test disabled>Try bedtime</button>
+                  <button class="btn" type="button" data-later disabled>Bedtime +30 min</button>
+                </div>
+                <p class="fine">Fictional time: 8:00 PM. A later bedtime changes watch hours, not daily minutes.</p>
+                <h3 class="sr-only">Example activity</h3>
+                <ul class="activity-list" data-event-list aria-label="Recent example activity">
+                  <li>47 minutes watched today<small>Fictional playback history</small>
+                  </li>
+                </ul>
+              </details>
+              <button class="reset" type="button" data-dashboard-reset disabled>Reset this example</button>
+            </div>
+            <figcaption class="demo-caption">Interactive preview · Fictional family and activity.<br>Companion controls only. No client has a guaranteed cutoff; this demo verifies no stop.</figcaption>
+            <noscript>
+              <p class="no-js">Turn on JavaScript to try these example controls.</p>
+            </noscript>
+          </figure>
+        </section>
+        <div class="strip">
+          <div>
+            <strong>Your library</strong>
+            <p>Age levels, picked titles, and whole-series choices.</p>
+          </div>
+          <div>
+            <strong>Your routine</strong>
+            <p>Daily minutes, watch hours, and room for exceptions.</p>
+          </div>
+          <div>
+            <strong>Your family</strong>
+            <p>Parent invitations and owner-controlled approvals.</p>
+          </div>
+        </div>
+        <section class="section" id="previews" aria-labelledby="preview-title">
+          <div class="section-head">
+            <p class="kicker">A closer look</p>
+            <h2 id="preview-title">Set the everyday rules.<br>Adjust when life happens.</h2>
+            <p>Try the examples below. Nothing connects to your server, and a refresh starts fresh.</p>
+          </div>
+          <article class="feature">
+            <div class="copy">
+              <span class="feature-number">01 / What they watch</span>
+              <h3>A library that feels like theirs</h3>
+              <p>Start with Little kids, Kids, or Teens. Then allow a movie they’re ready for or block a show you’d rather skip.</p>
+              <ul class="checks">
+                <li>Pick “Only titles I allow” for a handpicked library</li>
+                <li>Allow or block a whole series, not individual episodes</li>
+                <li>Unrated titles are excluded by the selection rules</li>
+              </ul>
+            </div>
+            <figure>
+              <div class="panel" data-titles>
+                <div class="panel-head">
+                  <strong>Rowan’s titles</strong>
+                  <span class="badge accent">Try it</span>
+                </div>
+                <div class="seg" role="group" aria-label="Example content level">
+                  <button type="button" data-level="little" aria-pressed="false" disabled>Little kids</button>
+                  <button type="button" data-level="kids" aria-pressed="true" disabled>Kids</button>
+                  <button type="button" data-level="teens" aria-pressed="false" disabled>Teens</button>
+                </div>
+                <label class="picked">
+                  <input type="checkbox" data-picked disabled>Only titles I allow</label>
+                <ul class="tiles" aria-label="Example movie and whole-series choices">
+                  <li>
+                    <button class="title-button" type="button" data-title="Toy Story" data-rating="G" data-type="movie" data-visible="true" aria-label="Toy Story: allowed in example" disabled>
+                      <span class="cover art-1">
+                        <span class="rating">G</span>
+                        <span class="tile-name">Toy Story</span>
+                      </span>
+                      <span class="mark" aria-hidden="true">✓</span>
+                      <span class="tile-meta">Movie · <span data-title-status>Age level</span>
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="title-button" type="button" data-title="Sesame Street" data-rating="TV-Y" data-type="show" data-visible="true" aria-label="Sesame Street: allowed in example" disabled>
+                      <span class="cover art-2">
+                        <span class="rating">TV-Y</span>
+                        <span class="tile-name">Sesame Street</span>
+                      </span>
+                      <span class="mark" aria-hidden="true">✓</span>
+                      <span class="tile-meta">Whole series · <span data-title-status>Age level</span>
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="title-button" type="button" data-title="Frozen" data-rating="PG" data-type="movie" data-visible="true" aria-label="Frozen: allowed in example" disabled>
+                      <span class="cover art-3">
+                        <span class="rating">PG</span>
+                        <span class="tile-name">Frozen</span>
+                      </span>
+                      <span class="mark" aria-hidden="true">✓</span>
+                      <span class="tile-meta">Movie · <span data-title-status>Age level</span>
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="title-button" type="button" data-title="SpongeBob SquarePants" data-rating="TV-Y7" data-type="show" data-visible="true" aria-label="SpongeBob SquarePants: allowed in example" disabled>
+                      <span class="cover art-4">
+                        <span class="rating">TV-Y7</span>
+                        <span class="tile-name">SpongeBob SquarePants</span>
+                      </span>
+                      <span class="mark" aria-hidden="true">✓</span>
+                      <span class="tile-meta">Whole series · <span data-title-status>Age level</span>
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="title-button" type="button" data-title="Jurassic Park" data-rating="PG-13" data-type="movie" data-visible="false" aria-label="Jurassic Park: hidden in example" disabled>
+                      <span class="cover art-5">
+                        <span class="rating">PG-13</span>
+                        <span class="tile-name">Jurassic Park</span>
+                      </span>
+                      <span class="mark" aria-hidden="true">×</span>
+                      <span class="tile-meta">Movie · <span data-title-status>Hidden</span>
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="title-button" type="button" data-title="Wednesday" data-rating="TV-14" data-type="show" data-visible="false" aria-label="Wednesday: hidden in example" disabled>
+                      <span class="cover art-6">
+                        <span class="rating">TV-14</span>
+                        <span class="tile-name">Wednesday</span>
+                      </span>
+                      <span class="mark" aria-hidden="true">×</span>
+                      <span class="tile-meta">Whole series · <span data-title-status>Hidden</span>
+                      </span>
+                    </button>
+                  </li>
+                </ul>
+                <p class="title-help">Tap a tile to allow, block, or return to its age rule.</p>
+                <p class="demo-status" role="status" data-titles-status>Kids level: 4 of 6 example titles available.</p>
+                <button class="reset" type="button" data-titles-reset disabled>Reset title choices</button>
+                <p class="ceiling">Selection rules stop at PG-13 movies and TV-14 shows. R, NC-17, TV-MA, unknown, and unrated titles are excluded. Filtering a library is not secure playback blocking.</p>
+              </div>
+              <figcaption class="demo-caption">Real title names and US ratings are examples only. Covers are original geometric designs, not official artwork. Series choices cover the whole series; episode ratings still matter. KidsWatch is not affiliated with these titles’ owners. These selections illustrate browsing rules, not secure playback blocking.</figcaption>
+              <noscript>
+                <p class="no-js">Static Kids-level example. JavaScript enables title controls.</p>
+              </noscript>
+            </figure>
+          </article>
+          <article class="feature reverse">
+            <div class="copy">
+              <span class="feature-number">02 / When they watch</span>
+              <h3>School nights and slow Saturdays</h3>
+              <p>Choose daily minutes and watch hours separately. School breaks, Friday movie nights, and Sunday bedtimes can each have their place.</p>
+              <ul class="checks">
+                <li>One time budget per child across devices</li>
+                <li>Bonus minutes for today, a later bedtime for tonight</li>
+                <li>Pause or resume from the parent dashboard above</li>
+              </ul>
+              <p class="small">Time accounting depends on player reports. Server outages and stale sessions need attention, not a false “all clear.”</p>
+            </div>
+            <figure>
+              <div class="panel" data-schedule>
+                <div class="panel-head">
+                  <strong>A week that fits your family</strong>
+                  <span class="badge accent">Example</span>
+                </div>
+                <div class="fields">
+                  <label class="field">Schedule preset<select data-preset disabled>
+                      <option value="school">School year</option>
+                      <option value="summer">School break</option>
+                      <option value="weekends">Weekends only</option>
+                    </select>
+                  </label>
+                  <label class="field">School-day minutes<input data-weekday-min type="number" min="0" max="240" step="15" value="120" disabled>
+                  </label>
+                </div>
+                <label class="inline-check">
+                  <input type="checkbox" data-friday disabled>Friday uses weekend rules</label>
+                <label class="inline-check">
+                  <input type="checkbox" data-sunday disabled>Sunday is a school night</label>
+                <ul class="days">
+                  <li>
+                    <div>
+                      <strong>Tue · Today</strong>
+                      <small data-day-hours="0">3:00 PM to 8:00 PM</small>
+                    </div>
+                    <b data-day-minutes="0">120 min</b>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Wednesday</strong>
+                      <small data-day-hours="1">3:00 PM to 8:00 PM</small>
+                    </div>
+                    <b data-day-minutes="1">120 min</b>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Thursday</strong>
+                      <small data-day-hours="2">3:00 PM to 8:00 PM</small>
+                    </div>
+                    <b data-day-minutes="2">120 min</b>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Friday</strong>
+                      <small data-day-hours="3">3:00 PM to 8:00 PM</small>
+                    </div>
+                    <b data-day-minutes="3">120 min</b>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Saturday</strong>
+                      <small data-day-hours="4">8:00 AM to 8:30 PM</small>
+                    </div>
+                    <b data-day-minutes="4">180 min</b>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Sunday</strong>
+                      <small data-day-hours="5">8:00 AM to 8:30 PM</small>
+                    </div>
+                    <b data-day-minutes="5">180 min</b>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Monday</strong>
+                      <small data-day-hours="6">3:00 PM to 8:00 PM</small>
+                    </div>
+                    <b data-day-minutes="6">120 min</b>
+                  </li>
+                </ul>
+                <p class="demo-status" role="status" data-schedule-status>School year: 120 min on school days, 180 min on weekends.</p>
+                <button class="reset" type="button" data-schedule-reset disabled>Reset schedule</button>
+              </div>
+              <figcaption class="demo-caption">Fictional Tuesday-starting week · Example timezone: America/Denver. Watch hours and daily minutes are separate limits. Your server and KidsWatch need the same household timezone.</figcaption>
+            </figure>
+          </article>
+          <article class="feature">
+            <div class="copy">
+              <span class="feature-number">03 / Stay in the loop</span>
+              <h3>Know what happened, without hovering</h3>
+              <p>See example watch time, parent changes, and the reason a stop was requested. A request and a confirmed stop should never look the same.</p>
+              <ul class="checks">
+                <li>Daily activity and a seven-day view</li>
+                <li>Pause, bonus time, and bedtime changes in context</li>
+                <li>Clear warnings when a player cannot be controlled</li>
+              </ul>
+            </div>
+            <figure class="panel" data-activity>
+              <div class="panel-head">
+                <strong>A little context, at a glance</strong>
+                <span class="badge accent">Example data</span>
+              </div>
+              <div class="activity-chart" role="group" aria-label="Select an example day">
+                <button type="button" data-activity-day="Wed" data-minutes="42" aria-pressed="false" aria-label="Wed, 42 example minutes" disabled>
+                  <span>42</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Wed</span>
+                </button>
+                <button type="button" data-activity-day="Thu" data-minutes="60" aria-pressed="false" aria-label="Thu, 60 example minutes" disabled>
+                  <span>60</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Thu</span>
+                </button>
+                <button type="button" data-activity-day="Fri" data-minutes="38" aria-pressed="false" aria-label="Fri, 38 example minutes" disabled>
+                  <span>38</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Fri</span>
+                </button>
+                <button type="button" data-activity-day="Sat" data-minutes="95" aria-pressed="false" aria-label="Sat, 95 example minutes" disabled>
+                  <span>95</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Sat</span>
+                </button>
+                <button type="button" data-activity-day="Sun" data-minutes="80" aria-pressed="false" aria-label="Sun, 80 example minutes" disabled>
+                  <span>80</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Sun</span>
+                </button>
+                <button type="button" data-activity-day="Mon" data-minutes="55" aria-pressed="false" aria-label="Mon, 55 example minutes" disabled>
+                  <span>55</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Mon</span>
+                </button>
+                <button type="button" data-activity-day="Today" data-minutes="47" aria-pressed="true" aria-label="Today, 47 example minutes" disabled>
+                  <span>47</span>
+                  <i aria-hidden="true">
+                  </i>
+                  <span>Today</span>
+                </button>
+              </div>
+              <p class="activity-readout" role="status" data-activity-status>Today: 47 of 120 minutes. Sesame Street on the example TV.</p>
+              <ul class="activity-list">
+                <li>Sunday · Outside watch hours<small>Stop requested. Playback outcome not confirmed.</small>
+                </li>
+                <li>Monday · 15 bonus minutes added<small>Example change by Jamie, Rowan’s parent</small>
+                </li>
+              </ul>
+              <figcaption class="demo-caption">Fictional playback and parent changes, not product measurements. Select a day to explore.</figcaption>
+            </figure>
+          </article>
+        </section>
+        <aside class="callout" data-runtime-limit="players">
+          <p>
+            <strong>A known server limit, on every client.</strong> Our Jellyfin 12.3 lab still fetched video from blocked titles using known direct video links. Turning playback off also failed to block playback setup and direct streaming. Buffered video may continue, too. Native controls are a best-effort companion, not secure title blocking or a guaranteed cutoff for any client. No client is certified by this preview. <a href="/jellyfin/server-owners#players">Read the player limits</a>.</p>
+        </aside>
+        <section class="section" aria-labelledby="together-title">
+          <div class="section-head">
+            <p class="kicker">Two roles. One family.</p>
+            <h2 id="together-title">A little setup from the owner.<br>Everyday control for parents.</h2>
+          </div>
+          <div class="two-col">
+            <article class="audience">
+              <p class="kicker">For server owners</p>
+              <h3>You set the boundaries</h3>
+              <p>Install alongside Jellyfin, choose the libraries, invite parents, and decide whether new children need your approval. Your admin integration key stays private.</p>
+              <a class="btn" href="/jellyfin/server-owners">See owner setup ↗</a>
+            </article>
+            <article class="audience">
+              <p class="kicker">For parents</p>
+              <h3>You handle the everyday</h3>
+              <p>Use your existing Jellyfin identity to request access. Once approved, add a child, choose their rules, and help sign their TV in to their own local account.</p>
+              <a class="btn" href="/jellyfin/parents">See the parent walkthrough ↗</a>
+            </article>
+          </div>
+        </section>
+        <section class="section">
+          <div class="final-cta">
+            <p class="kicker">A first look · Preview</p>
+            <h2>Make space for family time.</h2>
+            <p>Explore the installation plan with your server owner. The Jellyfin edition is a preview. No public build or download is available yet.</p>
+            <div class="buttons">
+              <a class="btn primary big-btn" href="/jellyfin/server-owners#install">Preview the setup steps</a>
+              <a class="btn big-btn" href="/jellyfin/parents">Start with the parent guide</a>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="site-footer footer">
+        <nav aria-label="Footer">
+          <a href="/">Other editions</a>
+          <a href="/jellyfin/">Home</a>
+          <a href="/jellyfin/server-owners">For server owners</a>
+          <a href="/jellyfin/parents">For parents</a>
+          <a href="/jellyfin/server-owners#install">Planned setup</a>
+        </nav>
+        <p>A Pughouse Labs project. Jellyfin edition preview; no public build is available yet.</p>
+        <p>KidsWatch is an independent project and is not affiliated with or endorsed by the Jellyfin project.</p>
+        <p>This website counts visits with Cloudflare Web Analytics, which does not use cookies. Interactive previews use fictional data and stay in this browser tab.</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+.git
+.venv
+.env
+.env.*
+!.env.example
+data
+secrets
+**/*.db
+**/*.db-*
+**/__pycache__
+.pytest_cache
+OSS_NOTES.md

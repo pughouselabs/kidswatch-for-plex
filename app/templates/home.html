@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, avatar, kid_avatar %}
+{% block title %}My kids · KidsWatch for Plex{% endblock %}
+{% block body %}
+<div class="page-header">
+  <div><h1>My kids</h1><p class="sub">Hi, {{ user.name.split(' ')[0] }}. {% if kids %}See who’s watching and how much time is left.{% else %}Add your first child to choose what they can watch.{% endif %}</p></div>
+  <div class="page-actions">
+    {% if can_pause_all %}
+    <form method="post" action="/kids/pause-all"><input type="hidden" name="csrf" value="{{ csrf }}">
+      {% if all_paused %}<button class="btn" name="action" value="resume">{{ icon('play') }}Resume everyone</button>
+      {% else %}<button class="btn" name="action" value="pause">{{ icon('pause') }}Pause everyone</button>{% endif %}
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+{% for r in replies %}
+<div class="notice info">{{ icon('inbox') }}<div><p class="notice-title">{{ owner_name }} {{ 'declined your request' if r.status == 'declined' else ('approved your request' if r.status == 'approved' and not r.owner_note else ('completed your request' if r.status == 'done' and not r.owner_note else 'replied')) }}{% if r.owner_note %}: “{{ r.owner_note }}”{% endif %}</p>
+  <p class="muted small">You asked{% if r.kid_name %} for {{ r.kid_name }}{% endif %}: {{ r.message }}</p></div></div>
+{% endfor %}
+
+{% if kids %}
+<div class="kid-cards">
+  {% for kid, st in kids %}
+  <section class="card kid-card" aria-labelledby="kid-{{ kid.id }}">
+    <div class="card-body">
+      <div class="top">
+        {{ kid_avatar(kid) }}
+        <div class="main"><h2 class="name" id="kid-{{ kid.id }}"><a href="/kids/{{ kid.id }}">{{ kid.name }}</a></h2>
+          <div class="muted small">{{ 'Only titles you allow' if kid.mode == 'picked' else rules.AGE_LEVELS[kid.age_level].label ~ ' level' }}</div></div>
+        {% if kid.status != 'active' %}<span class="badge {{ kid.status }}">{{ st.status_text }}</span>{% endif %}
+      </div>
+      <div class="mt">
+      {% if kid.status == 'active' %}
+        {% set back = '/home' %}{% include "_today.html" %}
+      {% elif kid.status == 'draft' %}
+        <p class="muted">Connect {{ kid.name }}'s Plex account{% if trusted_parents or user.role == 'owner' %} to start watching{% else %} so {{ owner_name }} can approve it{% endif %}.</p>
+        <a class="btn btn-primary" href="/kids/{{ kid.id }}#connect">{{ icon('link') }}Connect account</a>
+      {% elif kid.status == 'requested' %}
+        <p class="muted">Waiting for {{ owner_name }} to approve. You can choose titles and set a schedule now.</p>
+        <a class="btn" href="/kids/{{ kid.id }}/schedule">{{ icon('clock') }}Set schedule</a>
+      {% endif %}
+      </div>
+    </div>
+    <div class="card-footer row wrap small">
+      <a href="/kids/{{ kid.id }}">Overview<span class="visually-hidden"> for {{ kid.name }}</span></a><a href="/kids/{{ kid.id }}/titles{{ '?show=new' if news.get(kid.id) }}">Titles<span class="visually-hidden"> for {{ kid.name }}</span>{% if news.get(kid.id) %} <span class="count">{{ news[kid.id] }} new</span>{% endif %}</a><a href="/kids/{{ kid.id }}/schedule">Schedule<span class="visually-hidden"> for {{ kid.name }}</span></a>
+    </div>
+  </section>
+  {% endfor %}
+  <a class="card add-card" href="/kids/new">{{ icon('plus', 'lg') }}<span>Add a child</span></a>
+</div>
+{% else %}
+<section class="card form-col welcome">
+  <div class="card-header"><h2>{{ icon('users') }}Set up your first child</h2></div>
+  <div class="card-body">
+    <ol class="steps">
+      <li><div><div class="step-title">Add your child</div>
+        <div class="step-text">Choose an age level to start. You can allow or block individual movies and shows later.</div></div></li>
+      <li><div><div class="step-title">Connect their own Plex account</div>
+        <div class="step-text">Make a free account at plex.tv, then connect it here. Use a private window or scan the QR code on their tablet.</div></div></li>
+      <li><div><div class="step-title">{{ 'Titles appear in Plex' if trusted_parents or user.role == 'owner' else owner_name ~ ' approves the account' }}</div>
+        <div class="step-text">Their movies and shows appear in Plex. Come back here to set limits, pause watching, or check their history.</div></div></li>
+    </ol>
+  </div>
+  <div class="card-footer form-actions"><a class="btn btn-primary" href="/kids/new">{{ icon('plus') }}Add a child</a><a class="btn btn-quiet" href="/help">How it works</a></div>
+</section>
+{% endif %}
+
+{% if open_reqs %}<p class="muted small mt">{{ icon('inbox') }} You have {{ open_reqs }} open request{{ 's' if open_reqs != 1 }}. <a href="/requests">See requests</a></p>{% endif %}
+{% endblock %}

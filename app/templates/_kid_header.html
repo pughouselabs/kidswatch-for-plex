@@ -1,0 +1,22 @@
+{% from "_macros.html" import icon, avatar, kid_avatar %}
+<a class="breadcrumb" href="/home">{{ icon('back') }}My kids</a>
+<div class="kid-hero">
+  {{ kid_avatar(kid, 'lg') }}
+  <div>
+    <h1>{{ kid.name }}{% if kid.status != 'active' %} <span class="badge {{ kid.status }}">{{ st.status_text }}</span>{% endif %}</h1>
+    <div class="sub">{{ level_text }}{% if kid.plex_username %} · Plex account <strong>{{ kid.plex_username }}</strong>{% endif %}{% if user.role == 'owner' %} · Parent: {{ parent }}{% endif %}{% if co_parents %} · Shared with {{ co_parents|map(attribute='title')|join(', ') }}{% endif %}</div>
+  </div>
+</div>
+<nav class="tabs" aria-label="{{ kid.name }}">
+  <a href="/kids/{{ kid.id }}" {% if tab == 'overview' %}aria-current="page"{% endif %}>{{ icon('home') }}Overview</a>
+  <a href="/kids/{{ kid.id }}/titles" {% if tab == 'titles' %}aria-current="page"{% endif %}>{{ icon('film') }}Titles{% if new_titles %}<span class="count" title="New since your last look">{{ new_titles }}<span class="visually-hidden"> new titles</span></span>{% endif %}</a>
+  <a href="/kids/{{ kid.id }}/schedule" {% if tab == 'schedule' %}aria-current="page"{% endif %}>{{ icon('clock') }}Schedule</a>
+  {% if kid.status == 'active' %}<a href="/kids/{{ kid.id }}/activity" {% if tab == 'activity' %}aria-current="page"{% endif %}>{{ icon('chart') }}Activity</a>{% endif %}
+  <a href="/kids/{{ kid.id }}/settings" {% if tab == 'settings' %}aria-current="page"{% endif %}>{{ icon('sliders') }}Settings</a>
+</nav>
+{% if kid.sync_state == 'error' %}
+<div class="notice stop">{{ icon('alert') }}<p>Your changes are saved, but Plex hasn't applied them yet ({{ kid.sync_error }}). KidsWatch retries every few minutes.</p></div>
+{% endif %}
+{% if kid.block_online and kid.online_off == 0 %}
+<div class="notice warn">{{ icon('alert') }}<p>Plex's own free movies and Live TV are still on for {{ kid.name }}'s account, and they have no age limits. Sign in to app.plex.tv as {{ kid.name }} and switch off everything under Settings, Online Media Sources.</p></div>
+{% endif %}

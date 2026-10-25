@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Pug concept 2: Cozy lookout</title>
+  <desc id="desc">A tan pug seen from behind sits with its curly tail facing us and watches a teal television. One eye and a cheek peek out toward the screen.</desc>
+  <g stroke="#293B40" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <!-- The TV is above the pug so the viewing relationship stays legible. -->
+    <path d="m238 51 18 20 40-39" fill="none"/>
+    <rect x="132" y="78" width="304" height="181" rx="31" fill="#47A99B"/>
+    <rect x="154" y="100" width="260" height="137" rx="17" fill="#FFF6E5" stroke="none"/>
+    <path d="m271 133 45 35-45 35z" fill="#47A99B" stroke="none"/>
+    <path d="m162 262-10 18m254-18 10 18" fill="none"/>
+    <!-- Compact hindquarters, side paws, and a large curl define the back view. -->
+    <path d="M130 344c-18 16-26 40-25 71h44m139-66c24 19 32 44 29 66h-39" fill="#EBC99A"/>
+    <path d="M153 309c-29 25-29 84-17 113 9 20 31 29 68 29h19c37 0 59-12 64-34 9-36-2-83-28-108z" fill="#EBC99A"/>
+    <path d="M154 424c-22-27-8-58 20-58 27 0 36 31 17 43-10 6-20-1-16-10" fill="none"/>
+    <path d="M107 413c-22 0-23 23-4 23h35m147-23h25c20 0 24 23 3 23h-36" fill="#FFF6E5"/>
+    <!-- The asymmetric head turn gives a recognizable pug profile. -->
+    <path d="M130 247c0-54 28-88 78-88 48 0 78 29 79 77l20 10c12 6 15 17 10 29-5 13-18 21-32 21-14 34-43 54-81 54-45 0-74-32-74-75z" fill="#EBC99A"/>
+    <path d="M144 181c-24-3-43 15-39 36l15 40c4 11 14 11 18-1l21-54c4-10-3-19-15-21zm102-9c19-3 38 9 38 27l-8 45c-2 13-13 14-19 2l-22-54c-4-10 0-17 11-20z" fill="#293B40" stroke="none"/>
+    <path d="M283 244c12-9 24-2 28 7l6 14c-2 17-16 29-32 28-10-17-11-35-2-49z" fill="#293B40" stroke="none"/>
+    <ellipse cx="279" cy="224" rx="9" ry="12" fill="#293B40" stroke="none"/>
+    <circle cx="282" cy="221" r="3" fill="#FFF6E5" stroke="none"/>
+    <path d="M173 190q18-8 35-3" fill="none" stroke-width="8"/>
+  </g>
+</svg>

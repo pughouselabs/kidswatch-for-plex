@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, quick_block %}
+{% block title %}{{ kid.name }}'s activity · KidsWatch for Plex{% endblock %}
+{% block body %}
+{% include "_kid_header.html" %}
+
+<div class="columns">
+  <div class="stack">
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('history') }}Watch history</h2></div>
+      <div class="card-body">
+        {% if history_error %}<p class="muted">{{ history_error }}</p>
+        {% elif history %}
+        <ul class="list" data-post="/kids/{{ kid.id }}/titles" data-csrf="{{ csrf }}">
+          {% for h in history %}
+          <li>{% if h.poster %}<img class="thumb" src="/poster/{{ h.poster }}" alt="" loading="lazy" width="40" height="60">{% endif %}
+            <div class="main"><div class="title">{{ h.title }}</div><div class="meta"><span class="nowrap">{{ h.date|local_time }} ·</span> <span class="nowrap">{{ h.seconds|minutes }}{% if h.player %} ·{% endif %}</span>{% if h.player %} <span class="nowrap">{{ h.player }}</span>{% endif %}</div></div>{{ quick_block(kid, h, picks) }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}<div class="empty">{{ icon('film', 'xl') }}<p>No watch history yet. Videos appear here a minute or two after {{ kid.name }} stops watching.</p></div>{% endif %}
+      </div>
+    </section>
+    {% if top %}
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('star') }}Most watched</h2></div>
+      <div class="card-body">
+        <ul class="list" data-post="/kids/{{ kid.id }}/titles" data-csrf="{{ csrf }}">{% for t in top %}<li>{% if t.poster %}<img class="thumb" src="/poster/{{ t.poster }}" alt="" loading="lazy" width="40" height="60">{% endif %}
+          <div class="main"><div class="title">{{ t.title }}</div><div class="meta"><span class="nowrap">{{ 'Watched once' if t.plays == 1 else 'Watched ' ~ t.plays ~ ' times' }} ·</span> <span class="nowrap">{{ t.seconds|minutes }}</span></div></div>{{ quick_block(kid, {'poster': t.poster, 'name': t.title}, picks) }}</li>{% endfor %}</ul>
+      </div>
+    </section>
+    {% endif %}
+  </div>
+  <div class="stack">
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('chart') }}Last 7 days</h2><span class="muted small">{{ chart.total }} total{% if chart.average %} · {{ chart.average }} a day{% endif %}</span></div>
+      <div class="card-body">{% include "_week_chart.html" %}{% if chart.trend %}<p class="muted small center mt-sm">{{ chart.trend }}.</p>{% endif %}</div>
+    </section>
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('shield') }}Videos stopped</h2></div>
+      <div class="card-body">
+        {% if stops %}
+        <ul class="list">
+          {% for s in stops %}
+          <li><div class="main"><div class="title">{{ s.title }}</div><div class="meta">{{ s.at|local_time }} · {{ {'paused': 'Paused by a parent', 'hours': 'Outside watch hours', 'limit': 'Out of time'}[s.reason] }}</div></div></li>
+          {% endfor %}
+        </ul>
+        {% else %}<p class="muted">No videos stopped yet. Stops for time limits, watch hours, and parent pauses appear here.</p>{% endif %}
+      </div>
+    </section>
+    {% if changes %}
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('sliders') }}Recent changes</h2></div>
+      <div class="card-body">
+        <ul class="list">{% for ch in changes %}<li><div class="main"><div>{% if ch.who %}<strong>{{ ch.who }}</strong> {% endif %}{{ ch.text }}</div><div class="meta">{{ ch.at|local_time }}</div></div></li>{% endfor %}</ul>
+      </div>
+    </section>
+    {% endif %}
+    {% if devices %}
+    <section class="card">
+      <div class="card-header"><h2>{{ icon('tv') }}Devices</h2></div>
+      <div class="card-body">
+        <ul class="list">{% for name, sec in devices %}<li><div class="main"><div class="title">{{ name }}</div></div><span class="muted small num">{{ sec|minutes }}</span></li>{% endfor %}</ul>
+        <p class="hint mt">Time watched on each device, from recent history.</p>
+      </div>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

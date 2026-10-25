@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 3. Watch party: the back of a pug's head, ears folded, in front of a screen -->
+  <defs>
+    <mask id="kw3-ears" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path d="M12 47.5C14 43.5 16.5 40.5 21.5 38M52 47.5C50 43.5 47.5 40.5 42.5 38" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <path fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" d="M13 42.5A8 8 0 0 1 5.5 34.5V13A7.5 7.5 0 0 1 13 5.5H51A7.5 7.5 0 0 1 58.5 13V34.5A8 8 0 0 1 51 42.5"/>
+  <path mask="url(#kw3-ears)" fill="currentColor" d="M32 30C44 30 50.5 37 50.5 47C50.5 52 50 55.5 49 58.5H15C14 55.5 13.5 52 13.5 47C13.5 37 20 30 32 30Z"/>
+  <path fill="currentColor" d="M25 30.5C18 30 12 33 10 38.5C9.5 41.5 10 45 12 47.5C14 43.5 16.5 40.5 21.5 38ZM39 30.5C46 30 52 33 54 38.5C54.5 41.5 54 45 52 47.5C50 43.5 47.5 40.5 42.5 38Z"/>
+</svg>

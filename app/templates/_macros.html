@@ -1,0 +1,36 @@
+{% macro icon(name, cls='') -%}
+<svg class="icon {{ cls }}" aria-hidden="true" focusable="false"><use href="#i-{{ name }}"/></svg>
+{%- endmacro %}
+
+{% macro kid_avatar(kid, size='') -%}
+<span class="avatar {{ size }} c{{ (kid.color if kid.color is not none else kid.id) % 6 }}" aria-hidden="true">{{ (kid.name or '?')[:1]|upper }}</span>
+{%- endmacro %}
+
+{% macro avatar(name, seed, size='') -%}
+<span class="avatar {{ size }} c{{ (seed or 0) % 6 }}" aria-hidden="true">{{ (name or '?')[:1]|upper }}</span>
+{%- endmacro %}
+
+{% macro status_badge(kid, st) -%}
+<span class="badge {{ kid.status }}">{{ st.status_text }}</span>
+{%- endmacro %}
+
+{% macro quick_block(kid, h, picks) -%}
+{% if h.poster and kid.status == 'active' %}{% set name = h.name or h.title %}
+{% if picks.get(h.poster) == 'block' %}<span class="quick-blocked">{{ icon('ban') }}Blocked</span>
+{% else %}<button class="btn btn-quiet btn-sm" type="button" data-quick-block="{{ h.poster }}" data-prev="{{ picks.get(h.poster, '') }}" data-name="{{ name }}" aria-label="Block {{ name }} for {{ kid.name }}">{{ icon('ban') }}Block</button>{% endif %}
+{% endif %}
+{%- endmacro %}
+
+{% macro field_error(flashes, id, phrases, attrs=false, hint='') -%}
+{% set ns = namespace(errors=[]) %}
+{% for f in flashes if f.kind == 'error' %}
+  {% set match = namespace(found=false) %}
+  {% for phrase in phrases if phrase in f.text %}{% set match.found = true %}{% endfor %}
+  {% if match.found %}{% set ns.errors = ns.errors + [f.text] %}{% endif %}
+{% endfor %}
+{% if ns.errors %}
+  {% if attrs %}aria-invalid="true" aria-describedby="{{ hint ~ ' ' if hint }}{{ id }}-error"
+  {% else %}<span class="form-error" id="{{ id }}-error" data-field-error>{% for text in ns.errors %}{{ text }}{% if not loop.last %} {% endif %}{% endfor %}</span>{% endif %}
+{% elif attrs and hint %}aria-describedby="{{ hint }}"
+{% endif %}
+{%- endmacro %}

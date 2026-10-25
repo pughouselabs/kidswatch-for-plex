@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Invite parents · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>Invite parents</h1></div>
+  <div class="card-body">
+    <p>Invite someone you know to set up their family.</p>
+    <p>This invites them to KidsWatch. You still approve their access.</p>
+    {% if error %}<p class="notice warn" role="alert">{{ error }}</p>{% endif %}
+    {% if recipients %}
+    <form method="post" action="/admin/invites/new">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div class="field"><label class="label" for="parent-id">Parent</label>
+        <select class="select" name="parent_id" id="parent-id" required>
+          <option value="">Choose a Plex user</option>
+          {% for id, parent in recipients.items() %}<option value="{{ id }}">{{ parent.title or parent.username }} ({{ parent.username }})</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label class="label" for="days">Link expires</label>
+        <select class="select" name="days" id="days">{% for days in expiry_days %}<option value="{{ days }}" {% if days == 7 %}selected{% endif %}>{{ days }} day{% if days != 1 %}s{% endif %}</option>{% endfor %}</select>
+      </div>
+      <div class="form-actions mt"><button class="btn btn-primary">Create invite</button><a class="btn" href="/admin">Cancel</a></div>
+    </form>
+    {% else %}<p>No eligible Plex users need site approval right now.</p>{% endif %}
+    <details class="mt">
+      <summary>They don't have Plex access yet</summary>
+      <h2>Give this parent Plex access first</h2>
+      <p>Invite them in Plex, then return after they accept. They can make their own account on Plex while accepting the invitation.</p>
+      <p><a class="btn btn-quiet" href="https://app.plex.tv/desktop/#!/settings/manage-library-access" target="_blank" rel="noopener noreferrer">Open Plex library access (new tab)</a></p>
+      <a class="btn" href="/admin/invites/new">Check again</a>
+    </details>
+  </div>
+</section>
+{% if invitations %}
+<section class="card mt" aria-labelledby="previous-invites">
+  <div class="card-header"><h2 id="previous-invites">Your invitations</h2></div>
+  <div class="card-body"><ul class="list">{% for invite in invitations %}
+    <li><a class="btn btn-quiet" href="/admin/invites/{{ invite.id }}">Invitation {{ invite.id }}{% if invite.username %} for {{ invite.username }}{% endif %}</a>{% if invite.revoked_at %} · Revoked{% elif invite.claimed_at %} · Claimed{% elif invite.expires_at <= now %} · Expired{% endif %}</li>
+  {% endfor %}</ul></div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest an improvement for families or server owners.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. Use fictional examples and leave out credentials and personal information.
+        Report vulnerabilities privately using [SECURITY.md](https://github.com/pughouselabs/kidswatch-for-plex/blob/main/SECURITY.md).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Who encounters this problem, and what are they trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Describe how the feature should work and what a successful result looks like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include any workarounds you have tried.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Optional examples or sketches, with personal information removed.

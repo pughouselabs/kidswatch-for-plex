@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Finish setup · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>Finish setting up KidsWatch</h1></div>
+  <div class="card-body">
+    <p>Sign in with the account that owns this Plex server, then enter the code sent to your private notification account.</p>
+    <p>Choose libraries for children and check that you receive requests.</p>
+    <div class="form-actions mt">
+      {% if user and user.role == 'owner' %}<a class="btn btn-primary" href="/setup/libraries">Continue setup</a>
+      {% else %}<a class="btn btn-primary" href="/login">Sign in with Plex</a>{% endif %}
+      <a class="btn btn-quiet" href="/help">Installation help</a>
+    </div>
+    <p class="hint mt">Private code delivery must be configured on your server before signing in. The setup pages never ask for receiver credentials.</p>
+    {% if user and user.role != 'owner' %}<p>This account does not own this Plex server. Sign out, then try the server owner's account.</p>{% endif %}
+  </div>
+</section>
+{% endblock %}

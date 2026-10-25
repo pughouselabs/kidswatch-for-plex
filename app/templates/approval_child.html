@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Manage child access · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card">
+  <div class="card-header"><h1>Manage {{ kid.name }}'s access</h1></div>
+  <div class="card-body">
+    <p>Plex account: {{ kid.plex_username }}</p>
+    <p>An approved parent connected this child. You can manage access at any time.</p>
+    <p>Invitation acceptance and title updates may still be needed. Check the child's page for current progress.</p>
+    <div class="form-actions"><a class="btn" href="/kids/{{ kid.id }}">View child or pause access</a>
+      <a class="btn" href="/kids/{{ kid.id }}/settings#remove">Remove child access</a></div>
+    <p><a href="/admin?tab=kids">Back to Admin Children</a></p>
+  </div>
+</section>
+{% endblock %}

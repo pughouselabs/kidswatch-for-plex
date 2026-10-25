@@ -1,0 +1,11 @@
+/* Signed-out landing page extras. The product tour itself (.lp-*) lives in style.css. */
+.lp-project { margin: 28px 0 0; color: var(--muted); font-size: var(--fs-sm); text-align: center; }
+.lp-phone > * { min-width: 0; }  /* keep the cards inside the phone when the status line is long */
+
+/* Playback message in the product tour, drawn in the app's own style. */
+.lp-tv { width: min(380px, 100%); margin: -10px 0 0 auto; }
+.lp-tv-screen { padding: 14px; }
+.lp-tv-dialog { width: 100%; padding: 16px; border: 1px solid #5b5047; border-radius: 12px; background: #23201c; color: #f3efe9; text-align: left; }
+.lp-tv-dialog-title { display: block; margin-bottom: 8px; font-size: 1rem; line-height: 1.4; }
+.lp-tv-screen .lp-tv-dialog p { font-size: .875rem; font-weight: 400; line-height: 1.5; text-wrap: initial; }
+.lp-tv-caption { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-sm); line-height: 1.6; text-align: center; }

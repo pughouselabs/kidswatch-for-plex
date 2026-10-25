@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- 1. Antenna ears: an outlined screen face whose antennae flop over at the tips like pug ears -->
+  <rect x="7.5" y="19.5" width="49" height="38" rx="12" stroke="currentColor" stroke-width="5"/>
+  <path d="M28.5 17 21 7.5C16 6.5 12 9 10.5 14.5M35.5 17 43 7.5C48 6.5 52 9 53.5 14.5" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="22.5" cy="34" r="4.5" fill="currentColor"/>
+  <circle cx="41.5" cy="34" r="4.5" fill="currentColor"/>
+  <ellipse cx="32" cy="41.5" rx="4.8" ry="3.3" fill="currentColor"/>
+  <path d="M24 46.5c3 3.3 6 3.3 8 0 2 3.3 5 3.3 8 0" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

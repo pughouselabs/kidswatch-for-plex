@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error, icon, avatar %}
+{% block title %}{{ kid.name }}'s settings · KidsWatch for Plex{% endblock %}
+{% block body %}
+{% include "_kid_header.html" %}
+<form method="post" action="/kids/{{ kid.id }}/settings" class="stack form-col" data-dirty-guard>
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <section class="card">
+    <div class="card-header"><h2>{{ icon('user') }}Profile</h2></div>
+    <div class="card-body">
+      <div class="field"><label class="label" for="name">Name</label><input class="input" id="name" name="name" value="{{ kid.name }}" maxlength="40" required></div>
+      <div class="field"><span class="label" id="color-label">Color</span>
+        <div class="swatches" role="radiogroup" aria-labelledby="color-label">
+          {% set current = (kid.color if kid.color is not none else kid.id) % 6 %}
+          {% for c in range(6) %}<label class="swatch c{{ c }}"><input type="radio" name="color" value="{{ c }}" {% if c == current %}checked{% endif %} aria-label="{{ ['Orange', 'Green', 'Blue', 'Purple', 'Pink', 'Teal'][c] }}"><span></span></label>{% endfor %}
+        </div></div>
+      <div class="field"><span class="label">Plex account</span>
+        <span>{% if kid.plex_username %}{{ kid.plex_username }} · {{ 'connected' if kid.plex_accepted else 'invitation not accepted yet' }}{% else %}Not connected yet. <a href="/kids/{{ kid.id }}#connect">Connect it</a>{% endif %}</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-header"><h2 id="level-label">{{ icon('shield') }}What {{ kid.name }} can watch</h2></div>
+    <div class="card-body">
+      <div class="choice-list cols" id="level-choice" role="radiogroup" tabindex="-1" aria-labelledby="level-label" {{ field_error(flashes, 'level-choice', ['Pick what your child can watch'], attrs=true) }}>
+        {% for key, lvl in rules.AGE_LEVELS.items() %}
+        <label class="choice"><input type="radio" name="level_choice" value="age:{{ key }}" {% if kid.mode == 'age' and kid.age_level == key %}checked{% endif %}>
+          <span><span class="title">{{ lvl.label }} <span class="muted">({{ lvl.ages }})</span></span><span class="desc">{{ lvl.summary|ratings }}</span></span></label>
+        {% endfor %}
+        <label class="choice"><input type="radio" name="level_choice" value="picked" {% if kid.mode == 'picked' %}checked{% endif %}>
+          <span><span class="title">Only titles I allow</span><span class="desc">Allow titles on the Titles tab. Everything else stays hidden.</span></span></label>
+      </div>
+      {{ field_error(flashes, 'level-choice', ['Pick what your child can watch']) }}
+      <p class="hint mt">Allow or block individual movies and shows on the <a href="/kids/{{ kid.id }}/titles">Titles</a> tab. R, TV-MA and unrated titles always stay hidden, and downloads are always off so limits can't be skipped.</p>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-header"><h2>{{ icon('film') }}Libraries</h2></div>
+    <div class="card-body">
+      {{ field_error(flashes, 'libraries', ['Choose at least one library']) }}
+      {% for key, title in sections %}
+      <div class="switch-row"><div><div class="title">{{ title }}</div></div>
+        <label class="switch"><input type="checkbox" name="section_{{ key }}" id="section-{{ key }}" {{ field_error(flashes, 'libraries', ['Choose at least one library'], attrs=true) }} value="1" {% if key in chosen %}checked{% endif %} aria-label="{{ title }}"><span></span></label></div>
+      {% endfor %}
+      {% if kid.status == 'draft' %}
+      <div class="switch-row"><div><div class="title">Turn off Plex's own free movies and Live TV</div><div class="hint" id="online-hint">Recommended. They have no age limits. Applied when you connect the account.</div></div>
+        <label class="switch"><input type="checkbox" name="block_online" aria-describedby="online-hint" value="1" {% if kid.block_online %}checked{% endif %} aria-label="Turn off Plex's own free movies and Live TV"><span></span></label></div>
+      {% endif %}
+    </div>
+  </section>
+  <div class="form-actions"><button class="btn btn-primary">{{ icon('check') }}Save settings</button></div>
+</form>
+
+<section class="card spaced form-col" id="parents">
+  <div class="card-header"><h2>{{ icon('users') }}Who manages {{ kid.name }}</h2></div>
+  <div class="card-body">
+    <ul class="list">
+      <li>{{ avatar(parent, kid.parent_id) }}<div class="main"><div class="title">{{ 'You' if kid.parent_id == user.id else parent }}</div><div class="meta">Added {{ kid.name }}</div></div></li>
+      {% for p in co_parents %}
+      <li>{{ avatar(p.title or p.username, p.plex_id) }}<div class="main"><div class="title">{{ 'You' if p.plex_id == user.id else (p.title or p.username) }}</div><div class="meta">Co-parent · can change settings but cannot remove {{ kid.name }}</div></div></li>
+      {% endfor %}
+    </ul>
+    {% if user.role == 'owner' %}
+    <p class="hint mt">Add or remove co-parents on <a href="/admin?tab=kids">the Kids tab in Admin</a>.</p>
+    {% else %}
+    <p class="hint mt">Want another parent or a grandparent to help? <a href="/requests?kind=more_access&amp;kid={{ kid.id }}&amp;message={{ ('Please let ___ help manage ' ~ kid.name ~ '. Their Plex username or email is ___.')|urlencode }}">Ask {{ owner_name }} to add them</a>. They need their own Plex account on this server.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if others %}
+<section class="card spaced form-col" id="copy">
+  <div class="card-header"><h2>{{ icon('copy') }}Use these rules for another child</h2></div>
+  <form class="card-body" method="post" action="/kids/{{ kid.id }}/copy-to" data-confirm-submit="Copy {{ kid.name }}'s schedule, libraries and title picks to {name}? This replaces theirs. Their age level stays the same.">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <p class="hint">Copies the schedule, libraries and the titles you allowed or blocked. The other child keeps their own age level.</p>
+    <div class="field mt"><label class="label" for="copy-target">Copy to</label>
+      <div class="copy-to-row"><select class="select" id="copy-target" name="target">{% for k in others %}<option value="{{ k.id }}">{{ k.name }}</option>{% endfor %}</select>
+        <button class="btn">{{ icon('copy') }}Copy rules</button></div></div>
+  </form>
+</section>
+{% endif %}
+
+{% if user.role == 'owner' or kid.parent_id == user.id %}
+<section class="card spaced form-col" id="remove">
+  {% set removal = namespace(error=false) %}{% for f in flashes if f.kind == 'error' %}{% if 'To remove, type' in f.text or "Plex didn't accept the removal" in f.text %}{% set removal.error = true %}{% endif %}{% endfor %}
+  <details class="card-body danger-zone" {% if removal.error %}open{% endif %}>
+    <summary>{{ icon('trash') }} Remove {{ kid.name }}</summary>
+    <div class="mt">
+    <p class="muted">Removes {{ kid.name }}'s server access and settings. Their Plex account stays open. You can delete that separately at plex.tv.</p>
+    <form method="post" action="/kids/{{ kid.id }}/remove" class="form-actions">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input id="confirm" class="input" name="confirm" autocomplete="off" required placeholder="Type {{ kid.name }} to confirm" aria-label="Type {{ kid.name }} to confirm" {{ field_error(flashes, 'confirm', ['To remove, type'], attrs=true) }}>{{ field_error(flashes, 'confirm', ['To remove, type']) }}
+      <button class="btn btn-danger">{{ icon('trash') }}Remove</button>
+    </form>
+    </div>
+  </details>
+</section>
+{% endif %}
+{% endblock %}

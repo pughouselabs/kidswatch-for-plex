@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error, icon %}
+{% block title %}Add a child · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<a class="breadcrumb" href="/home">{{ icon('back') }}My kids</a>
+<div class="page-header"><div><h1>Add a child</h1><p class="sub">Start with a name and age level. Next, connect your child's Plex account{% if trusted_parents or user.role == 'owner' %} to start watching{% else %} for {{ owner_name }} to approve{% endif %}.</p></div></div>
+<form method="post" action="/kids/new" class="card">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <div class="card-body">
+    <div class="field"><label class="label" for="name">Child's first name</label><input class="input" id="name" name="name" maxlength="40" required autocomplete="off" {{ field_error(flashes, 'name', ["Add your child's first name"], attrs=true) }}>{{ field_error(flashes, 'name', ["Add your child's first name"]) }}</div>
+    <div class="field"><span class="label" id="age-label">What can they watch?</span>
+      <div class="choice-list" role="radiogroup" id="age-choice" tabindex="-1" aria-labelledby="age-label" {{ field_error(flashes, 'age-choice', ["Add your child's first name"], attrs=true) }}>
+        {% for key, lvl in rules.AGE_LEVELS.items() %}
+        <label class="choice"><input type="radio" name="age_level" value="{{ key }}" {% if key == 'kids' %}checked{% endif %}>
+          <span><span class="title">{{ lvl.label }} <span class="muted">({{ lvl.ages }})</span></span><span class="desc">{{ lvl.summary|ratings }}</span></span></label>
+        {% endfor %}
+      </div>
+      {{ field_error(flashes, 'age-choice', ["Add your child's first name"]) }}
+      <span class="hint">You can change this later or allow and block individual titles.</span>
+    </div>
+    {% if siblings %}
+    <div class="field"><label class="label" for="copy_from">Start with the same rules as</label>
+      <select class="select" id="copy_from" name="copy_from">
+        <option value="">Use the default schedule and libraries</option>
+        {% for k in siblings %}<option value="{{ k.id }}">{{ k.name }}</option>{% endfor %}
+      </select>
+      <span class="hint">Copies the schedule, libraries and the titles you allowed or blocked. The age level above still applies.</span>
+    </div>
+    {% endif %}
+  </div>
+  <div class="card-footer form-actions"><button class="btn btn-primary">Add child {{ icon('next') }}</button><a class="btn btn-quiet" href="/home">Cancel</a></div>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}Connected · KidsWatch for Plex{% endblock %}
+{% block container_class %}narrow{% endblock %}
+{% block body %}
+<section class="card"><div class="empty">
+  {{ icon('check', 'xl') }}
+  <h1>{{ kid.name }} is connected</h1>
+  <p>{{ text }}</p>
+  <p class="hint">You can close this window. To watch, sign in to the Plex app with {{ kid.name }}'s account. <a href="/help">Help</a> explains the options for a shared TV.</p>
+</div></section>
+{% endblock %}

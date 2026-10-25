@@ -1,0 +1,52 @@
+name: Bug report
+description: Report a reproducible problem with KidsWatch for Plex.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For vulnerabilities, follow [SECURITY.md](https://github.com/pughouselabs/kidswatch-for-plex/blob/main/SECURITY.md) instead of opening a public issue.
+        Remove tokens, webhook URLs, account details, child names, and private server addresses from text, logs, and screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Which release or commit are you running?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include installation method, host OS, browser, and relevant Plex server or player versions. Do not include credentials or private addresses.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest set of steps that shows the problem, using fictional accounts and titles.
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Explain what happened and whether you can reproduce it consistently.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized logs or screenshots
+      description: Optional supporting evidence. Review every attachment for personal information and credentials before submitting.

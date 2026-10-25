@@ -1,0 +1,72 @@
+{% from "_macros.html" import icon, avatar %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<title>{% block title %}KidsWatch for Plex{% endblock %}</title>
+<link rel="icon" href="/static/icon-favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=4">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-title" content="KidsWatch">
+<link rel="preload" href="/static/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/style.css?v=40">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#notifications" data-notification-link {% if not flashes %}hidden{% endif %}>Skip to notifications</a>
+{% include "_icons.html" %}
+<header class="app-header">
+  <div class="bar">
+    <a class="brand" href="/"><img src="/static/icon.svg?v=4" alt="" width="30" height="30">KidsWatch for Plex</a>
+    {% if user and user.role in ('parent', 'owner') %}
+    <nav class="nav" aria-label="Main">
+      <a href="/home" {% if nav == 'home' %}aria-current="page"{% endif %}>{{ icon('users') }}My kids</a>
+      <a href="/requests" {% if nav == 'requests' %}aria-current="page"{% endif %}>{{ icon('inbox') }}Requests{% if unread and nav != 'requests' %}<span class="count" title="New replies">{{ unread }}<span class="visually-hidden"> new replies</span></span>{% endif %}</a>
+      {% if user.role == 'owner' %}<a href="/admin" {% if nav == 'admin' %}aria-current="page"{% endif %}>{{ icon('shield') }}Admin</a>{% endif %}
+      <a href="/help" {% if nav == 'help' %}aria-current="page"{% endif %}>{{ icon('help') }}Help</a>
+    </nav>
+    {% endif %}
+    <div class="account">
+      {% if user %}
+        <span class="who">{{ user.name }}</span>
+        <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="btn btn-quiet btn-sm" title="Sign out">{{ icon('logout') }}<span class="visually-hidden">Sign out</span></button></form>
+      {% else %}
+        {% block header_signin %}<a class="btn btn-quiet btn-sm" href="/help">Help</a>{% endblock %}
+      {% endif %}
+    </div>
+  </div>
+</header>
+<main class="container {% block container_class %}{% endblock %}" id="main" tabindex="-1">
+  {% if flashes|selectattr('kind', 'equalto', 'error')|list %}
+  <section class="notice stop error-summary" id="form-errors" tabindex="-1" aria-labelledby="error-title" data-error-summary>
+    {{ icon('alert') }}<div><h2 id="error-title">Please check this</h2><ul>
+    {% for f in flashes if f.kind == 'error' %}<li>{{ f.text }}</li>{% endfor %}
+    </ul></div>
+  </section>
+  {% endif %}
+  {% block body %}{% endblock %}
+</main>
+<footer class="app-footer">
+  {% block footer_ask %}{% if user and user.role == 'parent' %}<p class="footer-ask">{{ icon('send') }}Need something changed? <a href="/requests?kind=feature#new">Suggest a feature</a> or <a href="/requests?kind=more_access#new">ask for access</a>.</p>{% endif %}{% endblock %}
+  <p>KidsWatch for Plex · For families sharing a Plex server</p>
+  <p class="small muted">Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
+</footer>
+<dialog class="sheet confirm" data-confirm aria-labelledby="confirm-text">
+  <form method="dialog" class="card-body">
+    <p id="confirm-text" data-confirm-text></p>
+    <div class="form-actions"><button class="btn btn-primary" value="yes" data-confirm-yes>Continue</button><button class="btn" value="no">Cancel</button></div>
+  </form>
+</dialog>
+<div class="visually-hidden" role="status" id="status-announcer"></div>
+<div class="visually-hidden" role="alert" id="error-announcer"></div>
+<div class="toasts" id="notifications" role="region" tabindex="-1" aria-label="Notifications">
+  {% for f in flashes if f.kind != 'error' %}<div class="toast">{{ icon('check') }}<span>{{ f.text }}</span>{% if f.undo %}<form method="post" action="{{ f.undo.url }}" class="toast-undo"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ f.undo.back }}"><button class="toast-action" name="action" value="{{ f.undo.action }}">Undo</button></form>{% endif %}<button type="button" data-dismiss aria-label="Dismiss">{{ icon('x') }}</button></div>{% endfor %}
+</div>
+<script src="/static/app.js?v=43" defer></script>
+</body>
+</html>

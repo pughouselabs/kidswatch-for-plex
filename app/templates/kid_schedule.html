@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error, icon %}
+{% block title %}{{ kid.name }}'s schedule · KidsWatch for Plex{% endblock %}
+{% block body %}
+{% include "_kid_header.html" %}
+<div class="with-aside">
+<form method="post" action="/kids/{{ kid.id }}/schedule" class="stack form-col" data-schedule data-dirty-guard>
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <div class="presets" role="group" aria-label="Quick presets">
+    <span class="muted small">Start with:</span>
+    <button type="button" class="btn btn-sm" data-preset='{"weekday_minutes":"60","weekend_minutes":"120","weekday_start":"15:00","weekday_end":"20:00","weekend_start":"08:00","weekend_end":"20:30"}'>{{ icon('calendar') }}School year</button>
+    <button type="button" class="btn btn-sm" data-preset='{"weekday_minutes":"120","weekend_minutes":"150","weekday_start":"08:00","weekday_end":"21:00","weekend_start":"08:00","weekend_end":"21:00"}'>{{ icon('star') }}Summer</button>
+    <button type="button" class="btn btn-sm" data-preset='{"weekday_minutes":"0","weekend_minutes":"120","weekend_start":"08:00","weekend_end":"20:30"}'>{{ icon('moon') }}Weekends only</button>
+    <button type="button" class="btn btn-sm" data-preset='{"weekday_minutes":"none","weekend_minutes":"none","any":true}'>{{ icon('clock') }}No limits</button>
+  </div>
+  <section class="card">
+    <div class="card-header"><h2>{{ icon('clock') }}Daily screen time</h2></div>
+    <div class="card-body">
+      <p class="hint">Only playing time counts. When it runs out, the video stops. Add extra time for today on the Overview tab.</p>
+      <div class="grid two mt">
+        {% for field, label in [('weekday_minutes', 'Weekdays'), ('weekend_minutes', 'Weekends')] %}
+        <div class="field">
+          <label class="label" for="{{ field }}">{{ label }}</label>
+          <select class="select" id="{{ field }}" name="{{ field }}" {{ field_error(flashes, field, ['Enter screen time in minutes'], attrs=true) }}>
+            <option value="none" {% if kid[field] is none %}selected{% endif %}>No limit</option>
+            <option value="0" {% if kid[field] == 0 %}selected{% endif %}>No watching</option>
+            {% for m in minute_options %}<option value="{{ m }}" {% if kid[field] == m %}selected{% endif %}>{{ (m * 60)|minutes }} a day</option>{% endfor %}
+            {% if kid[field] is not none and kid[field] != 0 and kid[field] not in minute_options %}<option value="{{ kid[field] }}" selected>{{ (kid[field] * 60)|minutes }} a day</option>{% endif %}
+          </select>{{ field_error(flashes, field, ['Enter screen time in minutes']) }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-header"><h2>{{ icon('moon') }}Watch hours</h2></div>
+    <div class="card-body">
+      <p class="hint" id="watch-hours-hint">Set the earliest start and latest finish. Videos stop outside these hours, even if screen time is left.</p>
+      <div class="sched mt">
+        {% for prefix, label in [('weekday', 'Weekdays'), ('weekend', 'Weekends')] %}
+        {% set start, end = kid[prefix ~ '_start'], kid[prefix ~ '_end'] %}
+        <fieldset class="sched-row"><legend class="visually-hidden">{{ label }}</legend>
+          <div class="day" aria-hidden="true">{{ label }}</div>
+          <div class="field"><label class="label {{ 'visually-hidden' if not loop.first }}" for="{{ prefix }}_start">Start time</label><input class="input" type="time" id="{{ prefix }}_start" aria-label="{{ 'Weekday' if prefix == 'weekday' else 'Weekend' }} start time" name="{{ prefix }}_start" value="{{ start }}" step="900" required {{ field_error(flashes, prefix ~ '_start', ['Choose both a start and an end time', label ~ ': Choose different times'], attrs=true, hint='watch-hours-hint') }}>{{ field_error(flashes, prefix ~ '_start', ['Choose both a start and an end time', label ~ ': Choose different times']) }}</div>
+          <div class="field"><label class="label {{ 'visually-hidden' if not loop.first }}" for="{{ prefix }}_end">End time</label><input class="input" type="time" id="{{ prefix }}_end" aria-label="{{ 'Weekday' if prefix == 'weekday' else 'Weekend' }} end time" name="{{ prefix }}_end" value="{{ end }}" step="900" required {{ field_error(flashes, prefix ~ '_end', ['Choose both a start and an end time', label ~ ': Choose different times'], attrs=true, hint='watch-hours-hint') }}>{{ field_error(flashes, prefix ~ '_end', ['Choose both a start and an end time', label ~ ': Choose different times']) }}</div>
+          <label class="switch-inline limit"><span class="switch"><input type="checkbox" name="any_time_{{ prefix }}" aria-label="Any time on {{ label|lower }}" aria-describedby="watch-hours-hint" value="1" {% if any_times[prefix] %}checked{% endif %}><span></span></span>Any time</label>
+        </fieldset>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-header"><h2>{{ icon('calendar') }}Special days</h2>{% if on_break %}<span class="badge info">School break on</span>{% endif %}</div>
+    <div class="card-body">
+      <div class="switch-row"><div><div class="title">Friday counts as a weekend</div><div class="hint" id="friday_weekend-hint">Friday uses the weekend screen time and watch hours.</div></div>
+        <label class="switch"><input type="checkbox" name="friday_weekend" aria-describedby="friday_weekend-hint" value="1" {% if kid.friday_weekend %}checked{% endif %} aria-label="Friday counts as a weekend"><span></span></label></div>
+      <div class="switch-row"><div><div class="title">Sunday is a school night</div><div class="hint" id="sunday_school-hint">Sunday uses the weekday screen time and watch hours.</div></div>
+        <label class="switch"><input type="checkbox" name="sunday_school" aria-describedby="sunday_school-hint" value="1" {% if kid.sunday_school %}checked{% endif %} aria-label="Sunday is a school night"><span></span></label></div>
+      <div class="switch-row"><div><div class="title">School break</div><div class="hint">Use weekend screen time and watch hours through this date, including the last day. Leave blank during the school year.</div></div>
+        <input id="break_until" class="input date-input" type="date" name="break_until" value="{{ kid.break_until or '' }}" min="{{ today }}" aria-label="School break through" {{ field_error(flashes, 'break_until', ['That school break date'], attrs=true) }}>{{ field_error(flashes, 'break_until', ['That school break date']) }}</div>
+    </div>
+  </section>
+  <div class="form-actions"><button class="btn btn-primary">{{ icon('check') }}Save schedule</button></div>
+</form>
+<aside class="card" aria-labelledby="ahead-title">
+  <div class="card-header"><h2 id="ahead-title">{{ icon('calendar') }}Next 7 days</h2></div>
+  <div class="card-body">
+    <p class="hint" data-ahead-hint>Daily limits and watch hours, including special days.</p>
+    <ul class="list days mt" data-ahead>
+      {% for d in ahead %}
+      <li class="{{ 'none' if d.none }}{{ ' today' if loop.first }}" data-date="{{ d.date }}" data-dow="{{ d.dow }}" data-bonus="{{ d.bonus }}" data-later="{{ d.later }}"><div class="main"><div class="title">{{ d.label }}{% if d.day %} <span class="muted day">{{ d.day }}</span>{% endif %} <span class="badge plain info" data-note {% if not d.note %}hidden{% endif %}>{{ d.note }}</span></div>
+        <div class="meta" data-hours>{{ 'No watching' if d.none else d.hours }}</div></div><span class="num" data-limit {% if d.none %}hidden{% endif %}>{{ d.limit }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</aside>
+</div>
+{% endblock %}
