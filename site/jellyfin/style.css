@@ -758,7 +758,7 @@ button:disabled {
   min-height:28px;
   padding-top:8px
 }
-.title-button:hover .cover {
+.title-button[data-visible=true]:hover .cover {
   filter:brightness(1.06)
 }
 .title-help {
@@ -1388,11 +1388,11 @@ button:disabled {
   .nav { justify-content:flex-start; }
   .nav a { padding:9px 8px; }
 }
-/* Desaturate only the artwork; retain readable title and rating text. */
+/* Grey only the original art palette; keep labels and marks fully opaque. */
 .title-button[data-visible=false] .cover {
-  --art:#d5d5d5;
-  --shape:#aaa;
-  --shape2:#c1c1c1;
-  --letter:#292929;
-  filter:none;
+  --art:#b8b8b8;
+  --shape:#858585;
+  --shape2:#a0a0a0;
+  --letter:#171717;
+  filter:none
 }
