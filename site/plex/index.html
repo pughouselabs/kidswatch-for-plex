@@ -1,18 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-edition="plex">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KidsWatch for Plex | Your kids' own Plex, with you in charge</title>
+  <title>KidsWatch for Plex | Your kids&#x27; own Plex, with you in charge</title>
   <meta name="description" content="A free, self-hosted app for families who share a Plex server. Give each child their own Plex account, choose what they watch, set screen time and bedtime, and pause it all from your phone.">
   <meta name="theme-color" content="#f7f4f0">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kidswatchtv.com/plex/">
   <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
   <script src="/titles-demo.js" defer></script>
+  <script src="/previews.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="KidsWatch for Plex">
-  <meta property="og:title" content="KidsWatch for Plex | Your kids' own Plex, with you in charge">
+  <meta property="og:title" content="KidsWatch for Plex | Your kids&#x27; own Plex, with you in charge">
   <meta property="og:description" content="Give each child their own Plex account. Choose what they watch, set screen time and bedtime, and pause it all from your phone.">
   <meta property="og:url" content="https://kidswatchtv.com/plex/">
 </head>
@@ -37,6 +39,7 @@
   <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13l2.5-8h11L20 13v6H4z"/><path d="M4 13h5l1 2h4l1-2h5"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.4-3.6 4.4-5 8-5s6.6 1.4 8 5"/></symbol>
 </svg>
+<svg class="sprite" aria-hidden="true"><symbol id="i-down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></symbol></svg>
 <a class="skip" href="#main">Skip to content</a>
 <div class="page">
   <header class="site-header">
@@ -50,6 +53,7 @@
     </nav>
   </header>
 
+
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div>
@@ -60,33 +64,61 @@
           <a class="btn btn-primary btn-lg" href="/plex/server-owners">I run a Plex server</a>
           <a class="btn btn-lg" href="/plex/parents">I'm a parent</a>
         </div>
-        <p class="fine">KidsWatch for Plex is installed by whoever runs your family's Plex server. Parents sign in with the Plex account they already watch with. Run the server? <a href="/plex/server-owners#install">See how to install it</a>.</p>
+        <p class="fine">KidsWatch for Plex is installed by whoever runs your family&#x27;s Plex server. Parents sign in with the Plex account they already watch with. Run the server? <a href="/plex/server-owners#install">See how to install it</a>.</p>
+        <aside class="runtime-note" data-runtime-limit="hero"><h2>Account and playback limits</h2><p>Rules follow the child&#x27;s own Plex account on your server. Videos stop at the next check, normally within 20 seconds. A parent&#x27;s account, other servers and other apps are outside those rules.</p><p><a href="/plex/server-owners#players">Read the playback limits and device results</a>.</p></aside>
       </div>
 
-      <div class="hero-art" aria-hidden="true">
-        <div class="phone">
-          <div class="phone-bar"><span>9:41</span><i></i></div>
-          <div class="kid"><span class="avatar">R</span><div><strong>Rowan</strong><span>Kids level</span></div></div>
-          <div class="card">
-            <div class="card-title"><svg class="icon"><use href="#i-clock"/></svg>Today</div>
-            <div class="today-head"><span class="big">47 min</span><span class="of-limit">of 2 hr</span></div>
-            <progress class="meter" max="100" value="39"></progress>
-            <div class="muted small">1 hr 13 min left · Ends 8:00 PM</div>
-            <div class="status"><span class="badge live">Watching</span><span>Maple Club on the TV</span></div>
-            <div class="btns"><span class="btn btn-sm"><svg class="icon"><use href="#i-pause"/></svg>Pause</span><span class="btn btn-sm"><svg class="icon"><use href="#i-plus"/></svg>Add time</span></div>
+      <figure class="pa-demo" aria-labelledby="demo-caption" data-parent-demo>
+        <div class="phone pa-phone">
+          <div class="phone-bar" aria-hidden="true"><span>9:41</span><i></i></div>
+          <p class="pa-app-name">KidsWatch <span>for Plex</span></p>
+          <div class="kid"><span class="avatar" aria-hidden="true">R</span><div><strong>Rowan</strong><span>Kids level</span></div></div>
+          <div class="pa-tabs" aria-hidden="true"><span class="pa-active">Overview</span><span>Titles</span><span>Schedule</span></div>
+          <div class="card pa-today">
+            <div class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Today</div>
+            <div class="today-head"><span class="big">47 min</span><span class="of-limit" data-demo-limit>of 2 hr</span></div>
+            <progress class="meter" max="120" value="47" aria-label="Screen time used today" data-demo-meter></progress>
+            <p class="muted small" data-demo-hours>1 hr 13 min left · Ends 8:00 PM</p>
+            <div class="pa-status"><span class="badge live" data-demo-badge>Watching</span><span data-demo-state>Maple Club on the TV</span></div>
+            <div class="pa-quick">
+              <details class="pa-menu" data-demo-pause>
+                <summary class="btn btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-pause"/></svg>Pause<svg class="icon pa-down" aria-hidden="true"><use href="#i-down"/></svg></summary>
+                <div class="pa-menu-list">
+                  <button type="button" data-demo-action="pause:30" disabled>For 30 minutes</button>
+                  <button type="button" data-demo-action="pause:60" disabled>For 1 hour</button>
+                  <button type="button" data-demo-action="pause:tomorrow" disabled>Until tomorrow</button>
+                  <button type="button" data-demo-action="pause:manual" disabled>Until I resume</button>
+                </div>
+              </details>
+              <button class="btn btn-sm" type="button" data-demo-action="resume" data-demo-resume hidden>Resume</button>
+              <details class="pa-menu" data-demo-add>
+                <summary class="btn btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Add time<svg class="icon pa-down" aria-hidden="true"><use href="#i-down"/></svg></summary>
+                <div class="pa-menu-list">
+                  <button type="button" data-demo-action="bonus:15" disabled>15 minutes today</button>
+                  <button type="button" data-demo-action="bonus:30" disabled>30 minutes today</button>
+                  <button type="button" data-demo-action="bonus:60" disabled>1 hour today</button>
+                  <hr>
+                  <button type="button" data-demo-action="later:30" disabled>Bedtime 30 minutes later</button>
+                </div>
+              </details>
+            </div>
           </div>
-          <div class="card row">
-            <span class="num">128</span><span class="muted small">titles Rowan can watch</span><span class="badge new">3 new</span>
-          </div>
+          <div class="card pa-title-count"><strong class="num">128</strong><span class="muted small">titles Rowan can watch</span></div>
         </div>
-        <div class="toast"><svg class="icon"><use href="#i-check"/></svg><span>Rowan is paused until 6:30 PM.</span><b>Undo</b></div>
-      </div>
+        <figcaption id="demo-caption">Example family · <span data-demo-hint>Try Pause or Add time</span></figcaption>
+        <noscript><p class="muted small">Turn on JavaScript to try the preview controls.</p></noscript>
+        <div class="pa-feedback">
+          <div class="pa-toast" data-demo-toast hidden><span role="status" aria-live="polite" data-demo-notice></span><button type="button" data-demo-undo>Undo</button></div>
+        </div>
+      </figure>
+
     </section>
+
 
     <section class="section" id="what" aria-labelledby="what-title">
       <div class="head">
         <p class="kicker">What it does</p>
-        <h2 id="what-title">Set it up once, then adjust from your phone</h2>
+        <span class="anchor-alias" id="preview-title" aria-hidden="true"></span><span class="anchor-alias" id="previews" aria-hidden="true"></span><h2 id="what-title">Set it up once, then adjust from your phone</h2>
         <p>Everything works on the Plex apps your kids already use. You make the rules in KidsWatch, and the server keeps them.</p>
       </div>
 
@@ -94,7 +126,7 @@
         <div class="copy">
           <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-film"/></svg></span>
           <h3>Choose exactly what they can watch</h3>
-          <p>Use an allow list or block list for individual movies and shows, or switch to "Only titles I allow" for the strictest setup. Allows stop at PG-13 movies and TV-14 shows; R, NC-17, TV-MA and unrated titles stay hidden.</p>
+          <p>Use an allow list or block list for individual movies and shows, or switch to &quot;Only titles I allow&quot; for the strictest setup. Allows stop at PG-13 movies and TV-14 shows; R, NC-17, TV-MA and unrated titles stay hidden.</p>
           <ul class="checks">
             <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Little kids, Kids and Teens levels, based on official ratings</li>
             <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Always allow or always block a title for finer control than its age rating</li>
@@ -148,8 +180,8 @@
               <li><div><strong>Saturday</strong><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
             </ul>
           </div>
-          <div class="tv"><div class="tv-screen"><div class="tv-dialog"><strong class="tv-dialog-title">Playback Error</strong><p>"alex" asked to stop your playback from this server: That's all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
-          <p class="tv-caption">Example of the message Plex shows when time runs out. Plex adds the server owner's name.</p>
+          <div class="tv"><div class="tv-screen"><div class="tv-dialog"><strong class="tv-dialog-title">Playback Error</strong><p>&quot;alex&quot; asked to stop your playback from this server: That&#x27;s all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
+          <p class="tv-caption">Example of the message Plex shows when time runs out. Plex adds the server owner&#x27;s name.</p>
         </div>
       </article>
 
@@ -186,7 +218,7 @@
         <div class="copy">
           <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>
           <h3>See what they watched</h3>
-          <p>A 7-day chart compares each day with the limit, and the watch history lists every show and the device it played on. Spot something you don't like? Block it right from the list.</p>
+          <p>A 7-day chart compares each day with the limit, and the watch history lists every show and the device it played on. Spot something you don&#x27;t like? Block it right from the list.</p>
         </div>
         <div class="stage" aria-hidden="true">
           <div class="panel">
@@ -234,8 +266,8 @@
       <ul class="grid">
         <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"/></svg></span><h3>Share the job</h3><p>Ask the server owner to add a co-parent or grandparent who can help manage a child.</p></li>
         <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg></span><h3>Siblings in one step</h3><p>Start a new child with a brother's or sister's rules, or copy rules across any time.</p></li>
-        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"/></svg></span><h3>Every screen</h3><p>Rules follow your child's Plex account on the TV, tablet, phone or browser.</p></li>
-        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span><h3>Safe by default</h3><p>Downloads stay off, and the free online movies and Live TV from Plex are switched off on kids' accounts.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"/></svg></span><h3>Every screen</h3><p>Rules follow your child&#x27;s Plex account on the TV, tablet, phone or browser.</p></li>
+        <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span><h3>Safe by default</h3><p>Downloads stay off, and the free online movies and Live TV from Plex are switched off on kids&#x27; accounts.</p></li>
         <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-history"/></svg></span><h3>Who changed what</h3><p>Every change is listed with who made it and when, so co-parents stay in sync.</p></li>
         <li><span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-inbox"/></svg></span><h3>Ask the server owner</h3><p>Get a new movie or show added, ask for more access, or suggest a feature.</p></li>
       </ul>
@@ -256,7 +288,7 @@
     <section class="section" aria-labelledby="who-title">
       <div class="head">
         <p class="kicker">Where to next</p>
-        <h2 id="who-title">Pick the page that fits you</h2>
+        <span class="anchor-alias" id="together-title" aria-hidden="true"></span><h2 id="who-title">Pick the page that fits you</h2>
       </div>
       <ul class="audiences">
         <li>
@@ -281,7 +313,7 @@
       <div class="cta center">
         <a class="btn btn-primary btn-lg" href="https://github.com/pughouselabs/kidswatch-for-plex">GitHub</a>
       </div>
-      <p class="license">MIT license. Needs your own Plex Media Server, with Plex Pass on the server owner's account.</p>
+      <p class="license">MIT license. Needs your own Plex Media Server, with Plex Pass on the server owner&#x27;s account.</p>
     </section>
   </main>
 
@@ -298,6 +330,7 @@
     <p>Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
     <p>This website counts visits with Cloudflare Web Analytics, which does not use cookies. The KidsWatch app itself has no analytics.</p>
   </footer>
+
 </div>
 </body>
 </html>

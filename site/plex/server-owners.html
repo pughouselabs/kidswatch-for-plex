@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-edition="plex">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>For Plex server owners | KidsWatch for Plex</title>
   <meta name="description" content="What KidsWatch for Plex does on your server, what you need (Plex Pass and Docker), how it works, privacy and security, setup, limitations and common questions.">
   <meta name="theme-color" content="#f7f4f0">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kidswatchtv.com/plex/server-owners">
   <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/owners.css">
   <script src="/copy.js" defer></script>
-  <script src="/owners.js" defer></script>
+  <script src="/previews.js" defer></script>
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="KidsWatch for Plex">
   <meta property="og:title" content="For Plex server owners | KidsWatch for Plex">
@@ -37,20 +37,22 @@
     <nav class="site-nav" aria-label="Main">
       <a href="/plex/server-owners" aria-current="page">For server owners</a>
       <a href="/plex/parents">For parents</a>
-      <a href="#install">Install</a>
+      <a href="/plex/server-owners#install">Install</a>
       <a href="/">Other editions</a>
       <a class="wide" href="https://github.com/pughouselabs/kidswatch-for-plex">GitHub</a>
     </nav>
   </header>
 
+
   <main id="main">
     <section class="hero owners-hero" aria-labelledby="page-title">
       <div class="owners-intro">
         <p class="kicker">For Plex server owners</p>
-        <h1 id="page-title">Your server. <br>Their kids. <br>Everyone in control.</h1>
-        <p class="lead">Give the families on your Plex server a place to manage their own kids' titles, screen time and bedtime. You approve every child. Parents handle the everyday rules.</p>
+        <span class="anchor-alias" id="owner-title" aria-hidden="true"></span><h1 id="page-title">Your server. <br>Their kids. <br>Everyone in control.</h1>
+        <p class="lead">Give the families on your Plex server a place to manage their own kids&#x27; titles, screen time and bedtime. You approve every child. Parents handle the everyday rules.</p>
         <div class="cta"><a class="btn btn-primary btn-lg" href="#install">Set up KidsWatch</a><a class="btn btn-lg" href="#how">See how it works</a></div>
         <p class="fine">Free, open source and self-hosted. Runs in Docker next to Plex, using its existing sharing and session controls.</p>
+        <aside class="runtime-note" data-runtime-limit="hero"><h2>Account and playback limits</h2><p>Rules follow the child&#x27;s own Plex account on your server. Videos stop at the next check, normally within 20 seconds. A parent&#x27;s account, other servers and other apps are outside those rules.</p><p><a href="/plex/server-owners#players">Read the playback limits and device results</a>.</p></aside>
       </div>
       <div class="admin-stage">
         <div class="demo-caption"><span class="demo-dot"></span>Admin preview <span>Example family</span></div>
@@ -73,8 +75,9 @@
             <div class="request-meta"><strong>Sarah</strong><span class="badge">Add a child</span><span class="muted">Today, 9:41 AM</span></div>
             <p class="request-message">Please approve Rowan's account.</p>
             <div class="request-child"><span class="avatar">R</span><div><strong>Rowan</strong><small>Parent: Sarah</small></div><span class="badge owner-waiting" data-child-status>Awaiting approval</span></div>
-            <div class="demo-actions"><button class="btn btn-primary" type="button" data-demo-approve hidden>Approve Rowan</button><span class="muted small" data-demo-hint>Every child needs your approval.</span></div>
+            <div class="demo-actions"><button class="btn btn-primary" type="button" data-demo-approve hidden>Approve Rowan</button><span class="muted small" data-demo-hint>This example child needs your approval.</span></div>
           </section>
+
           <section class="admin-panel" id="preview-kids" aria-labelledby="kids-heading">
             <h3 id="kids-heading">Kids</h3>
             <div class="request-child"><span class="avatar">R</span><div><strong>Rowan</strong><small>Parent: Sarah</small></div><span class="badge owner-waiting" data-child-status>Awaiting approval</span></div>
@@ -101,12 +104,13 @@
         <p class="demo-instruction" data-demo-instruction hidden>Try approving Rowan, then open Kids or Security.</p>
       </div>
     </section>
-    <section class="section" id="how" aria-labelledby="how-title">
+    <section class="section prose runtime-note" id="players" data-runtime-limit="players"><h2>Account and playback limits</h2><p>Rules follow the child&#x27;s own Plex account on your server. Videos stop at the next check, normally within 20 seconds. A parent&#x27;s account, other servers and other apps are outside those rules.</p><p>Test a real video stop before relying on limits. Downloads and Plex online content are switched off on child accounts; keep parent profiles protected.</p></section>
+    <span class="anchor-alias" id="workflow" aria-hidden="true"></span><section class="section" id="how" aria-labelledby="how-title">
       <div class="head"><p class="kicker">How it works</p><h2 id="how-title">A little setup. A lot less admin.</h2><p>Kids keep the normal Plex apps on their TV, tablet or phone. Nothing to install on their devices.</p></div>
       <ol class="owner-flow">
         <li><div class="flow-snippet" aria-hidden="true"><div class="person-row"><span class="avatar">S</span><strong>Sarah</strong><span class="demo-switch"></span></div><small>Can use the site</small></div><span class="flow-number">1</span><h3>Enable a parent</h3><p>Someone you already share with signs in with Plex, and you turn on their parent access.</p></li>
         <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>Rowan</strong><span class="badge owner-waiting">Awaiting approval</span></div><small>Plex account connected</small></div><span class="flow-number">2</span><h3>Approve their child</h3><p>The parent adds a child, connects their Plex account with a one-time link, and sends it to you for approval.</p></li>
-        <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>128 titles</strong><span class="badge owner-ok">Kids level</span></div><small>Downloads off · Online content off</small></div><span class="flow-number">3</span><h3>Share just their titles</h3><p>KidsWatch labels allowed titles, limits the child's share to those labels, and turns off and verifies downloads, free online movies and Live TV from Plex.</p></li>
+        <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>128 titles</strong><span class="badge owner-ok">Kids level</span></div><small>Downloads off · Online content off</small></div><span class="flow-number">3</span><h3>Share just their titles</h3><p>KidsWatch labels allowed titles, limits the child&#x27;s share to those labels, and turns off and verifies downloads, free online movies and Live TV from Plex.</p></li>
         <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>Time for a break</strong><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-history"/></svg></div><small>Screen-time check every 20 seconds</small></div><span class="flow-number">4</span><h3>Keep the rules running</h3><p>Every 20 seconds, KidsWatch checks playback and stops it with a message when time is up, watch hours end or a parent pauses.</p></li>
       </ol>
     </section>
@@ -125,7 +129,7 @@
       <p class="kicker">Before you install</p><h2 id="need-title">What you need</h2>
       <ul class="requirement-list">
         <li><strong>Your own Plex Media Server</strong> with movie or TV libraries you are allowed to share.</li>
-        <li><strong>Plex Pass on the server owner's account.</strong> KidsWatch relies on it to stop playing videos and to limit each child to their allowed titles.</li>
+        <li><strong>Plex Pass on the server owner&#x27;s account.</strong> KidsWatch relies on it to stop playing videos and to limit each child to their allowed titles.</li>
         <li><strong>Docker</strong> with Docker Compose v2, on a machine that can reach your Plex server.</li>
         <li><strong>A web address with HTTPS</strong> so parents can reach the site, for example through a reverse proxy like Caddy.</li>
         <li><strong>A private way to get sign-in codes on your phone.</strong> Your admin sign-in asks for a six-digit code. Home Assistant works well, or any private notification service that accepts a simple web request.</li>
@@ -144,7 +148,7 @@
         <p class="owner-security-note">It can change Plex shares. Treat it like an admin tool: use HTTPS, a machine you trust, and keep it up to date.</p>
       </section></div>
     <section class="section" id="install" aria-labelledby="install-title">
-      <div class="head"><p class="kicker">Choose your install path</p><h2 id="install-title">One small app next to Plex</h2><p>Both paths use Docker and your existing server. The repository is private while we get it ready; the GitHub source and README links will work once it is public.</p></div>
+      <div class="head"><p class="kicker">Choose your install path</p><h2 id="install-title">One small app next to Plex</h2><p>Both paths use Docker and your existing server. The public GitHub source and README cover installation, checks and cleanup.</p></div>
       <div class="owner-install-grid">      <article class="install-card prose" aria-labelledby="ai-title">
         <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg></span><p class="kicker">Option 1</p><h3 id="ai-title">Use your AI assistant</h3>
         <p>Already use an agent to look after your Plex server or home lab? Give it this prompt. It asks where to host KidsWatch, how parents will reach it, then shows a plan and waits for your OK.</p>
@@ -169,15 +173,15 @@ Before you start
 Install
 3. Fetch the official repository https://github.com/pughouselabs/kidswatch-for-plex and follow its README exactly. If my setup does not fit, tell me instead of improvising.
 4. Show me a plan (files, commands, anything outside the app folder) and wait for my OK.
-5. Create .env from .env.example and docker-compose.yml from docker-compose.example.yml with my answers. Find my movie and TV library keys with the README's read-only command.
-6. Start it with docker compose up -d --build and run the README's /healthz and /readyz checks. If /readyz fails, explain why using the README.
+5. Create .env from .env.example and docker-compose.yml from docker-compose.example.yml with my answers. Find my movie and TV library keys with the README&#x27;s read-only command.
+6. Start it with docker compose up -d --build and run the README&#x27;s /healthz and /readyz checks. If /readyz fails, explain why using the README.
 7. Set up HTTPS through my reverse proxy as the README describes. Keep port 8080 private.
 
 Safety rules
 - Never put my Plex token, Preferences.xml contents, the notification URL or any other secret in chat, logs, shell history or the repo. Read secrets from my existing password manager, or let me enter them on the machine.
 - Never expose the app to the internet without HTTPS. Keep PK_SECURE_COOKIES=1 and PK_OWNER_CODE=1.
 - Do not change existing Plex settings beyond what the README requires.
-- Back up files outside the app folder before editing them. Keep an undo note: what changed, where the backups are, and how to remove the app with the README's cleanup command.
+- Back up files outside the app folder before editing them. Keep an undo note: what changed, where the backups are, and how to remove the app with the README&#x27;s cleanup command.
 
 When you finish, report
 - The URL, the readiness result and the undo note.
@@ -187,34 +191,19 @@ When you finish, report
         <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-terminal"/></svg></span><p class="kicker">Option 2</p><h3 id="manual-title">Do it yourself</h3>
         <p>Comfortable with Docker? Download the source, point it at Plex, add private sign-in code delivery, and put it behind HTTPS.</p>
         <p>The <a href="https://github.com/pughouselabs/kidswatch-for-plex#quick-start-with-docker-compose">README</a> covers file permissions, troubleshooting and the full settings list.</p>
-        <details class="owner-disclosure manual-disclosure"><summary>Open the 9-step install guide</summary><div class="disclosure-body"><ol class="install-steps">
-        <li id="step-need">
-          <h3>Check what you need</h3>
-          <p>Make sure you have everything in <a href="#need">What you need</a>, then check that Docker works on the machine that will run KidsWatch:</p>
+        <details class="owner-disclosure manual-disclosure"><summary>Open the 9-step install guide</summary><div class="disclosure-body"><div data-platform-doc="install"><ol class="install-steps"><li id="step-need"><h3>Check what you need</h3><p>Make sure you have everything in <a href="#need">What you need</a>, then check that Docker works on the machine that will run KidsWatch:</p>
 <pre class="code"><code>docker version
 docker compose version</code></pre>
-          <p>If either says permission denied, put <code>sudo</code> in front of every Docker command on this page. Do not change the Docker socket's permissions to get around it.</p>
-        </li>
-
-        <li id="step-download">
-          <h3>Download it</h3>
-          <p>Get the source, copy the example files, and create the folders the app uses:</p>
+          <p>If either says permission denied, put <code>sudo</code> in front of every Docker command on this page. Do not change the Docker socket's permissions to get around it.</p></li>
+<li id="step-download"><h3>Download it</h3><p>Get the source, copy the example files, and create the folders the app uses:</p>
 <pre class="code"><code>git clone https://github.com/pughouselabs/kidswatch-for-plex.git
 cd kidswatch-for-plex
 cp docker-compose.example.yml docker-compose.yml
 cp .env.example .env
-sudo install -d -o 1000 -g 1000 -m 0700 data secrets</code></pre>
-        </li>
-
-        <li id="step-plex">
-          <h3>Point it at your Plex settings file</h3>
-          <p>In <code>docker-compose.yml</code>, replace <code>/path/to/plex/Preferences.xml</code> with your server's existing file. On Linux it is usually under <code>/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/</code>. For Plex in Docker, look in the folder mapped to Plex's <code>/config</code>.</p>
-          <p>The app runs as user 1000 and mounts the file read-only. Give user 1000 read access, but do not make the file readable by everyone, and never copy what is in it into <code>.env</code>.</p>
-        </li>
-
-        <li id="step-env">
-          <h3>Fill in your settings</h3>
-          <p>Edit <code>.env</code>. These are the settings most people change:</p>
+sudo install -d -o 1000 -g 1000 -m 0700 data secrets</code></pre></li>
+<li id="step-plex"><h3>Point it at your Plex settings file</h3><p>In <code>docker-compose.yml</code>, replace <code>/path/to/plex/Preferences.xml</code> with your server's existing file. On Linux it is usually under <code>/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/</code>. For Plex in Docker, look in the folder mapped to Plex's <code>/config</code>.</p>
+          <p>The app runs as user 1000 and mounts the file read-only. Give user 1000 read access, but do not make the file readable by everyone, and never copy what is in it into <code>.env</code>.</p></li>
+<li id="step-env"><h3>Fill in your settings</h3><p>Edit <code>.env</code>. These are the settings most people change:</p>
           <details class="owner-disclosure settings-disclosure"><summary>Settings reference</summary><div class="table-wrap">
             <table class="settings">
               <thead><tr><th scope="col">Setting</th><th scope="col">What to put</th></tr></thead>
@@ -230,34 +219,18 @@ sudo install -d -o 1000 -g 1000 -m 0700 data secrets</code></pre>
                 <tr><th scope="row"><code>PK_SECURE_COOKIES</code> and <code>PK_OWNER_CODE</code></th><td>Leave both at <code>1</code>.</td></tr>
               </tbody>
             </table>
-          </div></details>
-        </li>
-
-        <li id="step-codes">
-          <h3>Set up your sign-in codes</h3>
-          <p>Your admin sign-in needs a six-digit code sent to your phone, and sign-in stays blocked until delivery works. Make a private webhook, for example a Home Assistant automation that sends a phone notification, and save its full URL in your password manager. Then put that URL in <code>secrets/notification_url</code>, owned by user 1000 with mode <code>600</code>, without typing it into a command. The <a href="https://github.com/pughouselabs/kidswatch-for-plex#admin-code-delivery">README</a> has the Home Assistant recipe and a test command.</p>
-        </li>
-
-        <li id="step-start">
-          <h3>Start it and pick the kids' libraries</h3>
-<pre class="code"><code>docker compose config --quiet
+          </div></details></li>
+<li id="step-codes"><h3>Set up your sign-in codes</h3><p>Your admin sign-in needs a six-digit code sent to your phone, and sign-in stays blocked until delivery works. Make a private webhook, for example a Home Assistant automation that sends a phone notification, and save its full URL in your password manager. Then put that URL in <code>secrets/notification_url</code>, owned by user 1000 with mode <code>600</code>, without typing it into a command. The <a href="https://github.com/pughouselabs/kidswatch-for-plex#admin-code-delivery">README</a> has the Home Assistant recipe and a test command.</p></li>
+<li id="step-start"><h3>Start it and pick the kids&#x27; libraries</h3><pre class="code"><code>docker compose config --quiet
 docker compose up -d --build
 docker compose ps</code></pre>
           <p>Run the README's <a href="https://github.com/pughouselabs/kidswatch-for-plex#plex-preferences-and-library-keys">library listing command</a>. It prints each library's key, name and type without showing your token. Put the movie and TV keys in <code>PK_KID_SECTIONS</code>, then apply the change:</p>
 <pre class="code"><code>docker compose up -d --force-recreate kidswatch</code></pre>
-          <p class="muted small">After any <code>.env</code> change, use this command. A plain <code>docker compose restart</code> keeps the old settings.</p>
-        </li>
-
-        <li id="step-ready">
-          <h3>Check that it is ready</h3>
-<pre class="code"><code>curl --fail http://127.0.0.1:8080/healthz
+          <p class="muted small">After any <code>.env</code> change, use this command. A plain <code>docker compose restart</code> keeps the old settings.</p></li>
+<li id="step-ready"><h3>Check that it is ready</h3><pre class="code"><code>curl --fail http://127.0.0.1:8080/healthz
 curl --fail http://127.0.0.1:8080/readyz</code></pre>
-          <p>The second check passes only when Plex, your libraries and the time keeper are all working. Give a fresh install a few seconds. If it keeps failing, read the logs with <code>docker compose logs --tail=50 kidswatch</code>.</p>
-        </li>
-
-        <li id="step-https">
-          <h3>Put it behind HTTPS</h3>
-          <p>The app only listens on the Docker host itself, on port 8080. Keep it that way and let a reverse proxy serve your address. With Caddy installed on the same host, back up <code>/etc/caddy/Caddyfile</code> and add:</p>
+          <p>The second check passes only when Plex, your libraries and the time keeper are all working. Give a fresh install a few seconds. If it keeps failing, read the logs with <code>docker compose logs --tail=50 kidswatch</code>.</p></li>
+<li id="step-https"><h3>Put it behind HTTPS</h3><p>The app only listens on the Docker host itself, on port 8080. Keep it that way and let a reverse proxy serve your address. With Caddy installed on the same host, back up <code>/etc/caddy/Caddyfile</code> and add:</p>
 <pre class="code"><code>kids.example.com {
     reverse_proxy 127.0.0.1:8080 {
         header_up X-Forwarded-For {remote_host}
@@ -266,52 +239,43 @@ curl --fail http://127.0.0.1:8080/readyz</code></pre>
         header_up -CF-IPCountry
     }
 }</code></pre>
-          <p>Then run <code>sudo caddy validate --config /etc/caddy/Caddyfile</code> and <code>sudo systemctl reload caddy</code>. Caddy gets the certificate for you. Other proxies work too, as long as they replace the visitor address headers instead of passing them through. A proxy running in Docker should join a private network with the app and use <code>kidswatch:8080</code>.</p>
-        </li>
-
-        <li id="step-signin">
-          <h3>Sign in for the first time</h3>
-          <p>Open your HTTPS address and sign in with the Plex server owner's account, then enter the code sent to your phone. On the Admin page, turn on a parent. Connect and approve a test child, check what that child sees in Plex, and <strong>test that a real video stops</strong> before you rely on the limits.</p>
-        </li>
-      </ol></div></details>
+          <p>Then run <code>sudo caddy validate --config /etc/caddy/Caddyfile</code> and <code>sudo systemctl reload caddy</code>. Caddy gets the certificate for you. Other proxies work too, as long as they replace the visitor address headers instead of passing them through. A proxy running in Docker should join a private network with the app and use <code>kidswatch:8080</code>.</p></li>
+<li id="step-signin"><h3>Sign in for the first time</h3><p>Open your HTTPS address and sign in with the Plex server owner's account, then enter the code sent to your phone. On the Admin page, turn on a parent. Connect and approve a test child, check what that child sees in Plex, and <strong>test that a real video stops</strong> before you rely on the limits.</p></li>
+</ol></div></div></details>
       </article></div>
     </section>    <section class="section owner-reference" aria-labelledby="reference-title"><div class="head"><p class="kicker">Keep it running</p><h2 id="reference-title">The details, when you need them</h2></div><details class="owner-disclosure prose" id="update"><summary>Updating and removing</summary><div class="disclosure-body">
-      <h3>Updating</h3>
-      <p>Stop the app, back up its data and settings, keep the current image, then build the new version:</p>
+      <div data-platform-doc="lifecycle"><h3>Updating</h3><p>Stop the app, back up its data and settings, keep the current image, then build the new version:</p>
 <pre class="code"><code>docker compose stop
 sudo cp -a data "data-backup-$(date +%F)"
-cp .env .env.backup &amp;&amp; cp docker-compose.yml docker-compose.yml.backup
+cp .env .env.backup && cp docker-compose.yml docker-compose.yml.backup
 docker tag kidswatch:local kidswatch:previous
 git log -1 --oneline
 git pull
 docker compose up -d --build</code></pre>
-      <p>Write down the version that <code>git log</code> printed, and keep the backups as private as the live data. Then repeat the readiness checks, look at a child's titles, and test a real video stop. To roll back, stop the app, go back to the old version and image, and restore the matching data backup. An older version may not read data from a newer one, which is why the backup matters.</p>
-      <h3 id="remove">Removing</h3>
-      <p>Stopping the container does not remove the shares and labels KidsWatch made on your Plex server. Take a private backup first, then list what will be removed and remove it:</p>
+      <p>Write down the version that <code>git log</code> printed, and keep the backups as private as the live data. Then repeat the readiness checks, look at a child's titles, and test a real video stop. To roll back, stop the app, go back to the old version and image, and restore the matching data backup. An older version may not read data from a newer one, which is why the backup matters.</p><h3 id="remove">Removing</h3><p>Stopping the container does not remove the shares and labels KidsWatch made on your Plex server. Take a private backup first, then list what will be removed and remove it:</p>
 <pre class="code"><code>docker compose exec kidswatch python -m app.cleanup
 docker compose exec kidswatch python -m app.cleanup --apply
 docker compose down</code></pre>
-      <p>The first command only shows the list. The second removes each tracked child's share and labels. After that you can delete the app folder when you no longer need it.</p>
-    </div></details><details class="owner-disclosure prose" id="limits"><summary>Limitations to know before you start</summary><div class="disclosure-body">
+      <p>The first command only shows the list. The second removes each tracked child's share and labels. After that you can delete the app folder when you no longer need it.</p></div></div></details><details class="owner-disclosure prose" id="limits"><summary>Limitations to know before you start</summary><div class="disclosure-body">
       <p>KidsWatch does a few things well. It is honest to say what it does not do.</p>
       <ul>
         <li><strong>It is not a device lock.</strong> It stops videos on the next check, normally within 20 seconds. A child can press play again, and the next check stops that too. Music is not counted.</li>
-        <li><strong>Rules follow the child's own account.</strong> If a child watches on a parent's account, the rules do not apply. Put a PIN on parent profiles.</li>
+        <li><strong>Rules follow the child's own account.</strong> If a child watches on a parent&#x27;s account, the rules do not apply. Put a PIN on parent profiles.</li>
         <li><strong>It only covers your server.</strong> It does not filter anything played from other servers or other apps.</li>
         <li><strong>New titles take a little while.</strong> Allowed titles sync about every five minutes, and new titles can take up to 15 minutes or so to show up for kids.</li>
         <li><strong>Ratings come from your library.</strong> A title with a wrong rating still needs a parent to look at it.</li>
         <li><strong>Plex can change.</strong> It depends on the sharing and session features in Plex, which Plex can change at any time. Check your shares in Plex now and then.</li>
         <li><strong>One copy per database.</strong> Run a single container. It is not built to scale out.</li>
       </ul>
-    </div></details><details class="owner-disclosure prose" id="faq"><summary>Common questions</summary><div class="disclosure-body">
+    </div></details><span class="anchor-alias" id="questions" aria-hidden="true"></span><details class="owner-disclosure prose" id="faq"><summary>Common questions</summary><div class="disclosure-body">
       <div class="faq">
         <details>
           <summary>Does it cost anything?</summary>
-          <p>No. KidsWatch for Plex is free and open source under the MIT license. You do need Plex Pass on the server owner's account.</p>
+          <p>No. KidsWatch for Plex is free and open source under the MIT license. You do need Plex Pass on the server owner&#x27;s account.</p>
         </details>
         <details>
           <summary>Do the parents or kids need Plex Pass?</summary>
-          <p>No. Children do not need their own Plex Pass for KidsWatch's controls. The remote-playback rules from Plex may still apply to some devices or accounts.</p>
+          <p>No. Children do not need their own Plex Pass for KidsWatch&#x27;s controls. The remote-playback rules from Plex may still apply to some devices or accounts.</p>
         </details>
         <details>
           <summary>Can I use Plex Home managed profiles for the kids?</summary>
@@ -323,7 +287,7 @@ docker compose down</code></pre>
         </details>
         <details>
           <summary>Can kids get around it?</summary>
-          <p>Downloads are off and the free online movies and Live TV from Plex are switched off, so most easy ways around it are closed. The main gap is a parent's account: if a child watches on it, they see what the parent sees. Parents should keep their child's Plex password to themselves.</p>
+          <p>Downloads are off and the free online movies and Live TV from Plex are switched off, so most easy ways around it are closed. The main gap is a parent&#x27;s account: if a child watches on it, they see what the parent sees. Parents should keep their child&#x27;s Plex password to themselves.</p>
         </details>
         <details>
           <summary>What happens if KidsWatch is down?</summary>
@@ -348,13 +312,14 @@ docker compose down</code></pre>
       <a href="/">Other editions</a>
       <a href="/plex/server-owners">For server owners</a>
       <a href="/plex/parents">For parents</a>
-      <a href="#install">Install</a>
+      <a href="/plex/server-owners#install">Install</a>
       <a href="https://github.com/pughouselabs/kidswatch-for-plex">GitHub</a>
     </nav>
     <p>A Pughouse Labs project. Free and open source under the MIT license.</p>
     <p>Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
     <p>This website counts visits with Cloudflare Web Analytics, which does not use cookies. The KidsWatch app itself has no analytics.</p>
   </footer>
+
 </div>
 </body>
 </html>

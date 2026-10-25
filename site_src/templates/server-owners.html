@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-edition="{{slug}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="theme-color" content="{{theme.light.bg}}">
+  <meta name="robots" content="{{robots}}">
+  <link rel="canonical" href="https://kidswatchtv.com/{{slug}}/server-owners">
+  <link rel="icon" href="{{favicon}}" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/copy.js" defer></script>
+  <script src="/previews.js" defer></script>
+  <meta property="og:type" content="{{page.og_type}}">
+  <meta property="og:site_name" content="KidsWatch for {{platform}}">
+  <meta property="og:title" content="{{page.og_title}}">
+  <meta property="og:description" content="{{page.og_description}}">
+  <meta property="og:url" content="https://kidswatchtv.com/{{slug}}/server-owners">
+</head>
+<body class="owners-page">
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 4v3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M12 6.5h5M12 17.5h5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7m2-5v6l4 2"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m6 9 3 3-3 3m6 0h5"/></symbol>
+</svg>
+<a class="skip" href="#main">Skip to content</a>
+<div class="page">
+  {{header}}
+
+  <main id="main">
+    <section class="hero owners-hero" aria-labelledby="page-title">
+      <div class="owners-intro">
+        <p class="kicker">For {{platform}} server owners</p>
+        <span class="anchor-alias" id="owner-title" aria-hidden="true"></span><h1 id="page-title">Your server. <br>Their kids. <br>Everyone in control.</h1>
+        <p class="lead">{{facts.owner_lead}}</p>
+        <div class="cta"><a class="btn btn-primary btn-lg" href="#install">{{facts.setup_cta}}</a><a class="btn btn-lg" href="#how">See how it works</a></div>
+        <p class="fine">{{facts.owner_fine}}</p>
+        <aside class="runtime-note" data-runtime-limit="hero"><h2>{{facts.runtime_heading}}</h2><p>{{facts.runtime_summary}}</p><p><a href="/{{slug}}/server-owners#players">Read the playback limits and device results</a>.</p></aside>
+      </div>
+      <div class="admin-stage">
+        <div class="demo-caption"><span class="demo-dot"></span>Admin preview <span>Example family</span></div>
+        <div class="admin-demo" aria-label="Interactive Admin preview">
+          <div class="admin-heading"><div><h2>Admin</h2><p>Approve requests and choose who can use KidsWatch for {{platform}}.</p></div><span class="badge owner-ok">Checks running</span></div>
+          <div class="admin-stats">
+            <div class="stat"><strong data-stat="open">1</strong><span>Open requests</span></div>
+            <div class="stat"><strong data-stat="waiting">1</strong><span>Kids waiting</span></div>
+            <div class="stat"><strong data-stat="active">2</strong><span>Approved kids</span></div>
+            <div class="stat"><strong>1</strong><span>Watching now</span></div>
+          </div>
+          <div class="admin-tabs" role="tablist" aria-label="Preview Admin screens" hidden>
+            <button type="button" id="tab-requests" role="tab" aria-controls="preview-requests" aria-selected="true">Requests</button>
+            <button type="button" id="tab-kids" role="tab" aria-controls="preview-kids" aria-selected="false" tabindex="-1">Kids</button>
+            <button type="button" id="tab-parents" role="tab" aria-controls="preview-parents" aria-selected="false" tabindex="-1">Parents</button>
+            <button type="button" id="tab-security" role="tab" aria-controls="preview-security" aria-selected="false" tabindex="-1">Security</button>
+          </div>
+          <section class="admin-panel" id="preview-requests" aria-labelledby="requests-heading">
+            <h3 id="requests-heading">Open requests</h3>
+            <div class="request-meta"><strong>Sarah</strong><span class="badge">Add a child</span><span class="muted">Today, 9:41 AM</span></div>
+            <p class="request-message">Please approve Rowan's account.</p>
+            <div class="request-child"><span class="avatar">R</span><div><strong>Rowan</strong><small>Parent: Sarah</small></div><span class="badge owner-waiting" data-child-status>Awaiting approval</span></div>
+            <div class="demo-actions"><button class="btn btn-primary" type="button" data-demo-approve hidden>Approve Rowan</button><span class="muted small" data-demo-hint>This example child needs your approval.</span></div>
+          </section>
+
+          <section class="admin-panel" id="preview-kids" aria-labelledby="kids-heading">
+            <h3 id="kids-heading">Kids</h3>
+            <div class="request-child"><span class="avatar">R</span><div><strong>Rowan</strong><small>Parent: Sarah</small></div><span class="badge owner-waiting" data-child-status>Awaiting approval</span></div>
+            <div class="request-child"><span class="avatar avatar-blue">M</span><div><strong>Morgan</strong><small>47 min / 2 hr today</small></div><span class="badge owner-ok">Active</span></div>
+            <div class="request-child"><span class="avatar avatar-purple">J</span><div><strong>Jamie</strong><small>30 min / 1 hr today</small></div><span class="badge owner-ok">Active</span></div>
+          </section>
+          <section class="admin-panel" id="preview-parents" aria-labelledby="parents-heading">
+            <h3 id="parents-heading">Who can use this site</h3><p class="muted small">{{facts.parent_access}}</p>
+            <div class="people-head"><span>Person</span><span>Can use the site</span></div>
+            <div class="person-row"><span class="avatar">S</span><div><strong>Sarah</strong><small>Last signed in today</small></div><span class="demo-switch" role="img" aria-label="Parent access on"></span></div>
+            <div class="person-row"><span class="avatar avatar-blue">A</span><div><strong>Alex</strong><small>Never signed in</small></div><span class="demo-switch off" role="img" aria-label="Parent access off"></span></div>
+          </section>
+          <section class="admin-panel" id="preview-security" aria-labelledby="security-heading">
+            <h3 id="security-heading">Activity log</h3>
+            <ul class="admin-log">
+              <li data-approval-log hidden><strong>You</strong> approved a child<small>Rowan · Just now</small></li>
+              <li><strong>Sarah</strong> {{facts.connected_account}}<small>Rowan · Today, 9:41 AM</small></li>
+              <li><strong>You</strong> gave a parent site access<small>Sarah · Today, 9:35 AM</small></li>
+              <li><strong>KidsWatch for {{platform}}</strong> updated library access<small>Morgan · Today, 9:30 AM</small></li>
+            </ul>
+          </section>
+          <p class="demo-feedback" role="status" aria-live="polite" data-demo-status></p>
+        </div>
+        <p class="demo-instruction" data-demo-instruction hidden>Try approving Rowan, then open Kids or Security.</p>
+      </div>
+    </section>
+    <section class="section prose runtime-note" id="players" data-runtime-limit="players"><h2>{{facts.runtime_heading}}</h2><p>{{facts.runtime_summary}}</p><p>{{facts.runtime_devices}}</p></section>
+    <span class="anchor-alias" id="workflow" aria-hidden="true"></span><section class="section" id="how" aria-labelledby="how-title">
+      <div class="head"><p class="kicker">How it works</p><h2 id="how-title">A little setup. A lot less admin.</h2><p>{{facts.normal_apps}}</p></div>
+      <ol class="owner-flow">
+        <li><div class="flow-snippet" aria-hidden="true"><div class="person-row"><span class="avatar">S</span><strong>Sarah</strong><span class="demo-switch"></span></div><small>Can use the site</small></div><span class="flow-number">1</span><h3>Enable a parent</h3><p>{{facts.enable_parent}}</p></li>
+        <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>Rowan</strong><span class="badge owner-waiting">Awaiting approval</span></div><small>{{facts.child_connected}}</small></div><span class="flow-number">2</span><h3>Approve their child</h3><p>{{facts.approve_child}}</p></li>
+        <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>128 titles</strong><span class="badge owner-ok">Kids level</span></div><small>{{facts.restrictions_snippet}}</small></div><span class="flow-number">3</span><h3>{{facts.sharing_heading}}</h3><p>{{facts.sharing}}</p></li>
+        <li><div class="flow-snippet" aria-hidden="true"><div class="flow-line"><strong>Time for a break</strong><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-history"/></svg></div><small>Screen-time check every 20 seconds</small></div><span class="flow-number">4</span><h3>Keep the rules running</h3><p>{{facts.keeper}}</p></li>
+      </ol>
+    </section>
+    <details class="owner-disclosure prose feature-explainer" id="what"><summary>What can parents manage?</summary><div class="disclosure-body">
+      <p>{{facts.about}}</p>
+      <ul>
+        <li><strong>Titles by age.</strong> {{facts.owner_titles}}</li>
+        <li><strong>Screen time and watch hours.</strong> Daily minutes and watch hours for school days and weekends, with presets for the school year and summer.</li>
+        <li><strong>Pause and extra time.</strong> Parents can pause watching, add time for today, or push bedtime back. Extra time and later bedtimes reset the next day.</li>
+        <li><strong>Activity.</strong> {{facts.owner_activity}}</li>
+        <li><strong>You stay in charge.</strong> {{facts.owner_approval}}</li>
+      </ul>
+    </div></details>
+    <div class="owner-foundations section">
+    <section class="need-card prose" id="need" aria-labelledby="need-title">
+      <p class="kicker">Before you install</p><h2 id="need-title">What you need</h2>
+      <ul class="requirement-list">
+        <li><strong>Your own {{platform}} Media Server</strong> with movie or TV libraries you are allowed to share.</li>
+        <li><strong>{{facts.subscription_heading}}</strong> {{facts.subscription}}</li>
+        <li><strong>Docker</strong> with Docker Compose v2, on a machine that can reach your {{platform}} server.</li>
+        <li><strong>A web address with HTTPS</strong> so parents can reach the site, for example through a reverse proxy like Caddy.</li>
+        <li><strong>{{facts.notification_heading}}</strong> {{facts.notification_requirement}}</li>
+        <li><strong>{{facts.owner_child_heading}}</strong> {{facts.owner_child}}</li>
+      </ul>
+      <p>{{facts.optional_extras}}</p>
+    </section>
+      <section id="privacy" class="privacy-card" aria-labelledby="privacy-title">
+        <p class="kicker">Privacy and security</p><h2 id="privacy-title">Your hardware. Your families' data.</h2>
+        <ul class="privacy-points">
+          <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-server"/></svg><div><h3>No KidsWatch cloud</h3><p>{{facts.cloud}}</p></div></li>
+          <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg><div><h3>{{facts.settings_heading}}</h3><p>{{facts.settings}}</p></div></li>
+          <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"/></svg><div><h3>{{facts.storage_heading}}</h3><p>{{facts.private_storage}}</p></div></li>
+          <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg><div><h3>{{facts.admin_heading}}</h3><p>{{facts.admin_security}}</p></div></li>
+        </ul>
+        <p class="owner-security-note">{{facts.security_note}}</p>
+      </section></div>
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="head"><p class="kicker">Choose your install path</p><h2 id="install-title">One small app next to {{platform}}</h2><p>{{facts.install_intro}}</p></div>
+      <div class="owner-install-grid">      <article class="install-card prose" aria-labelledby="ai-title">
+        <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg></span><p class="kicker">Option 1</p><h3 id="ai-title">Use your AI assistant</h3>
+        <p>{{facts.agent_intro}}</p>
+        <p>{{facts.agent_safety}}</p>
+        <div class="install-action"><button class="btn btn-primary" type="button" data-copy-target="ai-prompt" data-copy-status="copy-status" data-copy-done="Prompt copied. Paste it into your AI assistant." aria-describedby="prompt-title" hidden>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg><span data-copy-label>Copy prompt</span>
+          </button></div>
+        <p class="prompt-status muted small" id="copy-status" role="status"></p>
+        <details class="owner-disclosure prompt-disclosure"><summary id="prompt-title">{{facts.install_prompt_label}}</summary><pre class="prompt-text" id="ai-prompt">{{facts.install_prompt}}</pre></details>
+        <p class="muted small">Works with any agent that can run commands on your server. Read the prompt first, and keep an eye on what the agent does.</p>
+      </article>      <article class="install-card prose" aria-labelledby="manual-title" id="manual">
+        <span class="feature-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-terminal"/></svg></span><p class="kicker">Option 2</p><h3 id="manual-title">{{facts.manual_title}}</h3>
+        <p>{{facts.manual_intro}}</p>
+        <p>The <a href="{{readme_url}}">{{readme_label}}</a> covers file permissions, troubleshooting and the full settings list.</p>
+        <details class="owner-disclosure manual-disclosure"><summary>{{facts.manual_summary}}</summary><div class="disclosure-body"><div data-platform-doc="install"><ol class="install-steps">{{manual_steps}}</ol></div></div></details>
+      </article></div>
+    </section>    <section class="section owner-reference" aria-labelledby="reference-title"><div class="head"><p class="kicker">Keep it running</p><h2 id="reference-title">The details, when you need them</h2></div><details class="owner-disclosure prose" id="update"><summary>Updating and removing</summary><div class="disclosure-body">
+      <div data-platform-doc="lifecycle"><h3>Updating</h3>{{facts.update_guide}}<h3 id="remove">Removing</h3>{{facts.remove_guide}}</div></div></details><details class="owner-disclosure prose" id="limits"><summary>Limitations to know before you start</summary><div class="disclosure-body">
+      <p>KidsWatch does a few things well. It is honest to say what it does not do.</p>
+      <ul>
+        <li><strong>It is not a device lock.</strong> {{facts.device_lock}}</li>
+        <li><strong>Rules follow the child's own account.</strong> {{facts.parent_profile_note}}</li>
+        <li><strong>It only covers your server.</strong> It does not filter anything played from other servers or other apps.</li>
+        <li><strong>New titles take a little while.</strong> {{facts.sync_delay}}</li>
+        <li><strong>Ratings come from your library.</strong> A title with a wrong rating still needs a parent to look at it.</li>
+        <li><strong>{{platform}} can change.</strong> {{facts.platform_changes}}</li>
+        <li><strong>One copy per database.</strong> Run a single container. It is not built to scale out.</li>
+      </ul>
+    </div></details><span class="anchor-alias" id="questions" aria-hidden="true"></span><details class="owner-disclosure prose" id="faq"><summary>Common questions</summary><div class="disclosure-body">
+      <div class="faq">
+        <details>
+          <summary>Does it cost anything?</summary>
+          <p>{{facts.cost}}</p>
+        </details>
+        <details>
+          <summary>{{facts.subscription_question}}</summary>
+          <p>{{facts.subscription_answer}}</p>
+        </details>
+        <details>
+          <summary>{{facts.child_question}}</summary>
+          <p>{{facts.child_answer}}</p>
+        </details>
+        <details>
+          <summary>Does it send any data to you?</summary>
+          <p>No. There is no telemetry and no outside service run by us. Everything is stored on your machine.</p>
+        </details>
+        <details>
+          <summary>Can kids get around it?</summary>
+          <p>{{facts.bypass_answer}}</p>
+        </details>
+        <details>
+          <summary>What happens if KidsWatch is down?</summary>
+          <p>{{facts.offline}}</p>
+        </details>
+        <details>
+          <summary>How do I remove it?</summary>
+          <p>{{facts.cleanup_label}} <a href="#remove">Removing</a>{{facts.remove_answer}}</p>
+        </details>
+      </div>
+    </div></details></section>
+    <section class="final" aria-labelledby="parents-title">
+      <h2 id="parents-title">Sending this to a parent?</h2>
+      <p>The parent guide explains what they get, what their kids will see, and what they need to do.</p>
+      <div class="cta center"><a class="btn btn-lg" href="/{{slug}}/parents">Read the parent guide</a></div>
+    </section>
+  </main>
+
+  {{footer}}
+</div>
+</body>
+</html>

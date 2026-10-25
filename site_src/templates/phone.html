@@ -1,0 +1,43 @@
+<figure class="pa-demo" aria-labelledby="demo-caption" data-parent-demo>
+        <div class="phone pa-phone">
+          <div class="phone-bar" aria-hidden="true"><span>9:41</span><i></i></div>
+          <p class="pa-app-name">KidsWatch <span>for {{platform}}</span></p>
+          <div class="kid"><span class="avatar" aria-hidden="true">R</span><div><strong>Rowan</strong><span>Kids level</span></div></div>
+          <div class="pa-tabs" aria-hidden="true"><span class="pa-active">Overview</span><span>Titles</span><span>Schedule</span></div>
+          <div class="card pa-today">
+            <div class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Today</div>
+            <div class="today-head"><span class="big">47 min</span><span class="of-limit" data-demo-limit>of 2 hr</span></div>
+            <progress class="meter" max="120" value="47" aria-label="Screen time used today" data-demo-meter></progress>
+            <p class="muted small" data-demo-hours>1 hr 13 min left · Ends 8:00 PM</p>
+            <div class="pa-status"><span class="badge live" data-demo-badge>Watching</span><span data-demo-state>Maple Club on the TV</span></div>
+            <div class="pa-quick">
+              <details class="pa-menu" data-demo-pause>
+                <summary class="btn btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-pause"/></svg>Pause<svg class="icon pa-down" aria-hidden="true"><use href="#i-down"/></svg></summary>
+                <div class="pa-menu-list">
+                  <button type="button" data-demo-action="pause:30" disabled>For 30 minutes</button>
+                  <button type="button" data-demo-action="pause:60" disabled>For 1 hour</button>
+                  <button type="button" data-demo-action="pause:tomorrow" disabled>Until tomorrow</button>
+                  <button type="button" data-demo-action="pause:manual" disabled>Until I resume</button>
+                </div>
+              </details>
+              <button class="btn btn-sm" type="button" data-demo-action="resume" data-demo-resume hidden>Resume</button>
+              <details class="pa-menu" data-demo-add>
+                <summary class="btn btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Add time<svg class="icon pa-down" aria-hidden="true"><use href="#i-down"/></svg></summary>
+                <div class="pa-menu-list">
+                  <button type="button" data-demo-action="bonus:15" disabled>15 minutes today</button>
+                  <button type="button" data-demo-action="bonus:30" disabled>30 minutes today</button>
+                  <button type="button" data-demo-action="bonus:60" disabled>1 hour today</button>
+                  <hr>
+                  <button type="button" data-demo-action="later:30" disabled>Bedtime 30 minutes later</button>
+                </div>
+              </details>
+            </div>
+          </div>
+          <div class="card pa-title-count"><strong class="num">128</strong><span class="muted small">titles Rowan can watch</span></div>
+        </div>
+        <figcaption id="demo-caption">Example family · <span data-demo-hint>Try Pause or Add time</span></figcaption>
+        <noscript><p class="muted small">Turn on JavaScript to try the preview controls.</p></noscript>
+        <div class="pa-feedback">
+          <div class="pa-toast" data-demo-toast hidden><span role="status" aria-live="polite" data-demo-notice></span><button type="button" data-demo-undo>Undo</button></div>
+        </div>
+      </figure>

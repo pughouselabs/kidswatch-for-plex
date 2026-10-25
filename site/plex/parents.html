@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-edition="plex">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>For parents | KidsWatch for Plex</title>
   <meta name="description" content="What KidsWatch for Plex gives parents, what your kids will see, what you need, and a ready-to-send message for your Plex server owner.">
   <meta name="theme-color" content="#f7f4f0">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kidswatchtv.com/plex/parents">
   <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/parents.css">
   <script src="/copy.js" defer></script>
-  <script src="/parents.js" defer></script>
+  <script src="/previews.js" defer></script>
   <script src="/titles-demo.js" defer></script>
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="KidsWatch for Plex">
@@ -43,14 +43,16 @@
     </nav>
   </header>
 
+
   <main id="main">
     <section class="hero pa-hero" aria-labelledby="page-title">
       <div>
         <p class="kicker">For parents</p>
-        <h1 id="page-title">Your kids' own Plex, with you in charge</h1>
-        <p class="lead">Watching on someone else's Plex server? Choose what your kids can watch, set screen time and bedtime, and pause it all from your phone.</p>
+        <span class="anchor-alias" id="parents-title" aria-hidden="true"></span><h1 id="page-title">Your kids' own Plex, with you in charge</h1>
+        <p class="lead">Watching on someone else&#x27;s Plex server? Choose what your kids can watch, set screen time and bedtime, and pause it all from your phone.</p>
         <div class="cta"><a class="btn btn-primary btn-lg" href="#share">Ask your server owner</a><a class="btn btn-lg" href="#get">Take a look around</a></div>
         <p class="fine">Your controls live in your phone's web browser. There is nothing to install. Your server owner sets up KidsWatch first.</p>
+        <aside class="runtime-note" data-runtime-limit="hero"><h2>Account and playback limits</h2><p>Rules follow the child&#x27;s own Plex account on your server. Videos stop at the next check, normally within 20 seconds. A parent&#x27;s account, other servers and other apps are outside those rules.</p><p><a href="/plex/server-owners#players">Read the playback limits and device results</a>.</p></aside>
       </div>
       <figure class="pa-demo" aria-labelledby="demo-caption" data-parent-demo>
         <div class="phone pa-phone">
@@ -95,7 +97,9 @@
           <div class="pa-toast" data-demo-toast hidden><span role="status" aria-live="polite" data-demo-notice></span><button type="button" data-demo-undo>Undo</button></div>
         </div>
       </figure>
+
     </section>
+
 
     <nav class="pa-jump" aria-label="On this page"><a href="#get">What you get</a><a href="#kids">What your kids see</a><a href="#need">What you need</a><a href="#share">Share with your server owner</a></nav>
 
@@ -103,7 +107,7 @@
       <div class="head"><p class="kicker">Less managing, more living</p><h2 id="get-title">What you get</h2><p>Make the everyday rules once. Change them when life happens.</p></div>
       <div class="pa-feature-grid">
         <article class="pa-feature">
-          <div class="pa-feature-copy"><span class="pa-number">01 / Titles</span><h3>A say in what they watch</h3><p>Pick an age level, then allow or block any movie or show. Grown-up titles never show up for kids.</p></div>
+          <div class="pa-feature-copy"><span class="anchor-alias" id="titles" aria-hidden="true"></span><span class="pa-number">01 / Titles</span><h3>A say in what they watch</h3><p>Pick an age level, then allow or block any movie or show. Grown-up titles never show up for kids.</p></div>
           <div class="pa-snippet">
             <div class="panel titles" data-level-demo>
               <div class="seg" aria-hidden="true"><span data-level="little">Little kids</span><span class="on" data-level="kids">Kids</span><span data-level="teens">Teens</span></div>
@@ -125,7 +129,7 @@
           </div>
         </article>
         <article class="pa-feature">
-          <div class="pa-feature-copy"><span class="pa-number">02 / Schedule</span><h3>Screen time that keeps itself</h3><p>Set daily minutes and watch hours for school days and weekends. Time only counts while a video is playing.</p></div>
+          <div class="pa-feature-copy"><span class="anchor-alias" id="routine" aria-hidden="true"></span><span class="pa-number">02 / Schedule</span><h3>Screen time that keeps itself</h3><p>Set daily minutes and watch hours for school days and weekends. Time only counts while a video is playing.</p></div>
           <div class="pa-snippet">
             <div class="panel pa-week">
               <div class="card-title">Next 7 days</div>
@@ -152,7 +156,7 @@
           </div>
         </article>
         <article class="pa-feature">
-          <div class="pa-feature-copy"><span class="pa-number">04 / Activity</span><h3>A clear picture</h3><p>See today's time at a glance, a 7-day chart, and every video that was stopped and why.</p></div>
+          <div class="pa-feature-copy"><span class="anchor-alias" id="activity" aria-hidden="true"></span><span class="pa-number">04 / Activity</span><h3>A clear picture</h3><p>See today&#x27;s time at a glance, a 7-day chart, and every video that was stopped and why.</p></div>
           <div class="pa-snippet">
             <div class="panel pa-activity">
               <div class="card-title">Last 7 days<span class="muted">Minutes</span></div>
@@ -178,8 +182,8 @@
     <section class="section" id="kids" aria-labelledby="kids-title">
       <div class="pa-kids-layout">
         <figure class="pa-tv-demo">
-          <div class="tv pa-tv"><div class="tv-screen"><div class="tv-dialog"><strong class="tv-dialog-title">Playback Error</strong><p>"alex" asked to stop your playback from this server: That's all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
-          <figcaption>Example of the message Plex shows when time runs out. Plex adds the server owner's name.</figcaption>
+          <div class="tv pa-tv"><div class="tv-screen"><div class="tv-dialog"><strong class="tv-dialog-title">Playback Error</strong><p>&quot;alex&quot; asked to stop your playback from this server: That&#x27;s all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
+          <figcaption>Example of the message Plex shows when time runs out. Plex adds the server owner&#x27;s name.</figcaption>
         </figure>
         <div class="pa-kids-copy"><p class="kicker">Their Plex, with your rules</p><h2 id="kids-title">What your kids see</h2>
           <ul class="pa-kid-points"><li><strong>The app they already know.</strong> The normal Plex app on their TV, tablet or phone, signed in to their own account.</li><li><strong>Just their movies and shows.</strong> Only the titles you allow appear. They do not see KidsWatch itself. To them, it is just their Plex.</li><li><strong>A clear stopping point.</strong> When time runs out, the video stops. If you pause watching, they see “A parent paused Plex” with the time it ends.</li></ul>
@@ -187,15 +191,16 @@
       </div>
     </section>
 
-    <section class="section" id="need" aria-labelledby="need-title">
+    <span class="anchor-alias" id="start" aria-hidden="true"></span><section class="section" id="need" aria-labelledby="need-title">
       <div class="pa-needs card"><div class="pa-needs-intro"><p class="kicker">A quick checklist</p><h2 id="need-title">What you need</h2><p>You bring the family.<br>Your server owner sets it up.</p></div>
         <ul class="pa-checklist">
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div><strong>Your own Plex account</strong><p>One that already watches from the server. You sign in to KidsWatch with it.</p></div></li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div><strong>A free Plex account for each child</strong><p>Use an email address you check and keep the password to yourself. A Plex Home profile alone will not work.</p></div></li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div><strong>A server owner willing to install it</strong><p>The person who runs the Plex server you watch from. They need Plex Pass and a little time to set it up.</p></div></li>
         </ul>
-        <aside class="pa-email-tip" aria-labelledby="email-tip-title"><h3 id="email-tip-title">Use your own email with a tag.</h3><p>Add <code>+&lt;kidname&gt;plex</code> right before the @ in your own email address. For example, <code>jane@gmail.com</code> becomes <code>jane+emmaplex@gmail.com</code>. Mail still lands in your inbox, so you keep control of your child's account and password.</p><p>If your email provider does not support this, use any address you check.</p></aside>
-        <div class="pa-good-to-know"><p><strong>Keep your account for you.</strong> Rules follow your child's own account. If they watch on your account, they see what you see, so put a PIN on your profile.</p><p><strong>Give it a moment.</strong> Videos stop at the next check, usually within a minute, not the very second time runs out.</p></div>
+        <div data-platform-doc="account"><aside class="pa-email-tip" aria-labelledby="email-tip-title"><h3 id="email-tip-title">Use your own email with a tag.</h3><p>Add <code>+&lt;kidname&gt;plex</code> right before the @ in your own email address. For example, <code>jane@gmail.com</code> becomes <code>jane+emmaplex@gmail.com</code>. Mail still lands in your inbox, so you keep control of your child's account and password.</p><p>If your email provider does not support this, use any address you check.</p></aside>
+</div>
+        <div class="pa-good-to-know"><p><strong>Keep your account for you.</strong> Rules follow your child&#x27;s own account. If they watch on your account, they see what you see, so put a PIN on your profile.</p><p><strong>Give it a moment.</strong> Videos stop at the next check, usually within a minute, not the very second time runs out.</p></div>
       </div>
     </section>
 
@@ -205,9 +210,9 @@
       <h2 id="share-title">Share this with your Plex server owner</h2>
       <p>Your server owner has to install KidsWatch before you can use it. Here is a short message you can send them. Select it, copy it, and paste it into a text or email.</p>
       <div class="pa-message-head"><strong>A ready-to-send message</strong><button class="btn btn-sm" type="button" data-copy-target="parent-message" data-copy-status="message-status" hidden><span data-copy-label>Copy message</span></button></div>
-      <pre class="message" id="parent-message">Hi! Could you take a look at KidsWatch for Plex? It's a free app you install next to your Plex server. It would let me give the kids their own Plex accounts, choose what they can watch, and set screen time myself, so you don't have to. You still approve each child.
+      <pre class="message" id="parent-message">Hi! Could you take a look at KidsWatch for Plex? It&#x27;s a free app you install next to your Plex server. It would let me give the kids their own Plex accounts, choose what they can watch, and set screen time myself, so you don&#x27;t have to. You still approve each child.
 
-It needs Plex Pass on your account and Docker. Here's the page for server owners:
+It needs Plex Pass on your account and Docker. Here&#x27;s the page for server owners:
 https://kidswatchtv.com/plex/server-owners
 
 Thanks!</pre>
@@ -238,6 +243,7 @@ Thanks!</pre>
     <p>Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
     <p>This website counts visits with Cloudflare Web Analytics, which does not use cookies. The KidsWatch app itself has no analytics.</p>
   </footer>
+
 </div>
 </body>
 </html>
