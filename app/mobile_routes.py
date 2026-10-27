@@ -52,6 +52,9 @@ class MobileBoundary:
         request=StarletteRequest(scope)
         headers=request.headers
         try:
+            length=headers.get('content-length')
+            if length is not None and (not re.fullmatch(r'[0-9]{1,12}',length) or int(length)>32768):
+                raise MobileError(413,'payload_too_large')
             if len(headers.getlist('authorization'))>1 or len(headers.getlist('content-type'))>1:
                 raise MobileError(400,'invalid_json')
             if api:
@@ -94,7 +97,9 @@ class MobileBoundary:
                         await error_response(MobileError(404 if status<500 else 503,'not_found' if status<500 else 'server_unavailable'))(scope,replay,send)
                         started=True
                         return
-                    extra=[(b'cache-control',b'no-store'),(b'vary',b'Authorization'),(b'referrer-policy',b'no-referrer')]
+                    if not api:
+                        message=dict(message,headers=[(k,v) for k,v in message.get('headers',[]) if k.lower()!=b'content-security-policy'])
+                    extra=([(b'content-security-policy',b"default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")] if not api else [])+[(b'cache-control',b'no-store'),(b'vary',b'Authorization'),(b'referrer-policy',b'no-referrer')]
                     removed=(b'cache-control',b'vary',b'referrer-policy',b'access-control-allow-origin')+( (b'set-cookie',) if api else ())
                     message=dict(message,headers=[(k,v) for k,v in message.get('headers',[]) if k.lower() not in removed]+extra)
                     started=True

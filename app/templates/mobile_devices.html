@@ -10,7 +10,7 @@
 <p>Last used <time datetime="{{ phone.last_seen_at }}">{{ phone.last_seen_at }}</time></p>
 <p>Expires <time datetime="{{ phone.expires_at }}">{{ phone.expires_at }}</time></p>
 {% if phone.revoked_at %}<p>Access revoked. This phone needs a new connection code.</p>{% else %}
-<form method="post" action="/mobile/devices/{{ phone.id }}/revoke" data-confirm="Revoke access for {{ phone.label }}? It will need a new connection code."><input type="hidden" name="csrf" value="{{ csrf }}"><button type="submit" class="btn">Revoke access<span class="visually-hidden"> for {{ phone.label }}</span></button></form>
+<form method="post" action="/mobile/devices/{{ phone.id }}/revoke" data-phone-revoke="Revoke access for {{ phone.label }}? It will need a new connection code."><input type="hidden" name="csrf" value="{{ csrf }}"><button type="submit" class="btn">Revoke access<span class="visually-hidden"> for {{ phone.label }}</span></button></form>
 {% endif %}
 </section>
 {% else %}<p>No connected phones yet.</p>{% endfor %}

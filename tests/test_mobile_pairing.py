@@ -154,3 +154,89 @@ def test_code_normalization_rejects_unicode_before_casefold():
     assert code_normalize('ABCD EFGH JKMS')=='ABCDEFGHJKMS'
     assert code_normalize('abcd-efgh-jkms')=='ABCDEFGHJKMS'
     assert code_normalize('ABCDEFGHJKMſ') is None
+
+
+def test_global_bruteforce_limit_cannot_be_rotated_by_client(core):
+    for i in range(60):
+        with pytest.raises(MobileError) as error:
+            core.redeem('bad',core.adapter.instance_id,'Phone','192.0.2.'+str(i))
+        assert error.value.status==400
+    # A full non-global table cannot erase or skip the reserved global bucket.
+    with pytest.raises(MobileError) as error:
+        MobileCore(Adapter(DB(core.db.path))).redeem('bad',core.adapter.instance_id,'Phone','198.51.100.1')
+    assert error.value.status==429
+    assert core.db.one("SELECT sum(hits) FROM mobile_rate_buckets WHERE scope='redeem-global'")[0]==60
+
+
+def test_new_issuance_revokes_old_and_issue_limit(core):
+    first=core.issue(None)
+    second=core.issue(None)
+    assert first['code']!=second['code']
+    with pytest.raises(MobileError) as error:
+        core.redeem(first['code'],core.adapter.instance_id,'Phone','192.0.2.1')
+    assert error.value.code=='pairing_unavailable'
+    core.issue(None)
+    with pytest.raises(MobileError) as error:
+        core.issue(None)
+    assert error.value.status==429
+
+
+def test_redemption_audit_failure_rolls_back_consumption(core,monkeypatch):
+    pairing=core.issue(None)
+    def broken(*args,**kwargs):
+        raise RuntimeError('fake audit failed')
+    monkeypatch.setattr(core.adapter,'audit',broken)
+    with pytest.raises(RuntimeError):
+        core.redeem(pairing['code'],core.adapter.instance_id,'Phone','192.0.2.1')
+    assert core.db.one('SELECT consumed_at FROM mobile_pairings')[0] is None
+    assert core.db.one('SELECT count(*) FROM mobile_devices')[0]==0
+
+
+def _process_redeem(path,code,ready,start,result):
+    candidate=MobileCore(Adapter(DB(path)))
+    ready.put(True)
+    start.wait(5)
+    try:
+        candidate.redeem(code,candidate.adapter.instance_id,'Phone','192.0.2.8')
+        result.put('accepted')
+    except MobileError as exc:
+        result.put(exc.code)
+
+
+def test_two_processes_one_device_and_audit(core):
+    import multiprocessing
+    context=multiprocessing.get_context('fork')
+    ready,start,result=context.Queue(),context.Event(),context.Queue()
+    pairing=core.issue(None)
+    workers=[context.Process(target=_process_redeem,args=(core.db.path,pairing['code'],ready,start,result)) for _ in range(2)]
+    try:
+        for worker in workers:
+            worker.start()
+        assert ready.get(timeout=5) and ready.get(timeout=5)
+        start.set()
+        assert sorted([result.get(timeout=5),result.get(timeout=5)])==['accepted','pairing_unavailable']
+        for worker in workers:
+            worker.join(5)
+            assert worker.exitcode==0
+    finally:
+        for worker in workers:
+            if worker.is_alive():
+                worker.terminate()
+                worker.join(5)
+    assert core.db.one('SELECT count(*) FROM mobile_devices')[0]==1
+    assert core.db.one("SELECT count(*) FROM audit WHERE action='phone_connected'")[0]==1
+
+
+def test_device_absolute_idle_subject_epoch_and_hash_only(core):
+    pairing=core.issue(None)
+    token,device=core.redeem(pairing['code'],core.adapter.instance_id,'Phone','192.0.2.1')
+    with core.transaction() as conn:
+        assert core.authenticate(conn,token)['id']==device['id']
+    core.db.x('UPDATE mobile_devices SET last_seen_at=last_seen_at-?',(14*86400+1,))
+    with pytest.raises(MobileError) as error, core.transaction() as conn:
+        core.authenticate(conn,token)
+    assert error.value.status==401
+    core.db.x('UPDATE mobile_devices SET last_seen_at=created_at,expires_at=0')
+    with pytest.raises(MobileError) as error, core.transaction() as conn:
+        core.authenticate(conn,token)
+    assert error.value.status==401

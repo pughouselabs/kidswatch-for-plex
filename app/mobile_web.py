@@ -70,8 +70,8 @@ def register_web(app,api,render):
         if not expected or not sent.isascii() or not secrets.compare_digest(sent,expected):
             raise MobileError(403,'csrf_failed')
 
-    def page(request,name,**context):
-        result=render(request,name,nav='phones',**context)
+    def page(request,name,status=200,**context):
+        result=render(request,name,status=status,nav='phones',**context)
         result.headers['Cache-Control']='no-store'
         result.headers['Referrer-Policy']='no-referrer'
         result.headers['Content-Security-Policy']="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
@@ -94,7 +94,7 @@ def register_web(app,api,render):
             output=io.BytesIO()
             segno.make(pairing['qr_text'],micro=False,error='m').save(output,kind='svg',scale=4,xmldecl=False)
             qr=Markup(output.getvalue().decode().replace('<svg ', '<svg role="img" aria-labelledby="qr-caption" ',1))
-            return page(request,'mobile_pairing.html',pairing=pairing,qr=qr)
+            return page(request,'mobile_pairing.html',status=201,pairing=pairing,qr=qr)
         except MobileError as exc:
             return error_response(exc)
 

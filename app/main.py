@@ -1587,6 +1587,8 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
     try:
         mobile_origin = canonical_origin(cfg.public_url)
     except ValueError:
+        if cfg.mobile_enabled:
+            raise ValueError('Mobile API requires a canonical root origin') from None
         mobile_origin = ''
     # Invalid legacy origins keep web behavior intact; mobile requires a canonical root origin.
     if mobile_origin:
@@ -1594,6 +1596,9 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
         app.state.mobile = mobile_api
         register_web(app, mobile_api, render)
         register_mobile(app, mobile_api)
+    else:
+        from .mobile_routes import MobileBoundary
+        app.add_middleware(MobileBoundary)
     return app
 
 

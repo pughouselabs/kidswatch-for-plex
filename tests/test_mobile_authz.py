@@ -41,7 +41,7 @@ def test_web_csrf_origin_and_fetch_metadata(mobile):
 def test_web_pairing_accessible_qr_and_no_stored_raw_code(mobile):
     web=browser(mobile)
     r=web.post('/mobile/pairings',data={'csrf':csrf(web)})
-    assert r.status_code==200,r.text
+    assert r.status_code==201,r.text
     assert '<svg role="img" aria-labelledby="qr-caption"' in r.text
     assert 'Connection code' in r.text and 'Server address' in r.text
     assert r.headers['referrer-policy']=='no-referrer'
@@ -158,3 +158,35 @@ def test_setup_completion_is_explicit_even_with_parent_row(mobile):
     assert r.status_code==409 and r.json()['error']['code']=='prerequisite_required'
     app.state.db.set_setting('setup.completed_at','2026-10-26T18:00:00Z')
     assert web.post('/mobile/pairings',data={'csrf':csrf(web)},headers={'Accept':'application/json'}).status_code==201
+
+
+def test_pairing_session_revocation_and_generic_errors(mobile):
+    app,_=mobile
+    web=browser(mobile)
+    pairing=web.post('/mobile/pairings',data={'csrf':csrf(web)},headers={'Accept':'application/json'}).json()
+    # Browser logout retires outstanding codes, while already paired phones remain separate.
+    web.post('/logout',data={'csrf':csrf(web)})
+    c=TestClient(app,base_url='https://testserver',headers=HEADERS)
+    body=dict(code=pairing['code'],instance_id=app.state.mobile.adapter.instance_id,device_label='Phone')
+    used=c.post('/api/mobile/v1/pairings/redeem',json=body)
+    wrong=c.post('/api/mobile/v1/pairings/redeem',json=body|{'code':'000000000000'})
+    other=c.post('/api/mobile/v1/pairings/redeem',json=body|{'instance_id':'other-instance'})
+    assert [r.status_code for r in (used,wrong,other)]==[400,400,400]
+    assert used.json()['error']==wrong.json()['error']==other.json()['error']
+
+
+def test_cookie_logout_does_not_revoke_existing_phone(mobile):
+    api,web,_=phone(mobile)
+    assert web.post('/logout',data={'csrf':csrf(web)}).status_code==303
+    assert api.get('/api/mobile/v1/session').status_code==200
+
+
+def test_waiting_identity_cannot_issue_and_owner_role_change_requires_repair(mobile):
+    app,fake=mobile
+    waiting=browser(mobile,'casey')
+    r=waiting.post('/mobile/pairings',data={'csrf':csrf(waiting,'/waiting')},headers={'Accept':'application/json'})
+    assert r.status_code==401
+    owner,_,_=phone(mobile,'owner')
+    fake.owner=lambda:ALEX
+    r=owner.get('/api/mobile/v1/session')
+    assert r.status_code==403 and r.json()['error']['code']=='access_removed'
