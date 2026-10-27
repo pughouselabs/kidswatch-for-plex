@@ -70,8 +70,9 @@ class MobileCore:
 
     def rate(self, limits):
         """Exact sliding windows using bounded per-attempt sub-buckets, never live eviction."""
-        now, denied = time.time(), False
+        denied = False
         with self.transaction() as conn:
+            now = time.time()
             conn.execute('DELETE FROM mobile_rate_buckets WHERE window_start<=?', (now - 3600,))
             for name, limit, window in limits:
                 scope = name.split(':')[0]
@@ -115,8 +116,10 @@ class MobileCore:
             raise MobileError(400, 'pairing_unavailable')
         digest = keyed(self.pair_key, 'code', normalized)
         self.adapter.refresh(True)
-        token, device_id, now = secrets.token_urlsafe(32), secrets.token_urlsafe(18), time.time()
+        token, device_id = secrets.token_urlsafe(32), secrets.token_urlsafe(18)
         with self.transaction() as conn:
+            # Both edition and SQLite locks may have waited past the code expiry.
+            now = time.time()
             row = conn.execute('SELECT * FROM mobile_pairings WHERE code_hmac=?', (digest,)).fetchone()
             if (not row or row['consumed_at'] is not None or row['revoked_at'] is not None or row['expires_at'] <= now or row['auth_epoch'] != self.adapter.epoch(conn)
                     or row['subject_epoch'] != self.subject_epoch(conn, row['subject_id'])
@@ -129,6 +132,7 @@ class MobileCore:
                 if exc.status == 503:
                     raise
                 raise MobileError(400, 'pairing_unavailable') from None
+            now = time.time()  # recheck immediately at conditional consume
             if conn.execute('UPDATE mobile_pairings SET consumed_at=?,device_id=? WHERE code_hmac=? AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at>?', (now,device_id,digest,now)).rowcount != 1:
                 raise MobileError(400, 'pairing_unavailable')
             idle, total = SESSION_LIMITS[row['issued_role']]

@@ -70,7 +70,7 @@ def test_atomic_two_worker_redemption(core):
 def test_expiry_revocation_replay_and_outage(core):
     pairing=core.issue(None)
     core.adapter.down=True
-    with pytest.raises(MobileError,match='') as error:
+    with pytest.raises(MobileError) as error:
         core.redeem(pairing['code'],core.adapter.instance_id,'Phone','192.0.2.1')
     assert error.value.status == 503
     assert core.db.one('SELECT consumed_at FROM mobile_pairings')[0] is None
@@ -101,3 +101,45 @@ def test_json_rejects_nonfinite_duplicates_and_nonobject(raw):
 def test_origin_rejects_ambiguous_authority(url):
     with pytest.raises(ValueError):
         canonical_origin(url)
+
+
+def test_code_expires_while_waiting_for_sqlite_writer(core, monkeypatch):
+    import sqlite3
+    import threading
+    from contextlib import contextmanager
+    import app.mobile_core as module
+
+    clock = SimpleNamespace(now=1000.0)
+    monkeypatch.setattr(module, 'time', SimpleNamespace(time=lambda: clock.now))
+    pairing = core.issue(None)
+    assert core.db.one('SELECT expires_at FROM mobile_pairings')[0] == 1120
+    refreshed, continue_refresh, waiting_for_transaction = (threading.Event() for _ in range(3))
+    def refresh(write):
+        refreshed.set()
+        assert continue_refresh.wait(5)
+    core.adapter.refresh = refresh
+    @contextmanager
+    def locked():
+        if continue_refresh.is_set():
+            waiting_for_transaction.set()
+        yield
+    core.adapter.locked = locked
+    def redeem():
+        try:
+            core.redeem(pairing['code'],core.adapter.instance_id,'Phone','192.0.2.7')
+            return 'accepted'
+        except MobileError as exc:
+            return exc.code
+    with ThreadPoolExecutor(1) as pool:
+        future = pool.submit(redeem)
+        assert refreshed.wait(5)  # rate accounting finished before the competing writer
+        with sqlite3.connect(core.db.path) as writer:
+            writer.execute('BEGIN IMMEDIATE')
+            continue_refresh.set()
+            assert waiting_for_transaction.wait(5)
+            clock.now = 1121.0
+            writer.commit()
+        assert future.result(timeout=5) == 'pairing_unavailable'
+    assert core.db.one('SELECT count(*) FROM mobile_devices')[0] == 0
+    assert core.db.one("SELECT count(*) FROM audit WHERE action='phone_connected'")[0] == 0
+    assert core.db.one('SELECT consumed_at FROM mobile_pairings')[0] is None

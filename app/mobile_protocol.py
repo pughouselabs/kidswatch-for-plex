@@ -132,7 +132,7 @@ SCHEMAS = {
     'activity': {'id': str, 'at': str, 'child_id': str, 'kind': str, 'summary': str,
                  'actor_display': (str, type(None)), 'seconds': (int, type(None))},
     'request': {'id': str, 'revision': int, 'child_id': (str, type(None)), 'kind': str, 'message': str, 'status': str,
-                'owner_note': (str, type(None)), 'created_at': str, 'resolved_at': (str, type(None)), 'allowed_decisions': list},
+                'owner_note': (str, type(None)), 'created_at': (str, type(None)), 'resolved_at': (str, type(None)), 'allowed_decisions': list},
     'approval': {'id': str, 'revision': int, 'kind': str, 'subject_display': str, 'child_id': (str, type(None)),
                  'state': str, 'prerequisites': list, 'allowed_decisions': list},
     'invite': {'id': str, 'revision': int, 'intended_display': str, 'expires_at': str, 'state': str},
