@@ -176,10 +176,11 @@ class DB:
         c.execute("UPDATE kids SET status='draft' WHERE status IN ('requested','approved') AND plex_id IS NULL")
         c.execute("UPDATE kids SET status='active' WHERE status='invited'")
         # Additive onboarding migrations precede create_app's client_id creation.
-        from . import approvals, invitations, setup
+        from . import approvals, invitations, setup, mobile_plex
         setup.migrate(c)
         invitations.migrate(c)
         approvals.migrate(c)
+        mobile_plex.migrate(c)
         # plex_accepted for older rows is re-read from Plex by the keeper's periodic check.
 
     def _connect(self) -> sqlite3.Connection:

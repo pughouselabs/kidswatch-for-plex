@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import ipaddress
 import json
+import math
 import re
 from datetime import datetime, timezone
 from urllib.parse import urlsplit
@@ -55,7 +56,7 @@ def canonical_origin(value):
         u = urlsplit(value)
         if (u.scheme not in ('https', 'http') or not u.hostname or u.username is not None
                 or u.password is not None or u.path not in ('', '/') or u.query or u.fragment
-                or '%' in u.netloc or '\\' in value or any(c.isspace() for c in value)):
+                or any(ord(c) < 33 or ord(c) == 127 for c in value) or u.port == 0 or '%' in u.netloc or '\\' in value or any(c.isspace() for c in value)):
             raise ValueError()
         host = u.hostname.encode('idna').decode('ascii').lower()
         if ':' in host:
@@ -84,7 +85,12 @@ def strict_json(raw):
             result[k] = v
         return result
     try:
-        value = json.loads(raw.decode('utf-8'), object_pairs_hook=pairs,
+        def finite(value):
+            result = float(value)
+            if not math.isfinite(result):
+                raise ValueError()
+            return result
+        value = json.loads(raw.decode('utf-8'), object_pairs_hook=pairs, parse_float=finite,
                            parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
         if not isinstance(value, dict):
             raise ValueError()
