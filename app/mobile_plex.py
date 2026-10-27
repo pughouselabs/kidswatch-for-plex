@@ -466,7 +466,13 @@ class PlexAdapter:
             return items,'approval',None
         if path=='owner/invite-recipients':
             self.owner(actor)
-            return [dict(id=str(k),display_name=_display(v.title,v.username) or 'Parent') for k,v in sorted(prepared.get('recipients',{}).items())],'recipient',None
+            items=[]
+            for key,recipient in sorted(prepared.get('recipients',{}).items()):
+                prior=conn.execute("SELECT status FROM requests WHERE parent_id=? AND kind='access' ORDER BY id DESC LIMIT 1",(key,)).fetchone()
+                if prior and prior[0] not in ('open','cancelled'):
+                    continue
+                items.append(dict(id=str(key),display_name=_display(recipient.title,recipient.username) or 'Parent'))
+            return items,'recipient',None
         if path=='owner/invites':
             self.owner(actor)
             return [self.invite_wire(conn,row) for row in conn.execute('SELECT * FROM parent_invitations ORDER BY id DESC')],'invite',None
