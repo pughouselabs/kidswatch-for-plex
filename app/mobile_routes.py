@@ -30,13 +30,24 @@ def envelope(data=None,error=None,replayed=False):
     return {'error':error,'meta':meta} if error else {'data':data,'meta':meta}
 
 
+class MobileErrorResponse(JSONResponse):
+    """Identify errors authored by this protocol, independently of Content-Type.
+
+    The shared request state survives web middleware response wrapping. The
+    marker is server-only and never becomes a response header or cookie.
+    """
+    async def __call__(self,scope,receive,send):
+        scope.setdefault('state',{})['_kidswatch_mobile_error']=True
+        await super().__call__(scope,receive,send)
+
+
 def error_response(exc):
     error=dict(code=exc.code,message=MESSAGES.get(exc.code,'This request could not be completed.'),fields=exc.fields,
                retryable=exc.status in (429,503) or exc.code=='operation_in_progress')
     headers={'Cache-Control':'no-store','Vary':'Authorization'}
     if exc.retry:
         headers['Retry-After']=str(min(exc.retry,3600))
-    return JSONResponse(envelope(error=error),status_code=exc.status,headers=headers)
+    return MobileErrorResponse(envelope(error=error),status_code=exc.status,headers=headers)
 
 
 class MobileBoundary:
@@ -49,6 +60,7 @@ class MobileBoundary:
         if scope['type']!='http' or not (scope['path'].startswith('/api/mobile') or scope['path'].startswith('/mobile/')):
             return await self.app(scope,receive,send)
         api=scope['path'].startswith('/api/mobile')
+        state=scope.setdefault('state',{})
         request=StarletteRequest(scope)
         headers=request.headers
         try:
@@ -91,10 +103,9 @@ class MobileBoundary:
                 nonlocal started,replacing
                 if message['type']=='http.response.start':
                     status=message['status']
-                    content=dict(message.get('headers',[])).get(b'content-type',b'')
-                    if api and (300<=status<400 or (status>=400 and b'application/json' not in content)):
+                    if api and (300<=status<400 or (status>=400 and not state.get('_kidswatch_mobile_error'))):
                         replacing=True
-                        await error_response(MobileError(404 if status<500 else 503,'not_found' if status<500 else 'server_unavailable'))(scope,replay,send)
+                        await error_response(MobileError(404 if status<500 else 503,'not_found' if status<500 else 'server_unavailable',retry=30 if status>=500 else None))(scope,replay,send)
                         started=True
                         return
                     if not api:
