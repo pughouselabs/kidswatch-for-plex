@@ -1,6 +1,6 @@
 # Mobile API v1
 
-The mobile feature is off by default (`PK_MOBILE_ENABLED=0`). This implementation follows the Android v1 design, including the nullable legacy request date amendment. Web routes remain supported. No playback, push registration, arbitrary URL fetch, or credential export endpoint is provided.
+The mobile feature is off by default (`PK_MOBILE_ENABLED=0`). This implementation follows the Android v1 design, including the nullable legacy request date and request author/cancel amendments. Web routes remain supported. No playback, push registration, arbitrary URL fetch, or credential export endpoint is provided.
 
 The reusable modules are `app/mobile_protocol.py`, `app/mobile_core.py`, `app/mobile_routes.py`, `app/mobile_web.py`, and `app/static/mobile.js`. `app/mobile_plex.py` owns Plex authorization, domain serialization, and policy verification. The common code uses SQLite connections with named rows, adapter transactions, and current edition authorization. An adapter lock precedes remote refresh and SQLite locks; no SQLite transaction spans a network call. Adapter authorization and issuer hooks must perform local checks only inside transactions. The existing QR encoder is reused locally.
 
@@ -34,7 +34,7 @@ There is no token recovery or pairing secret replay. If a redemption response is
 
 Success: `{"data": ..., "meta":{"request_id":"...","server_time":"...Z","api_version":1}}`. Lists contain `{"items":[],"next_cursor":null}` inside data. Authenticated cursors bind subject, filter, and order and expire after 15 minutes. Each page rechecks scope. Response fields may be added without changing v1.
 
-The checked synthetic envelopes are in `tests/fixtures/mobile-v1.json`; `validate_wire` validates nested resources, types, dates, and enums. All examples are fictional. Schemas include Metadata, Session with capabilities, Child, ChildSettings, Schedule, Title, Activity, Request, Approval, Invite, Device, Mutation, Events, and errors. IDs remain strings, including Plex identifiers. Unknown historical request creation dates may be null; display **Date unavailable**. No media URLs or artwork enter title DTOs.
+The checked synthetic envelopes are in `tests/fixtures/mobile-v1.json`; `validate_wire` validates nested resources, types, dates, and enums. All examples are fictional. Schemas include Metadata, Session with capabilities, Child, ChildSettings, Schedule, Title, Activity, Request, Approval, Invite, Device, Mutation, Events, and errors. IDs remain strings, including Plex identifiers. Requests include safe nullable `submitter_display` and current per-resource `can_cancel`; never infer cancellation from ownership of a shared child. An owner reading another adult's request cannot cancel it. Unknown historical request creation dates may be null; display **Date unavailable**. No media URLs or artwork enter title DTOs.
 
 | Method | Path relative to `/api/mobile/v1` | Result |
 | --- | --- | --- |

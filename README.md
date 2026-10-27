@@ -11,6 +11,12 @@ optionally require approval for each child. Parents can ask for titles and help 
 
 Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.
 
+## Android companion connection
+
+The optional versioned mobile API and **Connect a phone / Connected phones** website pages are off by default (`PK_MOBILE_ENABLED=0`). Complete owner setup and use a valid root HTTPS address before enabling them in a reviewed installation. Phones connect with a private, two-minute, one-time code; media-server credentials stay on the server. The website remains supported on every phone, including iPhone.
+
+See the [Android connection guide and assistant install prompt](docs/android-install.md), [server rollout and undo](docs/mobile-install.md), and [mobile API contract](docs/mobile-api.md). The server update does not publish or install an Android APK. Foreground polling requires no push provider; saved policy is distinct from observed playback stop.
+
 ## Screenshots
 
 These screenshots use the local development server with fictional accounts and

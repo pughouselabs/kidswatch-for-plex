@@ -2,7 +2,7 @@
 
 Adapter: db._connect()->SQLite row connection; secret:bytes; origin,instance_id,
 edition:str; refresh(write:bool); authorize(conn,subject_id,issued_role,write);
-auth_epoch(conn)->str; issuer(request,conn,write)->subject_id/issued_role/issuer_session_hash/auth_epoch/
+epoch(conn)->str; issuer(request,conn,write)->subject_id/issued_role/issuer_session_hash/auth_epoch/
 display_name; valid_issuer(conn,pairing)->bool. All authorization hooks raise
 MobileError, use current ordered observations, and run again at intent commit.
 """
@@ -14,7 +14,7 @@ import hmac
 import json
 import secrets
 import time
-from contextlib import closing, contextmanager, nullcontext
+from contextlib import closing, contextmanager
 
 from .mobile_protocol import ALPHABET, MobileError, code_normalize, keyed, stamp
 from .security import SESSION_LIMITS

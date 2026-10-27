@@ -44,6 +44,9 @@ class FakePlex:
 
     machine_id = "machine"
 
+    def fresh_owner(self):
+        return self.owner()
+
     def owner(self):
         return OWNER
 

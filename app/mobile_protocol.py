@@ -105,7 +105,7 @@ def fields(body, required, optional=()):
 
 
 def string(value, field, maximum, minimum=1):
-    if not isinstance(value, str) or not minimum <= len(value) <= maximum or any(ord(c) < 32 for c in value):
+    if not isinstance(value, str) or not minimum <= len(value) <= maximum or any(ord(c) < 32 and not (field in ('message','note') and c in '\r\n\t') for c in value):
         raise MobileError(422, 'invalid_fields', {field: 'Enter valid text.'})
     return value
 
@@ -131,7 +131,7 @@ SCHEMAS = {
               'choice': str, 'visible': bool, 'can_allow': bool, 'reason': str},
     'activity': {'id': str, 'at': str, 'child_id': str, 'kind': str, 'summary': str,
                  'actor_display': (str, type(None)), 'seconds': (int, type(None))},
-    'request': {'id': str, 'revision': int, 'child_id': (str, type(None)), 'kind': str, 'message': str, 'status': str,
+    'request': {'submitter_display': (str, type(None)), 'can_cancel': bool, 'id': str, 'revision': int, 'child_id': (str, type(None)), 'kind': str, 'message': str, 'status': str,
                 'owner_note': (str, type(None)), 'created_at': (str, type(None)), 'resolved_at': (str, type(None)), 'allowed_decisions': list},
     'approval': {'id': str, 'revision': int, 'kind': str, 'subject_display': str, 'child_id': (str, type(None)),
                  'state': str, 'prerequisites': list, 'allowed_decisions': list},

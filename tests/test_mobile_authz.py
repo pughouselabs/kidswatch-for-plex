@@ -87,6 +87,7 @@ def test_unshared_parent_outage_and_role_change(mobile):
     assert r.status_code==503 and 'DO_NOT_LEAK' not in r.text
     fake.shared_users=lambda:{ALEX.id:None,SAM.id:None}
     fake.owner=lambda:ALEX
+    app.state.db.x('UPDATE mobile_owner_state SET observed_at=0')
     assert api.get('/api/mobile/v1/session').status_code==403
 
 
@@ -188,5 +189,36 @@ def test_waiting_identity_cannot_issue_and_owner_role_change_requires_repair(mob
     assert r.status_code==401
     owner,_,_=phone(mobile,'owner')
     fake.owner=lambda:ALEX
+    app.state.db.x('UPDATE mobile_owner_state SET observed_at=0')
     r=owner.get('/api/mobile/v1/session')
     assert r.status_code==403 and r.json()['error']['code']=='access_removed'
+
+
+def test_request_submitter_display_and_per_resource_cancel(mobile):
+    api,_,_=phone(mobile)
+    owner,_,_=phone(mobile,'owner')
+    r=api.post('/api/mobile/v1/requests',json={'child_id':None,'kind':'other','message':'Fictional\nmultiline request'},headers={'Idempotency-Key':str(uuid.uuid4())})
+    assert r.status_code==201
+    own=r.json()['data']
+    assert own['submitter_display']=='Alex' and own['can_cancel'] is True
+    owner_view=next(x for x in owner.get('/api/mobile/v1/requests').json()['data']['items'] if x['id']==own['id'])
+    assert owner_view['submitter_display']=='Alex' and owner_view['can_cancel'] is False
+    owner_own=owner.post('/api/mobile/v1/requests',json={'child_id':None,'kind':'other','message':'Owner request'},headers={'Idempotency-Key':str(uuid.uuid4())})
+    assert owner_own.status_code==201 and owner_own.json()['data']['can_cancel'] is True
+    cancelled=save(api,'requests/'+own['id']+'/cancel',{},own['revision'])
+    assert cancelled.status_code==200 and cancelled.json()['data']['resource']['can_cancel'] is False
+
+
+def test_email_only_submitter_is_unknown_and_own_device_events_scoped(mobile):
+    api,_,_=phone(mobile)
+    b,_,_=phone(mobile,'sam')
+    app,_=mobile
+    app.state.db.x("UPDATE parents SET title='private@example.invalid',username='private@example.invalid' WHERE plex_id=101")
+    r=api.post('/api/mobile/v1/requests',json={'child_id':None,'kind':'other','message':'Test author privacy'},headers={'Idempotency-Key':str(uuid.uuid4())})
+    assert r.status_code==201 and r.json()['data']['submitter_display'] is None
+    assert 'private@example.invalid' not in r.text
+    assert 'private@example.invalid' not in api.get('/api/mobile/v1/session').text
+    events=api.get('/api/mobile/v1/events').json()['data']['items']
+    assert any(e['kind']=='access_changed' for e in events)
+    other_ids={r['id'] for r in b.get('/api/mobile/v1/devices').json()['data']['items']}
+    assert all(e['resource_id'] not in other_ids for e in events)

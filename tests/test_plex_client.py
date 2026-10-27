@@ -140,3 +140,46 @@ def test_accept_skips_plex_home_invites(tmp_path):
 
     assert client(tmp_path, handler).accept_invite_from_owner("kid-token") is True
     assert accepted == [{"friend": "0", "home": "0", "server": "1"}]
+
+
+def test_fresh_owner_bypasses_six_hour_cache_and_rotated_runtime_token(tmp_path):
+    import os
+    users=[]
+    def handler(request):
+        token=request.headers['X-Plex-Token']
+        users.append(token)
+        return httpx.Response(200,json={'id':1 if token=='T0K' else 2,'username':'owner','title':'Owner'})
+    p=client(tmp_path,handler)
+    assert p.owner().id==1
+    assert p.owner().id==1 and len(users)==1
+    prefs=tmp_path/'Preferences.xml'
+    old=prefs.stat().st_mtime
+    prefs.write_text('<Preferences PlexOnlineToken="NEW_FAKE_TOKEN" ProcessedMachineIdentifier="M1"/>')
+    os.utime(prefs,(old+10,old+10))
+    assert p.fresh_owner().id==2
+    assert p.owner().id==2
+    assert users==['T0K','NEW_FAKE_TOKEN']
+
+
+def test_slow_old_owner_read_cannot_replace_new_cache(tmp_path):
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+    old_started,release=threading.Event(),threading.Event()
+    hits=0
+    def handler(request):
+        nonlocal hits
+        hits+=1
+        which=hits
+        if which==1:
+            old_started.set()
+            assert release.wait(5)
+        return httpx.Response(200,json={'id':which,'username':'owner','title':'Owner'})
+    p=client(tmp_path,handler)
+    with ThreadPoolExecutor(2) as pool:
+        old=pool.submit(p.fresh_owner)
+        assert old_started.wait(5)
+        new=pool.submit(p.fresh_owner)
+        assert new.result(timeout=5).id==2
+        release.set()
+        assert old.result(timeout=5).id==2
+    assert p.owner().id==2

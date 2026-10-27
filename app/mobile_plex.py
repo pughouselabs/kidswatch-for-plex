@@ -17,8 +17,15 @@ from .security import SESSION_LIMITS
 from .setup import effective_kid_sections
 
 
+def _display(*values):
+    return next((v for v in values if isinstance(v,str) and v.strip() and '@' not in v),None)
+
+
 def migrate(conn):
     core_migrate(conn)
+    conn.execute("""CREATE TABLE IF NOT EXISTS mobile_owner_state(id INTEGER PRIMARY KEY CHECK(id=1),
+        observation INTEGER NOT NULL DEFAULT 0, observed_at REAL NOT NULL DEFAULT 0, subject_id TEXT, display_name TEXT)""")
+    conn.execute('INSERT OR IGNORE INTO mobile_owner_state(id) VALUES(1)')
     for table in ('kids', 'requests', 'parent_invitations'):
         if 'revision' not in {r[1] for r in conn.execute(f'PRAGMA table_info({table})')}:
             conn.execute(f'ALTER TABLE {table} ADD COLUMN revision INTEGER NOT NULL DEFAULT 1')
@@ -72,6 +79,9 @@ def migrate(conn):
         WHEN NEW.key='session_epoch' BEGIN
         UPDATE mobile_devices SET revoked_at=strftime('%s','now'),revision=revision+1 WHERE revoked_at IS NULL AND auth_epoch<>NEW.value;
         UPDATE mobile_pairings SET revoked_at=strftime('%s','now') WHERE auth_epoch<>NEW.value; END""")
+    conn.execute("""CREATE TRIGGER IF NOT EXISTS mobile_device_created AFTER INSERT ON mobile_devices
+        BEGIN INSERT INTO mobile_events(at,kind,resource_kind,resource_id,subject_id)
+        VALUES(strftime('%s','now'),'access_changed','device',NEW.id,NEW.subject_id); END""")
 
 
 class PlexAdapter:
@@ -86,7 +96,6 @@ class PlexAdapter:
         if not self.instance_id:
             self.db.x("INSERT OR IGNORE INTO settings(key,value) VALUES('mobile_instance_id',?)", (secrets.token_urlsafe(24),))
             self.instance_id = self.db.setting('mobile_instance_id')
-        self.owner_info = self.plex.owner()
 
     @staticmethod
     def locked():
@@ -98,13 +107,30 @@ class PlexAdapter:
         conn.execute('INSERT INTO audit(at,actor,action,detail) VALUES(?,?,?,?)', (stamp(),subject,action,json.dumps(detail)))
 
     def refresh(self, write):
+        owner=self.db.one('SELECT * FROM mobile_owner_state WHERE id=1')
+        if not owner['subject_id'] or time.time()-owner['observed_at']>30:
+            observed,started=self.db.next_shared_observation(),time.time()
+            try:
+                current=self.plex.fresh_owner()
+            except Exception:
+                if write or not owner['subject_id'] or time.time()-owner['observed_at']>SHARED_TRUST_MAX:
+                    raise MobileError(503,'authorization_unavailable',retry=30) from None
+            else:
+                # Late owner identity reads cannot overwrite a newer verified identity.
+                self.db.x('UPDATE mobile_owner_state SET observation=?,observed_at=?,subject_id=?,display_name=? WHERE id=1 AND observation<?',
+                          (observed,started,str(current.id),_display(current.title,current.username) or 'Owner',observed))
         snapshot = self.db.shared_snapshot()
         max_age = 30 if write else 600
         if snapshot['user_ids'] is None or time.time() - snapshot['observed_at'] > max_age:
             if not self.svc.refresh_shared() and (write or time.time() - snapshot['observed_at'] > SHARED_TRUST_MAX):
                 raise MobileError(503, 'authorization_unavailable', retry=30)
-        # Reading owner() uses the established verified runtime identity, never a caller ID.
-        self.owner_info = self.plex.owner()
+
+    @staticmethod
+    def owner_state(conn,write=False):
+        row=conn.execute('SELECT * FROM mobile_owner_state WHERE id=1').fetchone()
+        if not row['subject_id'] or time.time()-row['observed_at']>(30 if write else SHARED_TRUST_MAX):
+            raise MobileError(503,'authorization_unavailable',retry=30)
+        return row
 
     @staticmethod
     def epoch(conn):
@@ -112,18 +138,18 @@ class PlexAdapter:
         return row[0] if row else '1'
 
     def authorize(self, conn, subject, role, write):
-        owner = self.owner_info
+        owner = self.owner_state(conn,write)
         if role == 'owner':
-            if subject != str(owner.id):
+            if subject != owner['subject_id']:
                 raise MobileError(403, 'access_removed')
-            return owner.title or owner.username
-        if role != 'parent' or subject == str(owner.id):
+            return owner['display_name']
+        if role != 'parent' or subject == owner['subject_id']:
             raise MobileError(403, 'access_removed')
         row = conn.execute('SELECT * FROM parents WHERE CAST(plex_id AS TEXT)=?', (subject,)).fetchone()
         if not row or not row['enabled']:
             raise MobileError(403, 'access_removed')
         self.shared(conn, subject, write)
-        return row['title'] or row['username']
+        return _display(row['title'],row['username']) or 'Parent'
 
     @staticmethod
     def shared(conn, subject, write):
@@ -163,7 +189,7 @@ class PlexAdapter:
         if actor['issued_role'] != 'owner' and str(kid['parent_id']) != actor['subject_id'] and not conn.execute(
                 'SELECT 1 FROM kid_parents WHERE kid_id=? AND CAST(parent_id AS TEXT)=?', (kid['id'], actor['subject_id'])).fetchone():
             raise MobileError(404, 'not_found')
-        if kid['parent_id'] != self.owner_info.id:
+        if str(kid['parent_id']) != self.owner_state(conn,write)['subject_id']:
             parent = conn.execute('SELECT enabled FROM parents WHERE plex_id=?', (kid['parent_id'],)).fetchone()
             if not parent or not parent[0]:
                 raise MobileError(404, 'not_found')
@@ -230,10 +256,13 @@ class PlexAdapter:
         return dict(revision=kid['revision'],timezone=self.cfg.tz,**days,friday_weekend=bool(kid['friday_weekend']),
                     sunday_school=bool(kid['sunday_school']),break_until=kid['break_until'])
 
-    @staticmethod
-    def request_wire(row, actor):
+    def request_wire(self, row, actor, conn):
         decisions = ['approve','decline','done'] if actor['issued_role']=='owner' and row['status']=='open' and row['kind'] not in ('access','add_child') else []
-        return dict(id=str(row['id']),revision=row['revision'],child_id=str(row['kid_id']) if row['kid_id'] else None,
+        submitter=conn.execute('SELECT title,username FROM parents WHERE plex_id=?',(row['parent_id'],)).fetchone()
+        owner=self.owner_state(conn)
+        display=_display(submitter['title'],submitter['username']) if submitter else (owner['display_name'] if owner['subject_id']==str(row['parent_id']) else None)
+        cancellable=str(row['parent_id'])==actor['subject_id'] and row['status']=='open' and row['kind'] not in ('add_child','access')
+        return dict(submitter_display=display,can_cancel=cancellable,id=str(row['id']),revision=row['revision'],child_id=str(row['kid_id']) if row['kid_id'] else None,
                     kind=row['kind'],message=row['message'],status=row['status'],owner_note=row['owner_note'],
                     created_at=stamp(row['created_at']) if row['created_at'] else None,resolved_at=stamp(row['resolved_at']) if row['resolved_at'] else None,allowed_decisions=decisions)
 
@@ -253,7 +282,7 @@ class PlexAdapter:
     def invite_wire(self, conn, row):
         parent = conn.execute('SELECT title,username FROM parents WHERE plex_id=?', (row['intended_plex_id'],)).fetchone()
         state = 'claimed' if row['claimed_at'] else ('revoked' if row['revoked_at'] else ('expired' if row['expires_at']<=time.time() else 'open'))
-        return dict(id=str(row['id']),revision=row['revision'],intended_display=(parent['title'] or parent['username']) if parent else 'Parent',expires_at=stamp(row['expires_at']),state=state)
+        return dict(id=str(row['id']),revision=row['revision'],intended_display=(_display(parent['title'],parent['username']) or 'Parent') if parent else 'Parent',expires_at=stamp(row['expires_at']),state=state)
 
     def approval_wire(self, conn, actor, row):
         parent = conn.execute('SELECT title,username FROM parents WHERE plex_id=?',(row['parent_id'],)).fetchone()
@@ -264,7 +293,7 @@ class PlexAdapter:
             if not kid['plex_id'] or not kid['plex_accepted'] or self.svc.unsafe_share_pending(kid):
                 prereq=['Finish the child connection on the website.']
         else:
-            name=(parent['title'] or parent['username']) if parent else 'Parent'
+            name=(_display(parent['title'],parent['username']) or 'Parent') if parent else 'Parent'
             snap=conn.execute('SELECT * FROM sharing_state WHERE id=1').fetchone()
             if str(row['parent_id']) not in {str(n) for n in json.loads(snap['user_ids'] or '[]')}:
                 prereq=['Accept the Plex library invitation first.']
@@ -325,7 +354,7 @@ class PlexAdapter:
                 return self.settings_wire(conn,kid,prepared)
             return self.schedule_wire(kid)
         if kind=='request':
-            return self.request_wire(self.request_row(conn,actor,resource_id),actor)
+            return self.request_wire(self.request_row(conn,actor,resource_id),actor,conn)
         if kind=='approval':
             self.owner(actor)
             prefix, _, rid=resource_id.partition('_')
@@ -422,7 +451,7 @@ class PlexAdapter:
                     if exc.status==404:
                         continue
                     raise
-                rows.append(self.request_wire(row,actor))
+                rows.append(self.request_wire(row,actor,conn))
             return rows,'request',None
         if path=='owner/approvals':
             self.owner(actor)
@@ -437,7 +466,7 @@ class PlexAdapter:
             return items,'approval',None
         if path=='owner/invite-recipients':
             self.owner(actor)
-            return [dict(id=str(k),display_name=v.title or v.username) for k,v in sorted(prepared.get('recipients',{}).items())],'recipient',None
+            return [dict(id=str(k),display_name=_display(v.title,v.username) or 'Parent') for k,v in sorted(prepared.get('recipients',{}).items())],'recipient',None
         if path=='owner/invites':
             self.owner(actor)
             return [self.invite_wire(conn,row) for row in conn.execute('SELECT * FROM parent_invitations ORDER BY id DESC')],'invite',None
@@ -448,12 +477,6 @@ class PlexAdapter:
         parts=path.split('/')
         if len(parts)==3 and parts[0]=='children':
             kid=self.child(conn,actor,parts[1],True)
-            if kid['connection_claim']:
-                raise MobileError(409,'operation_in_progress',retry=2)
-            if self.svc.unsafe_share_pending(kid) or kid['status'] not in ('draft','active'):
-                raise MobileError(409,'prerequisite_required')
-            if parts[2]=='controls' and kid['status']!='active':
-                raise MobileError(422,'unsupported_action')
             return ('settings' if parts[2]=='settings' else ('schedule' if parts[2]=='schedule' else 'child')),parts[1],kid['revision']
         if len(parts)==3 and parts[0]=='requests':
             row=self.request_row(conn,actor,parts[1])
@@ -477,6 +500,12 @@ class PlexAdapter:
         data=None
         if parts[0]=='children':
             kid=self.child(conn,actor,parts[1],True)
+            if kid['connection_claim']:
+                raise MobileError(409,'operation_in_progress',retry=2)
+            if self.svc.unsafe_share_pending(kid) or kid['status'] not in ('draft','active'):
+                raise MobileError(409,'prerequisite_required')
+            if parts[2]=='controls' and kid['status']!='active':
+                raise MobileError(422,'unsupported_action')
             changes={}
             if parts[2]=='settings':
                 fields(body,(),('name','age_level','mode','library_ids'))
@@ -588,7 +617,7 @@ class PlexAdapter:
             elif parts[2]=='decision':
                 self.owner(actor)
                 fields(body,('decision','note'))
-                if body['decision'] not in self.request_wire(row,actor)['allowed_decisions']:
+                if body['decision'] not in self.request_wire(row,actor,conn)['allowed_decisions']:
                     raise MobileError(422,'unsupported_action')
                 status={'approve':'approved','decline':'declined','done':'done'}[body['decision']]
                 note=string(body['note'],'note',500,0) or None
@@ -626,7 +655,7 @@ class PlexAdapter:
             recipient=identifier(body['recipient_id'],'recipient_id')
             if type(body['expiry_days']) is not int or body['expiry_days'] not in (1,7,30):
                 raise MobileError(422,'invalid_fields')
-            if recipient not in {str(k) for k in prepared.get('recipients',{})}:
+            if recipient==self.owner_state(conn,True)['subject_id'] or recipient not in {str(k) for k in prepared.get('recipients',{})}:
                 raise MobileError(409,'prerequisite_required')
             try:
                 Invitations._eligible(conn,int(recipient))

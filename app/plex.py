@@ -124,6 +124,9 @@ class PlexClient:
         self._prefs: tuple[float, str, str] | None = None
         self._tautulli: tuple[float, str] | None = None
         self._label_lock = threading.Lock()
+        self._owner_lock = threading.Lock()
+        self._owner_next = 0
+        self._owner_published = 0
 
     # ---------- credentials, read in place ----------
     def _owner(self) -> tuple[str, str]:
@@ -215,9 +218,21 @@ class PlexClient:
                        title=d.get("title") or d.get("friendlyName") or "", email=d.get("email") or "",
                        thumb=d.get("thumb") or "")
 
+    def fresh_owner(self) -> Account:
+        """Read the runtime credential's current identity without the six-hour UI cache."""
+        with self._owner_lock:
+            self._owner_next += 1
+            observed = self._owner_next
+        account = self.account(self.owner_token())
+        with self._owner_lock:
+            if observed > self._owner_published:
+                self.cache.put("owner", account)
+                self._owner_published = observed
+            return self.cache.get("owner", float('inf')) or account
+
     def owner(self) -> Account:
         hit = self.cache.get("owner", 6 * 3600)
-        return hit or self.cache.put("owner", self.account(self.owner_token()))
+        return hit or self.fresh_owner()
 
     # ---------- sharing (owner token) ----------
     def section_ids(self) -> dict[str, int]:

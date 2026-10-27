@@ -36,8 +36,16 @@ def register_web(app,api,render):
                         conn.execute('UPDATE mobile_devices SET revoked_at=?,revision=revision+1 WHERE id=?',(time.time(),device_id))
                         api.core.audit(conn,issuer['subject_id'],'phone_revoked',device=device_id)
                 elif kind=='devices':
-                    rows=conn.execute('SELECT * FROM mobile_devices ORDER BY created_at DESC LIMIT 100').fetchall() if issuer['issued_role']=='owner' else conn.execute('SELECT * FROM mobile_devices WHERE subject_id=? ORDER BY created_at DESC LIMIT 100',(issuer['subject_id'],)).fetchall()
-                    phones=[api.core.device(r,None) for r in rows]
+                    query=dict(request.query_params)
+                    if set(query)-{'cursor'} or len(query)!=len(request.query_params.multi_items()):
+                        raise MobileError(422,'invalid_fields')
+                    start=api.core.decode_cursor(query['cursor'],issuer['subject_id'],'web-devices') if query.get('cursor') else 0
+                    if issuer['issued_role']=='owner':
+                        rows=conn.execute('SELECT * FROM mobile_devices ORDER BY created_at DESC,id LIMIT 101 OFFSET ?',(start,)).fetchall()
+                    else:
+                        rows=conn.execute('SELECT * FROM mobile_devices WHERE subject_id=? ORDER BY created_at DESC,id LIMIT 101 OFFSET ?',(issuer['subject_id'],start)).fetchall()
+                    phones=[api.core.device(r,None) for r in rows[:100]]
+                    next_cursor=api.core.cursor(issuer['subject_id'],'web-devices',start+100) if len(rows)>100 else None
                 elif kind=='status':
                     row=conn.execute('SELECT * FROM mobile_pairings WHERE subject_id=? ORDER BY created_at DESC LIMIT 1',(issuer['subject_id'],)).fetchone()
                     state='expired'
@@ -48,7 +56,7 @@ def register_web(app,api,render):
             if kind=='issue':
                 return api.core.issue(request)
             if kind=='devices':
-                return page(request,'mobile_devices.html',phones=phones)
+                return page(request,'mobile_devices.html',phones=phones,next_cursor=next_cursor)
             if kind=='status':
                 return JSONResponse(dict(state=state))
             if kind=='page':

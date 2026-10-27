@@ -155,3 +155,51 @@ def test_capped_bonus_returns_actual_result(mobile):
     app.state.db.update_kid(kid,bonus_day=app.state.svc.today(),bonus_minutes=590)
     r=save(api,f'children/{kid}/controls',{'action':'bonus','value':60,'expected_day':app.state.svc.today()},app.state.db.kid(kid)['revision'])
     assert r.status_code==200 and r.json()['data']['resource']['bonus_minutes']==600
+
+
+def test_pending_policy_uses_revision_before_busy_conflict(mobile):
+    api,_,_=phone(mobile)
+    app,fake=mobile
+    _,kid=active_mobile(app,fake)
+    rev=app.state.db.kid(kid)['revision']
+    app.state.mobile.perform_effect=lambda *_:None
+    first=save(api,f'children/{kid}/settings',{'name':'River Two'},rev,method='patch')
+    assert first.status_code==202
+    stale=save(api,f'children/{kid}/settings',{'name':'River Three'},rev,method='patch')
+    assert stale.status_code==412,stale.text
+    current=save(api,f'children/{kid}/settings',{'name':'River Three'},app.state.db.kid(kid)['revision'],method='patch')
+    assert current.status_code==409
+
+
+def test_ordered_owner_reads_and_no_upstream_during_sqlite_commit(mobile):
+    import threading
+    from .fakes import ALEX,OWNER
+    app,fake=mobile
+    adapter=app.state.mobile.adapter
+    old_started,release_old=threading.Event(),threading.Event()
+    calls=0
+    def owner_read():
+        nonlocal calls
+        calls+=1
+        if calls==1:
+            old_started.set()
+            assert release_old.wait(5)
+            return OWNER
+        return ALEX
+    fake.fresh_owner=owner_read
+    app.state.db.x('UPDATE mobile_owner_state SET observed_at=0')
+    # Prepublish shared state so this test isolates owner observation ordering.
+    app.state.svc.read_shared()
+    with ThreadPoolExecutor(2) as pool:
+        old=pool.submit(adapter.refresh,True)
+        assert old_started.wait(5)
+        latest=pool.submit(adapter.refresh,True)
+        latest.result(timeout=5)
+        release_old.set()
+        old.result(timeout=5)
+    row=app.state.db.one('SELECT * FROM mobile_owner_state')
+    assert row['subject_id']==str(ALEX.id)
+    # authorize must use the winning SQL snapshot, never Plex.owner() or network.
+    fake.owner=lambda:(_ for _ in ()).throw(AssertionError('network inside commit'))
+    with app.state.mobile.core.transaction() as conn:
+        assert adapter.authorize(conn,str(ALEX.id),'owner',True)=='Alex'

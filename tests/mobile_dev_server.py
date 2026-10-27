@@ -17,6 +17,8 @@ from fastapi.responses import RedirectResponse
 from app.config import Config
 from app.main import create_app
 from app.mobile_protocol import canonical_origin
+from app import rules
+from app.plex import Share
 from .fakes import ACCOUNTS, FakePlex
 
 
@@ -24,7 +26,8 @@ def create_fixture(origin='https://localhost:8792'):
     origin=canonical_origin(origin)
     if not origin.startswith('https://'):
         raise ValueError('The fake fixture requires HTTPS')
-    folder=tempfile.TemporaryDirectory(prefix='kidswatch-mobile-fake-')
+    ram=Path('/dev/shm')
+    folder=tempfile.TemporaryDirectory(prefix='kidswatch-mobile-fake-',dir=str(ram) if ram.is_dir() else None)
     cfg=Config(public_url=origin,plex_prefs='',plex_url='http://fake.invalid',tautulli_url='',tautulli_config='',
                db_path=str(Path(folder.name)/'fixture.db'),tz='America/Denver',ha_webhook_file='',poll_seconds=20,
                seed_parents=('alex','sam'),kid_sections=('1','2'),secure_cookies=True,owner_name='Owner',
@@ -47,6 +50,11 @@ def create_fixture(origin='https://localhost:8792'):
     assert app.state.svc.connect(kid,'tok-kid1')[0]
     app.state.svc.approve(kid,'owner')
     db.add_usage(kid,app.state.svc.today(),1500)
+    pending=db.x("INSERT INTO kids(parent_id,name,status,plex_id,plex_username,plex_accepted,age_level,sections,weekday_minutes,weekend_minutes,created_at,updated_at) VALUES(101,'Quinn','requested',202,'fake-child-two',1,'little','1,2',60,90,?,?)",(at,at))
+    filters=rules.build_filters(pending)
+    fake.share_map[202]=Share(702,202,'fake-child-two',False,['1','2'],filters['filterMovies'],filters['filterTelevision'],True)
+    db.x('INSERT INTO requests(parent_id,kid_id,kind,message,created_at) VALUES(101,?,?,?,?)',(pending,'add_child','Review this fictional child.',at))
+    db.x("INSERT INTO requests(parent_id,kind,message,created_at) VALUES(103,'access','A fictional parent requests access.',?)",(at,))
     db.x('INSERT INTO requests(parent_id,kind,message,created_at) VALUES(101,?,?,?)',('other','A fictional request for review.',at))
 
     @app.get('/dev/login')

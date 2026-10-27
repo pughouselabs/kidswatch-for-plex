@@ -210,7 +210,7 @@ class MobileAPI:
                 last=row['id']
                 visible=actor['issued_role']=='owner'
                 if not visible:
-                    if row['kind']=='request_changed':
+                    if row['kind'] in ('request_changed','access_changed'):
                         visible=row['subject_id']==actor['subject_id']
                     elif row['kind']=='child_changed':
                         try:
@@ -263,6 +263,8 @@ class MobileAPI:
             allowed_query.add('status')
         if path=='events':
             allowed_query={'after','limit'}
+        if path.endswith(('/settings','/schedule')):
+            allowed_query=set()
         if path in ('meta','session','pairings/redeem') or path.startswith('operations/') or (path.startswith('children/') and path.count('/')<2):
             allowed_query=set()
         if set(query)-allowed_query:
