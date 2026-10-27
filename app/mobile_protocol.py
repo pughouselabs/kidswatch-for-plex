@@ -41,7 +41,7 @@ def stamp(value=None):
 
 
 def code_normalize(value):
-    if not isinstance(value, str) or len(value) > 40:
+    if not isinstance(value, str) or not value.isascii() or len(value) > 40:
         return None
     value = value.replace(' ', '').replace('-', '').upper()
     return value if len(value) == 12 and all(c in ALPHABET for c in value) else None

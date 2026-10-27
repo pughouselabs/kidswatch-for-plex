@@ -30,6 +30,8 @@ class Config:
     media_request_url: str = ""
     trusted_proxies: tuple[Network, ...] = ()
     trust_cf_headers: bool = False
+    mobile_enabled: bool = False
+    mobile_lan_origin: str = ""
 
 
 def load() -> Config:
@@ -59,6 +61,8 @@ def load() -> Config:
         # Reverse proxies whose X-Forwarded-For is believed. Empty: use the direct connection's address.
         trusted_proxies=parse_networks(env("PK_TRUSTED_PROXIES", "")),
         trust_cf_headers=_switch("PK_TRUST_CF_HEADERS", False),
+        mobile_enabled=_switch("PK_MOBILE_ENABLED", False),
+        mobile_lan_origin=env("PK_MOBILE_LAN_ORIGIN", ""),
     )
 
 

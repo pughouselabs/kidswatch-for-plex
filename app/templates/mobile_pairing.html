@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Connect a phone · KidsWatch for Plex{% endblock %}
+{% block body %}
+<h1>Connect a phone</h1>
+<p>Open KidsWatch on your phone and choose Scan to connect.</p>
+{% if pairing %}
+<section class="card card-body" data-phone-pairing data-expires="{{ pairing.expires_at }}">
+  <figure>{{ qr }}<figcaption id="qr-caption">Scan this connection code with KidsWatch. You can also enter the server address and code below.</figcaption></figure>
+  <p><strong>Server address</strong> <span>{{ pairing.qr_text.split('/#')[0] }}</span></p>
+  <p><strong>Connection code</strong> <code class="phone-code">{{ pairing.code[:4] }} {{ pairing.code[4:8] }} {{ pairing.code[8:] }}</code></p>
+  <p role="status" data-phone-status>Expires in 120 seconds.</p>
+  <p>Keep this code private. It connects a phone as you.</p>
+  <form method="post" action="/mobile/pairings/cancel" data-phone-cancel><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn" type="submit">Cancel code</button></form>
+</section>
+{% endif %}
+<form method="post" action="/mobile/pairings"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn btn-primary" type="submit">{{ 'Create new code' if pairing else 'Create code' }}</button></form>
+<p><a href="/mobile/devices">Connected phones</a></p>
+{% endblock %}

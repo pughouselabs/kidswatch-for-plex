@@ -858,3 +858,7 @@ p, .hint, .desc, .meta, .step-text { text-wrap: pretty; }
 fieldset.sched-row { border: 0; padding: 0; margin: 0; min-width: 0; }
 [id^="kid-parents-"], [id^="request-"] { scroll-margin-top: 90px; }
 @media (forced-colors: active) { .tile .poster:focus-visible::after { border-color: Highlight; outline-color: Canvas; } }
+
+[data-phone-pairing] svg { display: block; max-width: 100%; height: auto; background: #fff; }
+[data-phone-pairing] figure { max-width: 22rem; margin: 0 0 1rem; }
+.phone-code { display: block; font-size: 1.6rem; letter-spacing: .08em; overflow-wrap: anywhere; }

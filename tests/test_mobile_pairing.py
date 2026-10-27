@@ -143,3 +143,10 @@ def test_code_expires_while_waiting_for_sqlite_writer(core, monkeypatch):
     assert core.db.one('SELECT count(*) FROM mobile_devices')[0] == 0
     assert core.db.one("SELECT count(*) FROM audit WHERE action='phone_connected'")[0] == 0
     assert core.db.one('SELECT consumed_at FROM mobile_pairings')[0] is None
+
+
+def test_code_normalization_rejects_unicode_before_casefold():
+    from app.mobile_protocol import code_normalize
+    assert code_normalize('ABCD EFGH JKMS')=='ABCDEFGHJKMS'
+    assert code_normalize('abcd-efgh-jkms')=='ABCDEFGHJKMS'
+    assert code_normalize('ABCDEFGHJKMſ') is None

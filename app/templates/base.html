@@ -27,6 +27,7 @@
       <a href="/home" {% if nav == 'home' %}aria-current="page"{% endif %}>{{ icon('users') }}My kids</a>
       <a href="/requests" {% if nav == 'requests' %}aria-current="page"{% endif %}>{{ icon('inbox') }}Requests{% if unread and nav != 'requests' %}<span class="count" title="New replies">{{ unread }}<span class="visually-hidden"> new replies</span></span>{% endif %}</a>
       {% if user.role == 'owner' %}<a href="/admin" {% if nav == 'admin' %}aria-current="page"{% endif %}>{{ icon('shield') }}Admin</a>{% endif %}
+      {% if mobile_enabled %}<a href="/mobile/pairings" {% if nav == 'phones' %}aria-current="page"{% endif %}>Connect a phone</a>{% endif %}
       <a href="/help" {% if nav == 'help' %}aria-current="page"{% endif %}>{{ icon('help') }}Help</a>
     </nav>
     {% endif %}

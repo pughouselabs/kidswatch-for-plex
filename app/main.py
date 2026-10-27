@@ -175,7 +175,7 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
             "style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["Referrer-Policy"] = "same-origin"
+        response.headers["Referrer-Policy"] = "no-referrer" if request.url.path.startswith("/mobile/") else "same-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         if cfg.secure_cookies:
             response.headers["Strict-Transport-Security"] = "max-age=31536000"
@@ -333,7 +333,7 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
                         "setup_notifications.html", "setup_ready.html") and user(request) and user(request)["role"] == "owner":
                 ctx["library_warning"] = library_policy_warning(conn, cfg.kid_sections)
         ctx.update(user=user(request), csrf=csrf_token(request), owner_name=cfg.owner_name,
-                   trusted_parents=trusted,
+                   trusted_parents=trusted, mobile_enabled=cfg.mobile_enabled,
                    flashes=request.session.pop("flash", []), rules=rules, STATUS_TEXT=STATUS_TEXT,
                    REQUEST_KINDS=REQUEST_KINDS, REQUEST_HINTS=REQUEST_HINTS, KIND_LABELS=KIND_LABELS,
                    media_request_url=cfg.media_request_url, media_request_host=media_request_host)
@@ -1582,6 +1582,20 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
                              lambda m: f'<span class="nowrap">{m.group(1)}</span>', str(escape(text))))
 
     templates.env.filters["ratings"] = ratings
+    from .mobile_protocol import canonical_origin
+    from .mobile_plex import PlexAdapter
+    from .mobile_routes import MobileAPI, register as register_mobile
+    from .mobile_web import register_web
+    try:
+        mobile_origin = canonical_origin(cfg.public_url)
+    except ValueError:
+        mobile_origin = ''
+    # Invalid legacy origins keep web behavior intact; mobile requires a canonical root origin.
+    if mobile_origin:
+        mobile_api = MobileAPI(PlexAdapter(app, cfg, mobile_origin), cfg.mobile_enabled, cfg.mobile_lan_origin)
+        app.state.mobile = mobile_api
+        register_web(app, mobile_api, render)
+        register_mobile(app, mobile_api)
     return app
 
 
