@@ -346,7 +346,7 @@ A blank value keeps the default, and anything else stops startup.
 | `PK_POLL_SECONDS` | `20` | Positive whole seconds between session checks. Longer intervals delay stops. |
 | `PK_SEED_PARENTS` | Empty | Comma-separated Plex usernames to enable at first sign-in, only if they already share your server. |
 | `PK_KID_SECTIONS` | `1,2` | Comma-separated movie/TV library keys children may use; check your own server. |
-| `PK_SECURE_COOKIES` | `1` | Require HTTPS for the session cookie and send HSTS. Disable only for an isolated local development preview. |
+| `PK_SECURE_COOKIES` | `1` | Require HTTPS for the session cookie and send HSTS. Keep `1` for HTTPS/public instances. Use `0` only for isolated development or a separately configured, explicitly selected direct HTTP LAN-only instance; browser cookies, codes, and bearer traffic are unencrypted, with no public/tunnel/proxy exposure. See the [LAN prerequisites](docs/android-install.md#make-the-server-reachable). |
 | `PK_OWNER_NAME` | `Admin` | Public display name of the server owner in help, requests, and approval messages. Does not choose the admin account. |
 | `PK_START_ENFORCER` | `1` | Run the time keeper and periodic share/title synchronization. Leave enabled in production. |
 | `PK_OWNER_CODE` | `1` | Require the admin's additional six-digit sign-in code. Missing code delivery blocks sign-in. |
