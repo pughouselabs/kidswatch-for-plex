@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from app.db import DB
-from app.mobile_core import MobileCore
+from app.mobile_core import MobileCore, migrate
 from app.mobile_protocol import MobileError, canonical_origin, strict_json
 
 
@@ -19,6 +19,10 @@ class Adapter:
 
     def __init__(self, db):
         self.db = db
+        from contextlib import closing
+        with closing(db._connect()) as conn, conn:
+            conn.execute('BEGIN IMMEDIATE')
+            migrate(conn)
         self.allowed = True
         self.down = False
 

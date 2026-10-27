@@ -32,7 +32,7 @@ def migrate(conn):
           created_at REAL NOT NULL, last_seen_at REAL NOT NULL, expires_at REAL NOT NULL, revoked_at REAL, revision INTEGER NOT NULL DEFAULT 1)''',
         '''CREATE TABLE IF NOT EXISTS mobile_rate_buckets(scope TEXT, key_hash TEXT, window_start REAL, hits INTEGER CHECK(hits>=0), PRIMARY KEY(scope,key_hash,window_start))''',
         '''CREATE TABLE IF NOT EXISTS mobile_revisions(kind TEXT, resource_id TEXT, revision INTEGER CHECK(revision>=1), PRIMARY KEY(kind,resource_id))''',
-        '''CREATE TABLE IF NOT EXISTS mobile_operations(id TEXT PRIMARY KEY, device_id TEXT NOT NULL, subject_id TEXT NOT NULL,
+        '''CREATE TABLE IF NOT EXISTS mobile_operations(id TEXT PRIMARY KEY, device_id TEXT NOT NULL REFERENCES mobile_devices(id), subject_id TEXT NOT NULL,
           kind TEXT NOT NULL, resource_id TEXT, result_revision INTEGER NOT NULL, state TEXT NOT NULL CHECK(state IN ('applied','pending','failed','unknown')), created_at REAL NOT NULL,
           effect TEXT, updated_at REAL, safe_error_code TEXT)''',
         '''CREATE TABLE IF NOT EXISTS mobile_idempotency(device_id TEXT NOT NULL, key TEXT NOT NULL,
@@ -144,6 +144,10 @@ class MobileCore:
 
     def authenticate(self, conn, token, write=False, touch=True):
         now = time.time()
+        conn.execute('DELETE FROM mobile_pairings WHERE expires_at<=?',(now,))
+        conn.execute('DELETE FROM mobile_events WHERE at<?',(now-7*86400,))
+        conn.execute('DELETE FROM mobile_idempotency WHERE tombstone_until<?',(now,))
+        conn.execute("DELETE FROM mobile_operations WHERE state IN ('applied','failed') AND created_at<? AND id NOT IN (SELECT operation_id FROM mobile_idempotency)",(now-8*86400,))
         if not isinstance(token, str) or len(token) != 43:
             raise MobileError(401, 'reconnect_required')
         row = conn.execute('SELECT * FROM mobile_devices WHERE token_hash=?', (hashlib.sha256(token.encode()).hexdigest(),)).fetchone()

@@ -69,5 +69,6 @@
   {% for f in flashes if f.kind != 'error' %}<div class="toast">{{ icon('check') }}<span>{{ f.text }}</span>{% if f.undo %}<form method="post" action="{{ f.undo.url }}" class="toast-undo"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ f.undo.back }}"><button class="toast-action" name="action" value="{{ f.undo.action }}">Undo</button></form>{% endif %}<button type="button" data-dismiss aria-label="Dismiss">{{ icon('x') }}</button></div>{% endfor %}
 </div>
 <script src="/static/app.js?v=43" defer></script>
+{% if mobile_enabled %}<script src="/static/mobile.js" defer></script>{% endif %}
 </body>
 </html>

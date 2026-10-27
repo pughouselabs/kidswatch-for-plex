@@ -341,3 +341,15 @@ class DB:
         fields["updated_at"] = now_iso()
         cols = ", ".join(f"{k}=?" for k in fields)
         self.x(f"UPDATE kids SET {cols} WHERE id=?", (*fields.values(), kid_id))
+
+    def increment_daily(self, kid_id, kind, day, extra, cap, conn=None):
+        """Serialize web/mobile additive controls without a stale read-modify-write."""
+        if kind not in ('bonus', 'later'):
+            raise ValueError('Invalid daily control')
+        sql=(f"UPDATE kids SET {kind}_day=?, {kind}_minutes=min(?, "
+             f"CASE WHEN {kind}_day=? THEN coalesce({kind}_minutes,0) ELSE 0 END + ?), updated_at=? WHERE id=?")
+        args=(day,cap,day,extra,now_iso(),kid_id)
+        if conn is not None:
+            conn.execute(sql,args)
+        else:
+            self.x(sql,args)

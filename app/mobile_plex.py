@@ -18,9 +18,7 @@ from .setup import effective_kid_sections
 
 
 def migrate(conn):
-    legacy = conn.execute("SELECT 1 FROM settings WHERE key='client_id'").fetchone()
     core_migrate(conn)
-    conn.execute("INSERT OR IGNORE INTO settings(key,value) VALUES('mobile.legacy_configured',?)",('1' if legacy else '0',))
     for table in ('kids', 'requests', 'parent_invitations'):
         if 'revision' not in {r[1] for r in conn.execute(f'PRAGMA table_info({table})')}:
             conn.execute(f'ALTER TABLE {table} ADD COLUMN revision INTEGER NOT NULL DEFAULT 1')
@@ -70,6 +68,10 @@ def migrate(conn):
     conn.execute("""CREATE TRIGGER IF NOT EXISTS mobile_device_event AFTER UPDATE OF revoked_at ON mobile_devices
         WHEN NEW.revoked_at IS NOT OLD.revoked_at BEGIN INSERT INTO mobile_events(at,kind,resource_kind,resource_id,subject_id)
         VALUES(strftime('%s','now'),'access_changed','device',NEW.id,NEW.subject_id); END""")
+    conn.execute("""CREATE TRIGGER IF NOT EXISTS mobile_epoch_insert AFTER INSERT ON settings
+        WHEN NEW.key='session_epoch' BEGIN
+        UPDATE mobile_devices SET revoked_at=strftime('%s','now'),revision=revision+1 WHERE revoked_at IS NULL AND auth_epoch<>NEW.value;
+        UPDATE mobile_pairings SET revoked_at=strftime('%s','now') WHERE auth_epoch<>NEW.value; END""")
 
 
 class PlexAdapter:
@@ -141,10 +143,8 @@ class PlexAdapter:
         pair = dict(subject_id=str(u.get('id')), issued_role=u['role'], issuer_session_hash=digest, auth_epoch=session.get('epoch'))
         if not self.valid_issuer(conn, pair):
             raise MobileError(401, 'reconnect_required')
-        if not conn.execute("SELECT 1 FROM settings WHERE key='setup.completed_at'").fetchone():
-            # Existing upgraded installs are already configured; new installs must finish setup.
-            if conn.execute("SELECT value FROM settings WHERE key='mobile.legacy_configured'").fetchone()[0]!='1':
-                raise MobileError(409, 'prerequisite_required')
+        if not conn.execute("SELECT 1 FROM settings WHERE key='setup.completed_at' AND value<>''").fetchone():
+            raise MobileError(409, 'prerequisite_required')
         pair['display_name'] = self.authorize(conn, pair['subject_id'], pair['issued_role'], write)
         return pair
 
@@ -287,6 +287,33 @@ class PlexAdapter:
         if path in ('owner/invites','owner/invite-recipients'):
             self.owner(actor)
             prepared['recipients']=Invitations(self.db,self.svc).recipients()
+        if path.startswith('operations/'):
+            op_id=path.split('/')[1]
+            with closing(self.db._connect()) as conn:
+                op=conn.execute('SELECT * FROM mobile_operations WHERE id=?',(op_id,)).fetchone()
+                if not op or (actor['issued_role']!='owner' and op['subject_id']!=actor['subject_id']):
+                    raise MobileError(404,'not_found')
+                if op['effect'] and op['state']!='applied':
+                    effect=json.loads(op['effect'])
+                    kid=self.child(conn,actor,effect['child_id'])
+                else:
+                    kid=None
+            if kid is not None:
+                verified=None
+                try:
+                    share=self.plex.shares(fresh=True).get(kid['plex_id']) if kid['plex_id'] else None
+                    if effect['action']=='decline':
+                        verified=share is None
+                    elif kid['status']=='active':
+                        verified=bool(share and self.svc.share_matches(share,self.svc.kid_sections(kid),rules.build_filters(kid['id'])))
+                        if verified:
+                            want=self.svc.visible_titles(kid)
+                            verified=all(self.plex.items_with_label(sec,rules.ok_label(kid['id']))==want.get(sec,set()) for sec in self.svc.library_sections())
+                    elif kid['status']=='draft':
+                        verified=True  # Local configuration has no active media share.
+                except Exception:
+                    verified=None
+                prepared['operation_readback']=dict(operation_id=op_id,child_id=str(kid['id']),child_revision=kid['revision'],verified=verified)
         return prepared
 
     def resource(self, conn, actor, kind, resource_id, prepared):
@@ -507,8 +534,7 @@ class PlexAdapter:
                         a,b=rules.window_for(rules.Schedule.from_row(kid),self.svc.now_local().date())
                         if a==b:
                             raise MobileError(422,'unsupported_action')
-                    current=kid[action+'_minutes'] if kid[action+'_day']==self.svc.today() else 0
-                    changes={action+'_day':self.svc.today(),action+'_minutes':min(current+value,600 if action=='bonus' else 180)}
+                    self.db.increment_daily(kid['id'],action,self.svc.today(),value,600 if action=='bonus' else 180,conn=conn)
                 else:
                     raise MobileError(422,'invalid_fields',{'value':'Choose a supported control and value.'})
             elif parts[2]=='titles':
@@ -624,12 +650,34 @@ class PlexAdapter:
                 conn.execute('UPDATE parent_invitations SET revoked_at=? WHERE id=?',(now_iso(),rid))
         else:
             raise MobileError(404,'not_found')
+        if effect:
+            effect_child=parts[1] if parts[0]=='children' else str(row['kid_id'])
+            effect_kid=conn.execute('SELECT revision FROM kids WHERE id=?',(effect_child,)).fetchone()
+            effect=json.dumps(dict(action=effect,child_id=effect_child,child_revision=effect_kid['revision']))
         resource=data or self.resource(conn,actor,kind,rid,prepared)
         revision=resource['revision']
         self.audit(conn,actor['subject_id'],'mobile_intent_saved',operation=operation_id,kind=kind,resource=rid)
         if path in ('requests','owner/invites'):
             return 201,resource,kind,rid,revision,effect
         return (202 if effect else 200),None,kind,rid,revision,effect
+
+    def reconcile_operation(self,conn,actor,row,prepared):
+        observed=prepared.get('operation_readback')
+        if not observed or row['state']=='applied' or observed['operation_id']!=row['id']:
+            return row
+        effect=json.loads(row['effect'])
+        kid=self.child(conn,actor,observed['child_id'])
+        # Compare readback against the exact committed configuration, never a newer edit.
+        if kid['revision']!=observed['child_revision'] or kid['revision']!=effect['child_revision']:
+            state='unknown'
+        elif observed['verified'] is True:
+            state='applied'
+        else:
+            state='unknown' if observed['verified'] is None else 'failed'
+        conn.execute('UPDATE mobile_operations SET state=?,updated_at=?,safe_error_code=? WHERE id=?',
+                     (state,time.time(),None if state=='applied' else 'server_unavailable',row['id']))
+        conn.execute('UPDATE kids SET connection_claim=NULL WHERE id=? AND connection_claim=?',(kid['id'],row['id']))
+        return conn.execute('SELECT * FROM mobile_operations WHERE id=?',(row['id'],)).fetchone()
 
     def effect(self, core, token, operation_id):
         """One attempt only. Interrupted/uncertain external effects are never blindly replayed."""
@@ -639,18 +687,15 @@ class PlexAdapter:
             op=conn.execute('SELECT * FROM mobile_operations WHERE id=?',(operation_id,)).fetchone()
             if not op or op['state']!='pending' or not op['effect']:
                 return
-            if op['kind']=='approval':
-                row=self.request_row(conn,actor,op['resource_id'].split('_',1)[1])
-                child_id=str(row['kid_id'])
-            else:
-                child_id=op['resource_id']
+            effect=json.loads(op['effect'])
+            child_id=effect['child_id']
             kid=self.child(conn,actor,child_id,True)
-            if kid['connection_claim']!=operation_id:
+            if kid['connection_claim']!=operation_id or kid['revision']!=effect['child_revision']:
                 return
             conn.execute("UPDATE mobile_operations SET state='unknown',updated_at=? WHERE id=?",(time.time(),operation_id))
         ok=False
         try:
-            if op['effect']=='decline':
+            if effect['action']=='decline':
                 self.svc._drop_share(kid)
                 with core.transaction() as conn:
                     core.authenticate(conn,token,True)
@@ -663,7 +708,7 @@ class PlexAdapter:
                 with core.transaction() as conn:
                     actor=core.authenticate(conn,token,True)
                     current=self.child(conn,actor,child_id,True)
-                    if current['connection_claim']!=operation_id:
+                    if current['connection_claim']!=operation_id or current['revision']!=effect['child_revision']:
                         raise MobileError(409,'operation_in_progress')
                 if ok:
                     ok=self.svc.sync_titles(int(child_id))
@@ -678,6 +723,9 @@ class PlexAdapter:
             ok=False
         finally:
             with core.transaction() as conn:
+                latest=conn.execute('SELECT revision FROM kids WHERE id=?',(child_id,)).fetchone()
+                if effect['action']!='decline' and (not latest or latest['revision']!=effect['child_revision']):
+                    ok=False
                 conn.execute('UPDATE kids SET connection_claim=NULL WHERE id=? AND connection_claim=?',(child_id,operation_id))
                 conn.execute('UPDATE mobile_operations SET state=?,updated_at=?,safe_error_code=? WHERE id=?',
                              ('applied' if ok else 'failed',time.time(),None if ok else 'server_unavailable',operation_id))

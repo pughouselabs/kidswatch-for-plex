@@ -1104,14 +1104,12 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
         elif action in ("bonus:15", "bonus:30", "bonus:60"):
             extra = int(action.split(":")[1])
             action, detail = "bonus", {"minutes": extra}
-            current = kid["bonus_minutes"] if kid["bonus_day"] == today else 0
-            db.update_kid(kid_id, bonus_day=today, bonus_minutes=min(current + extra, 600))
+            db.increment_daily(kid_id, "bonus", today, extra, 600)
             flash(request, f"Added {extra} minutes for today.")
         elif action in ("later:30", "later:60"):
             extra = int(action.split(":")[1])
             action, detail = "later", {"minutes": extra}
-            current = kid["later_minutes"] if kid["later_day"] == today else 0
-            db.update_kid(kid_id, later_day=today, later_minutes=min(current + extra, 180))
+            db.increment_daily(kid_id, "later", today, extra, 180)
             flash(request, f"Bedtime is {extra} minutes later tonight.")
         elif action == "dayoff":
             if rules.is_weekend(svc.now_local().date(), rules.Schedule.from_row(kid)):

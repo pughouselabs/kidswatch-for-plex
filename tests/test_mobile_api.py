@@ -18,6 +18,7 @@ def mobile(env):
     old,fake=env
     app=create_app(replace(old.state.svc.cfg,public_url='https://testserver',mobile_enabled=True),fake)
     app.state.svc.sync_inline=True
+    app.state.db.set_setting('setup.completed_at','2026-10-26T18:00:00Z')
     return app,fake
 
 

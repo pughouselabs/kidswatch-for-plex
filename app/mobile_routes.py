@@ -135,7 +135,7 @@ class MobileAPI:
         if 'application/json' not in request.headers.get('accept',''):
             raise MobileError(415,'json_required')
         if not re.fullmatch(r'android/[1-9][0-9]{0,8}',request.headers.get('x-kidswatch-client','')):
-            raise MobileError(426,'upgrade_required')
+            raise MobileError(426,'upgrade_required',{'api_versions':[1],'min_client_version_code':1})
 
     def perform_effect(self,token,op_id):
         try:
@@ -349,6 +349,7 @@ class MobileAPI:
         if data is None:
             resource=self.resource(conn,actor,kind,rid,prepared)
             data=dict(operation_id=op_id,resource_revision=revision,state=state,resource=resource)
+        validate_wire(kind if status==201 else 'mutation',data)
         response=JSONResponse(envelope(data),status_code=status,headers={'ETag':f'"r{revision}"'})
         response.mobile_effect=(token,op_id) if effect else None
         return response
