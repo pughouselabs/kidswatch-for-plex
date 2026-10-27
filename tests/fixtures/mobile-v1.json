@@ -1,0 +1,335 @@
+{
+  "meta": {
+    "data": {
+      "instance_id": "instance_demo",
+      "edition": "plex",
+      "api_versions": [
+        1
+      ],
+      "min_client_version_code": 1,
+      "pairing_enabled": true
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "session": {
+    "data": {
+      "subject": {
+        "id": "101",
+        "display_name": "Alex",
+        "role": "parent"
+      },
+      "device": {
+        "id": "phone_demo",
+        "label": "My phone",
+        "expires_at": "2026-11-25T18:00:00Z",
+        "idle_expires_at": "2026-11-09T18:00:00Z"
+      },
+      "edition": "plex",
+      "timezone": "America/Denver",
+      "today": "2026-10-26",
+      "capabilities": {
+        "controls": [
+          "pause",
+          "resume",
+          "bonus",
+          "later"
+        ],
+        "editable_settings": [
+          "name",
+          "age_level",
+          "mode",
+          "library_ids"
+        ],
+        "bonus_choices": [
+          15,
+          30,
+          60
+        ],
+        "later_choices": [
+          30,
+          60
+        ],
+        "bonus_cap": 600,
+        "later_cap": 180,
+        "request_kinds": [
+          "title",
+          "feature",
+          "more_access",
+          "problem",
+          "other"
+        ],
+        "request_message_max": 1000,
+        "request_cancel": true,
+        "invite_expiry_days": [
+          1,
+          7,
+          30
+        ],
+        "invite_recipient_mode": "accepted_share",
+        "notifications": "polling",
+        "web_only": [
+          "add_child",
+          "owner_setup",
+          "child_account_linking"
+        ]
+      },
+      "enforcement": {
+        "mode": "server_managed",
+        "notice": "Saved controls do not guarantee playback stopped."
+      }
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "child": {
+    "data": {
+      "id": "1",
+      "name": "River",
+      "status": "active",
+      "revision": 7,
+      "age_level": "kids",
+      "mode": "age",
+      "library_ids": [
+        "1",
+        "2"
+      ],
+      "today": {
+        "date": "2026-10-26",
+        "checked_at": null,
+        "used_seconds": 1500,
+        "limit_seconds": 3600,
+        "remaining_seconds": 2100
+      },
+      "state": "available",
+      "paused_until": null,
+      "bonus_minutes": 0,
+      "later_minutes": 0,
+      "sync": {
+        "state": "unknown",
+        "checked_at": null
+      },
+      "allowed_actions": [
+        "pause",
+        "resume",
+        "bonus",
+        "later"
+      ]
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "settings": {
+    "data": {
+      "revision": 7,
+      "name": "River",
+      "age_level": "kids",
+      "mode": "age",
+      "library_ids": [
+        "1",
+        "2"
+      ],
+      "library_choices": [
+        {
+          "id": "1",
+          "title": "Movies"
+        },
+        {
+          "id": "2",
+          "title": "Shows"
+        }
+      ]
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "schedule": {
+    "data": {
+      "revision": 7,
+      "timezone": "America/Denver",
+      "weekday": {
+        "minutes": 60,
+        "start": "07:00",
+        "end": "20:00",
+        "any_time": false
+      },
+      "weekend": {
+        "minutes": null,
+        "start": "00:00",
+        "end": "00:00",
+        "any_time": true
+      },
+      "friday_weekend": false,
+      "sunday_school": false,
+      "break_until": null
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "title": {
+    "data": {
+      "id": "11",
+      "title": "Cloud Garden",
+      "year": 2016,
+      "kind": "movie",
+      "rating": "PG",
+      "choice": "reset",
+      "visible": true,
+      "can_allow": true,
+      "reason": "Allowed by age level"
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "activity": {
+    "data": {
+      "id": "usage_demo",
+      "at": "2026-10-26T18:00:00Z",
+      "child_id": "1",
+      "kind": "usage",
+      "summary": "25 minutes used",
+      "actor_display": null,
+      "seconds": 1500
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "request": {
+    "data": {
+      "id": "1",
+      "revision": 1,
+      "child_id": "1",
+      "kind": "title",
+      "message": "Please add Cloud Garden.",
+      "status": "open",
+      "owner_note": null,
+      "created_at": "2026-10-26T18:00:00Z",
+      "resolved_at": null,
+      "allowed_decisions": []
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "approval": {
+    "data": {
+      "id": "parent_2",
+      "revision": 1,
+      "kind": "parent_access",
+      "subject_display": "Taylor",
+      "child_id": null,
+      "state": "open",
+      "prerequisites": [],
+      "allowed_decisions": [
+        "approve",
+        "decline"
+      ]
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "invite": {
+    "data": {
+      "id": "1",
+      "revision": 1,
+      "intended_display": "Taylor",
+      "expires_at": "2026-11-02T18:00:00Z",
+      "state": "open"
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "device": {
+    "data": {
+      "id": "phone_demo",
+      "revision": 1,
+      "label": "My phone",
+      "subject_display": "Alex",
+      "issued_role": "parent",
+      "created_at": "2026-10-26T18:00:00Z",
+      "last_seen_at": "2026-10-26T18:00:00Z",
+      "expires_at": "2026-11-25T18:00:00Z",
+      "revoked_at": null,
+      "is_current": true
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "mutation": {
+    "data": {
+      "operation_id": "op_demo",
+      "resource_revision": 8,
+      "state": "pending",
+      "resource": null
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "events": {
+    "data": {
+      "items": [
+        {
+          "id": "1",
+          "at": "2026-10-26T18:00:00Z",
+          "kind": "child_changed",
+          "resource_id": "1"
+        }
+      ],
+      "next_cursor": "cursor_demo",
+      "reset": false
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  },
+  "errors": {
+    "error": {
+      "code": "reconnect_required",
+      "message": "Reconnect this phone to continue.",
+      "fields": {},
+      "retryable": false
+    },
+    "meta": {
+      "request_id": "req_demo",
+      "server_time": "2026-10-26T18:00:00Z",
+      "api_version": 1
+    }
+  }
+}
