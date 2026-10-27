@@ -15,11 +15,7 @@ def main():
     root=Path(__file__).resolve().parents[1]
     module=os.environ.get('KIDSWATCH_PLAYWRIGHT_MODULE')
     if not module:
-        candidate=Path.home()/'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core'
-        if candidate.is_dir():
-            module=str(candidate)
-        else:
-            raise SystemExit('Set KIDSWATCH_PLAYWRIGHT_MODULE to the existing playwright-core installation.')
+        raise SystemExit('Set KIDSWATCH_PLAYWRIGHT_MODULE to the existing playwright-core installation.')
     with socket.socket() as sock:
         sock.bind(('127.0.0.1',0))
         port=sock.getsockname()[1]
