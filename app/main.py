@@ -29,6 +29,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from . import config as config_mod
 from . import approval_routes, invitation_routes, rules, setup_routes
+from .branding import OwnerArt, SLOTS, bundled_art
 from .email_tip import register_email_tip
 from .invitation_routes import safe_return
 from .db import DB, SHARED_TRUST_MAX, now_iso
@@ -138,6 +139,10 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
     enforcer.on_alert = lambda title, body: notifier.send(title, body, "/admin")
     templates = Jinja2Templates(directory=str(HERE / "templates"))
     register_email_tip(templates.env)
+    owner_art = OwnerArt(cfg.landing_art_dir)
+    # Keep the limits even for callers constructing Config directly.
+    app_name = cfg.app_name.strip()[:80]
+    footer_text = cfg.footer_text.strip()[:240]
     addr = ClientAddress(cfg.trusted_proxies, cfg.trust_cf_headers)
     sessions = Sessions(db)
     pins = Pending(ttl=2 * LINK_PIN_MAX_AGE)  # Plex PIN codes stay on the server, not in the cookie
@@ -333,6 +338,7 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
                         "setup_notifications.html", "setup_ready.html") and user(request) and user(request)["role"] == "owner":
                 ctx["library_warning"] = library_policy_warning(conn, cfg.kid_sections)
         ctx.update(user=user(request), csrf=csrf_token(request), owner_name=cfg.owner_name,
+                   app_name=app_name, footer_text=footer_text, owner_art=owner_art,
                    trusted_parents=trusted, mobile_enabled=cfg.mobile_enabled,
                    flashes=request.session.pop("flash", []), rules=rules, STATUS_TEXT=STATUS_TEXT,
                    REQUEST_KINDS=REQUEST_KINDS, REQUEST_HINTS=REQUEST_HINTS, KIND_LABELS=KIND_LABELS,
@@ -570,13 +576,22 @@ def create_app(cfg=None, plex: PlexClient | None = None) -> FastAPI:
     @app.get("/manifest.webmanifest")
     def manifest():
         return JSONResponse({
-            "name": "KidsWatch for Plex", "short_name": "KidsWatch", "start_url": "/", "scope": "/",
+            "name": app_name or "KidsWatch for Plex", "short_name": app_name or "KidsWatch", "start_url": "/", "scope": "/",
             "display": "standalone", "background_color": "#f7f4f0", "theme_color": "#ffffff",
             "icons": [{"src": "/static/icon-192.png?v=4", "sizes": "192x192", "type": "image/png"},
                       {"src": "/static/icon-512.png?v=4", "sizes": "512x512", "type": "image/png"},
                       {"src": "/static/icon-maskable-512.png?v=4", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
                       {"src": "/static/icon.svg?v=4", "sizes": "any", "type": "image/svg+xml"}],
         }, media_type="application/manifest+json")
+
+    @app.get("/owner-art/{slot}")
+    def owner_poster(slot: str):
+        if slot not in SLOTS:
+            raise HTTPException(404)
+        if slot not in owner_art.images:
+            return RedirectResponse(bundled_art(slot), status_code=307)
+        data, content_type = owner_art.images[slot]
+        return Response(data, media_type=content_type, headers={"Cache-Control": "public, max-age=3600"})
 
     @app.get("/", response_class=HTMLResponse)
     def index(request: Request):

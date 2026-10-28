@@ -61,12 +61,12 @@
         <div class="lp-seg"><span>Little kids</span><span class="on">Kids</span><span>Teens</span></div>
         <div class="lp-search">{{ icon('search') }}<span>Title, genre or rating</span></div>
         <ul class="lp-tiles">
-          <li class="on"><span class="lp-poster"><img src="/static/lp/maple-club.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">TV-Y7 · Show</span></li>
-          <li class="on"><span class="lp-poster"><img src="/static/lp/cloud-garden.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"><em class="badge new">New</em></span><span class="lp-tile-meta">PG · Movie</span></li>
-          <li class="on"><span class="lp-poster"><img src="/static/lp/paper-harbor.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Movie</span></li>
-          <li class="off"><span class="lp-poster"><img src="/static/lp/mountain-puzzle.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG-13 · Blocked</span></li>
-          <li class="on"><span class="lp-poster"><img src="/static/lp/pebble-trail.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">G · Movie</span></li>
-          <li class="on"><span class="lp-poster"><img src="/static/lp/winter-picnic.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Your pick</span></li>
+          <li class="on"><span class="lp-poster"><img src="{{ owner_art.url("maple-club") if owner_art else "/static/lp/maple-club.svg?v=1" }}" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">TV-Y7 · Show</span></li>
+          <li class="on"><span class="lp-poster"><img src="{{ owner_art.url("cloud-garden") if owner_art else "/static/lp/cloud-garden.svg?v=1" }}" alt="" width="150" height="225" loading="lazy" decoding="async"><em class="badge new">New</em></span><span class="lp-tile-meta">PG · Movie</span></li>
+          <li class="on"><span class="lp-poster"><img src="{{ owner_art.url("paper-harbor") if owner_art else "/static/lp/paper-harbor.svg?v=1" }}" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Movie</span></li>
+          <li class="off"><span class="lp-poster"><img src="{{ owner_art.url("mountain-puzzle") if owner_art else "/static/lp/mountain-puzzle.svg?v=1" }}" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG-13 · Blocked</span></li>
+          <li class="on"><span class="lp-poster"><img src="{{ owner_art.url("pebble-trail") if owner_art else "/static/lp/pebble-trail.svg?v=1" }}" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">G · Movie</span></li>
+          <li class="on"><span class="lp-poster"><img src="{{ owner_art.url("winter-picnic") if owner_art else "/static/lp/winter-picnic.svg?v=1" }}" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Your pick</span></li>
         </ul>
       </div>
     </div>
@@ -163,8 +163,8 @@
           <text class="axis today" x="312" y="140" text-anchor="middle">Today</text>
         </svg>
         <ul class="lp-history">
-          <li><img class="lp-thumb" src="/static/lp/maple-club.svg?v=1" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Maple Club: First Snow</strong><small>4:10 PM · 23 min · Living Room TV</small></div><span class="btn btn-sm">{{ icon('ban') }}Block</span></li>
-          <li><img class="lp-thumb" src="/static/lp/pebble-trail.svg?v=1" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Pebble Trail</strong><small>Sat · 1 hr 40 min · iPad</small></div><span class="btn btn-sm">{{ icon('ban') }}Block</span></li>
+          <li><img class="lp-thumb" src="{{ owner_art.url("maple-club") if owner_art else "/static/lp/maple-club.svg?v=1" }}" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>{{ owner_art.title("maple-club", "Maple Club: First Snow") if owner_art else "Maple Club: First Snow" }}</strong><small>4:10 PM · 23 min · Living Room TV</small></div><span class="btn btn-sm">{{ icon('ban') }}Block</span></li>
+          <li><img class="lp-thumb" src="{{ owner_art.url("pebble-trail") if owner_art else "/static/lp/pebble-trail.svg?v=1" }}" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>{{ owner_art.title("pebble-trail", "Pebble Trail") if owner_art else "Pebble Trail" }}</strong><small>Sat · 1 hr 40 min · iPad</small></div><span class="btn btn-sm">{{ icon('ban') }}Block</span></li>
         </ul>
       </div>
     </div>

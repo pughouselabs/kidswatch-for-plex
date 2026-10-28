@@ -32,6 +32,9 @@ class Config:
     trust_cf_headers: bool = False
     mobile_enabled: bool = False
     mobile_lan_origin: str = ""
+    app_name: str = ""
+    footer_text: str = ""
+    landing_art_dir: str = ""
 
 
 def load() -> Config:
@@ -63,6 +66,9 @@ def load() -> Config:
         trust_cf_headers=_switch("PK_TRUST_CF_HEADERS", False),
         mobile_enabled=_switch("PK_MOBILE_ENABLED", False),
         mobile_lan_origin=env("PK_MOBILE_LAN_ORIGIN", ""),
+        app_name=env("PK_APP_NAME", "").strip()[:80],
+        footer_text=env("PK_FOOTER_TEXT", "").strip()[:240],
+        landing_art_dir=env("PK_LANDING_ART_DIR", "").strip(),
     )
 
 

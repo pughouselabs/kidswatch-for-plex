@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<title>KidsWatch for Plex</title>
+<link rel="icon" href="/static/icon-favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=4">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-title" content="KidsWatch">
+<link rel="preload" href="/static/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/style.css?v=40">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#notifications" data-notification-link hidden>Skip to notifications</a>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.8c1.8.7 3 2.4 3.5 5.2"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 5v14l12-7z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.6-3 8.1-7 9.5-4-1.4-7-4.9-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h9M18 6h2M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15.5" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V7M17 16v-8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.4v.2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 7V4h4v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.4-3.6 4.4-5 8-5s6.6 1.4 8 5"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13l2.5-8h11L20 13v6H4z"/><path d="M4 13h5l1 2h4l1-2h5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5M12 17.4v.2"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5"/><path d="M12 8v4l3 2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></symbol>
+</svg>
+<header class="app-header">
+  <div class="bar">
+    <a class="brand" href="/"><img src="/static/icon.svg?v=4" alt="" width="30" height="30">KidsWatch for Plex</a>
+    
+    <div class="account">
+      
+        <a class="btn btn-quiet btn-sm" href="/help">Help</a><a class="btn btn-primary btn-sm" href="/login">Sign in</a>
+      
+    </div>
+  </div>
+</header>
+<main class="container " id="main" tabindex="-1">
+  
+  
+<link rel="stylesheet" href="/static/landing.css?v=4">
+
+<div class="lp">
+
+<section class="lp-hero">
+  <div class="lp-hero-text">
+    <p class="lp-eyebrow"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>Private to families on this Plex server</p>
+    <h1>Your kids’ own Plex, with you in charge</h1>
+    <p class="lead">Give each child their own Plex account. Choose what they watch, set screen time and bedtime, and pause it all from your phone.</p>
+    <div class="lp-cta">
+      <a class="btn btn-primary btn-lg" href="/login">Sign in with Plex</a>
+      <a class="btn btn-lg lp-ghost" href="#what">See what it does</a>
+    </div>
+    <p class="fine">Use the Plex account you already watch with. Only families that Admin shares this Plex server with can sign in.</p>
+  </div>
+
+  <div class="lp-hero-art" aria-hidden="true">
+    <div class="lp-phone">
+      <div class="lp-phone-bar"><span>9:41</span><i></i></div>
+      <div class="lp-kid"><span class="avatar c1">R</span><div><strong>Rowan</strong><span>Kids level</span></div></div>
+      <div class="lp-card">
+        <div class="lp-card-title"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>Today</div>
+        <div class="today-head"><span class="big">47 min</span><span class="of-limit">of 2 hr</span></div>
+        <progress class="meter" max="100" value="39"></progress>
+        <div class="muted small">1 hr 13 min left · Ends 8:00 PM</div>
+        <div class="lp-status"><span class="badge live">Watching</span><span>Maple Club on the TV</span></div>
+        <div class="lp-btns"><span class="btn btn-sm"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-pause"/></svg>Pause</span><span class="btn btn-sm"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>Add time</span></div>
+      </div>
+      <div class="lp-card lp-row">
+        <span class="lp-num">128</span><span class="muted small">titles Rowan can watch</span><span class="badge new">3 new</span>
+      </div>
+    </div>
+    <div class="lp-toast"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Rowan is paused until 6:30 PM.</span><b>Undo</b></div>
+  </div>
+</section>
+
+<section class="lp-section" id="what">
+  <div class="lp-head">
+    <p class="lp-kicker">What it does</p>
+    <h2>Set it up once, then adjust from your phone</h2>
+    <p>Everything works on the Plex apps your kids already use. You make the rules here, and the server keeps them.</p>
+  </div>
+
+  <article class="lp-feature">
+    <div class="lp-copy">
+      <span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-film"/></svg></span>
+      <h3>Choose exactly what they can watch</h3>
+      <p>Use an allow list or block list for individual movies and shows, or switch to "Only titles I allow" for the strictest setup. Allows stop at PG-13 movies and TV-14 shows; R, NC-17, TV-MA and unrated titles stay hidden.</p>
+      <ul class="lp-checks">
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Little kids, Kids and Teens levels, based on official ratings</li>
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Search by title, genre or rating</li>
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>New titles on the server are marked New for you to review</li>
+      </ul>
+    </div>
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-panel lp-titles">
+        <div class="lp-seg"><span>Little kids</span><span class="on">Kids</span><span>Teens</span></div>
+        <div class="lp-search"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-search"/></svg><span>Title, genre or rating</span></div>
+        <ul class="lp-tiles">
+          <li class="on"><span class="lp-poster"><img src="/static/lp/maple-club.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">TV-Y7 · Show</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/cloud-garden.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"><em class="badge new">New</em></span><span class="lp-tile-meta">PG · Movie</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/paper-harbor.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Movie</span></li>
+          <li class="off"><span class="lp-poster"><img src="/static/lp/mountain-puzzle.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG-13 · Blocked</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/pebble-trail.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">G · Movie</span></li>
+          <li class="on"><span class="lp-poster"><img src="/static/lp/winter-picnic.svg?v=1" alt="" width="150" height="225" loading="lazy" decoding="async"></span><span class="lp-tile-meta">PG · Your pick</span></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="lp-feature flip">
+    <div class="lp-copy">
+      <span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-clock"/></svg></span>
+      <h3>Screen time that keeps itself</h3>
+      <p>Set daily minutes and watch hours for school days and weekends. Time only counts while a video is playing. When it runs out, the video stops with a friendly message on the TV.</p>
+      <ul class="lp-checks">
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Quick starts for the school year, summer or weekends only</li>
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Friday as a weekend, Sunday as a school night, and school breaks</li>
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>See exactly how the next 7 days play out</li>
+      </ul>
+    </div>
+    <div class="lp-stage">
+      <div class="lp-panel lp-week" aria-hidden="true">
+        <div class="lp-card-title"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>Next 7 days</div>
+        <ul class="lp-days">
+          <li class="today"><div><strong>Today</strong> <span>Tuesday</span><small>7:00 AM to 8:00 PM</small></div><b>2 hr</b></li>
+          <li><div><strong>Wednesday</strong><small>7:00 AM to 8:00 PM</small></div><b>2 hr</b></li>
+          <li><div><strong>Friday</strong> <em class="badge info">Weekend rules</em><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
+          <li><div><strong>Saturday</strong><small>7:00 AM to 9:00 PM</small></div><b>3 hr</b></li>
+        </ul>
+      </div>
+      <div class="lp-tv"><div class="lp-tv-screen"><div class="lp-tv-dialog"><strong class="lp-tv-dialog-title">Playback Error</strong><p>"alex" asked to stop your playback from this server: That's all the screen time for today. See you tomorrow.</p></div></div><i aria-hidden="true"></i></div>
+      <p class="lp-tv-caption">Example of the message Plex shows when time runs out. Plex adds the server owner's name.</p>
+    </div>
+  </article>
+
+  <article class="lp-feature">
+    <div class="lp-copy">
+      <span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-pause"/></svg></span>
+      <h3>One tap when plans change</h3>
+      <p>Pause for dinner, add 15 minutes to finish an episode, push bedtime back for movie night, or use weekend rules on a sick day. Tapped the wrong thing? Undo is right there.</p>
+      <ul class="lp-checks">
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Pause for 30 minutes, an hour, until tomorrow, or until you resume</li>
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Videos stop within a minute, with a short message for your child</li>
+        <li><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Extra time and later bedtimes reset on their own the next day</li>
+      </ul>
+    </div>
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-panel lp-menu-demo">
+        <div class="lp-btns"><span class="btn btn-sm"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-pause"/></svg>Pause <svg class="icon " aria-hidden="true" focusable="false"><use href="#i-down"/></svg></span><span class="btn btn-sm lp-pressed"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>Add time <svg class="icon " aria-hidden="true" focusable="false"><use href="#i-down"/></svg></span></div>
+        <div class="lp-menu">
+          <span class="hl"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>15 minutes today</span>
+          <span><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>30 minutes today</span>
+          <span><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>1 hour today</span>
+          <i></i>
+          <span><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>Bedtime 30 minutes later</span>
+          <span><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>Bedtime 1 hour later</span>
+          <i></i>
+          <span><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>Weekend rules today</span>
+        </div>
+      </div>
+      <div class="lp-toast lp-toast-stage"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Added 15 minutes for today.</span><b>Undo</b></div>
+    </div>
+  </article>
+
+  <article class="lp-feature flip">
+    <div class="lp-copy">
+      <span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>
+      <h3>See what they watched</h3>
+      <p>A 7-day chart compares each day with the limit, and the watch history lists every show and the device it played on. Spot something you don’t like? Block it right from the list.</p>
+    </div>
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-panel">
+        <div class="lp-card-title"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-chart"/></svg>Last 7 days<span class="muted small">9 hr 50 min total</span></div>
+        <svg class="chart" viewBox="0 0 336 148">
+          <rect class="bar" x="10" y="103.3" width="28" height="16.7" rx="4"></rect>
+          <rect class="bar over" x="58" y="42.2" width="28" height="77.8" rx="4"></rect>
+          <rect class="bar" x="106" y="71.1" width="28" height="48.9" rx="4"></rect>
+          <rect class="bar" x="154" y="86.7" width="28" height="33.3" rx="4"></rect>
+          <rect class="bar" x="202" y="47.8" width="28" height="72.2" rx="4"></rect>
+          <rect class="bar" x="250" y="67.2" width="28" height="52.8" rx="4"></rect>
+          <rect class="bar today" x="298" y="93.9" width="28" height="26.1" rx="4"></rect>
+          <line class="limit" x1="6" x2="138" y1="53.3" y2="53.3"></line>
+          <line class="limit" x1="150" x2="234" y1="20" y2="20"></line>
+          <line class="limit" x1="246" x2="330" y1="53.3" y2="53.3"></line>
+          <text class="val" x="24" y="97" text-anchor="middle">30m</text>
+          <text class="val" x="72" y="36" text-anchor="middle">2h 20m</text>
+          <text class="val" x="120" y="65" text-anchor="middle">1h 28m</text>
+          <text class="val" x="168" y="80" text-anchor="middle">1h</text>
+          <text class="val" x="216" y="41" text-anchor="middle">2h 10m</text>
+          <text class="val" x="264" y="61" text-anchor="middle">1h 35m</text>
+          <text class="val" x="312" y="88" text-anchor="middle">47m</text>
+          <text class="axis" x="24" y="140" text-anchor="middle">Wed</text>
+          <text class="axis" x="72" y="140" text-anchor="middle">Thu</text>
+          <text class="axis" x="120" y="140" text-anchor="middle">Fri</text>
+          <text class="axis" x="168" y="140" text-anchor="middle">Sat</text>
+          <text class="axis" x="216" y="140" text-anchor="middle">Sun</text>
+          <text class="axis" x="264" y="140" text-anchor="middle">Mon</text>
+          <text class="axis today" x="312" y="140" text-anchor="middle">Today</text>
+        </svg>
+        <ul class="lp-history">
+          <li><img class="lp-thumb" src="/static/lp/maple-club.svg?v=1" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Maple Club: First Snow</strong><small>4:10 PM · 23 min · Living Room TV</small></div><span class="btn btn-sm"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-ban"/></svg>Block</span></li>
+          <li><img class="lp-thumb" src="/static/lp/pebble-trail.svg?v=1" alt="" width="30" height="45" loading="lazy" decoding="async"><div><strong>Pebble Trail</strong><small>Sat · 1 hr 40 min · iPad</small></div><span class="btn btn-sm"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-ban"/></svg>Block</span></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="lp-section">
+  <div class="lp-head">
+    <p class="lp-kicker">And the little things</p>
+    <h2>Made for real family life</h2>
+  </div>
+  <ul class="lp-grid">
+    <li><span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-users"/></svg></span><h3>Share the job</h3><p>Ask Admin to add a co-parent or grandparent who can help manage a child.</p></li>
+    <li><span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-copy"/></svg></span><h3>Siblings in one step</h3><p>Start a new child with a brother’s or sister’s rules, or copy rules across any time.</p></li>
+    <li><span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-tv"/></svg></span><h3>Every screen</h3><p>Rules follow your child’s Plex account on the TV, tablet, phone or browser.</p></li>
+    <li><span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span><h3>Safe by default</h3><p>Downloads stay off, and Plex’s own free movies and Live TV are switched off.</p></li>
+    <li><span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-history"/></svg></span><h3>Who changed what</h3><p>Every change is listed with who made it and when, so co-parents stay in sync.</p></li>
+    <li><span class="lp-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-inbox"/></svg></span><h3>Ask Admin</h3><p>Get a new movie or show added, ask for more access, or suggest a feature.</p></li>
+  </ul>
+</section>
+
+<section class="lp-section">
+  <div class="lp-head">
+    <p class="lp-kicker">Getting started</p>
+    <h2>Ready in three steps</h2>
+  </div>
+  <ol class="lp-steps">
+    <li><span class="lp-step">1</span><h3>Sign in with Plex</h3><p>Use the Plex account you already watch with.</p></li>
+    <li><span class="lp-step">2</span><h3>Add your child</h3><p>Give them a free Plex account, connect it with a one-time link, and pick their titles and screen time.</p></li>
+    <li><span class="lp-step">3</span><h3>Admin approves</h3><p>Their titles appear in Plex, ready on any TV, tablet or phone they sign in to.</p></li>
+  </ol>
+</section>
+
+<section class="lp-final">
+  <h2>Ready to set up your kids?</h2>
+  <p>Have your Plex sign-in handy, plus an email address for each child’s free Plex account. The site walks you through the rest.</p>
+  <div class="lp-cta center">
+    <a class="btn btn-primary btn-lg" href="/login">Sign in with Plex</a>
+    <a class="btn btn-lg lp-ghost" href="/help">Read the help page</a>
+  </div>
+</section>
+
+<p class="lp-project">A small, self-hosted project. <a href="https://github.com/pughouselabs/kidswatch-for-plex">Source code</a> · MIT license</p>
+
+</div>
+
+</main>
+<footer class="app-footer">
+  
+  <p>KidsWatch for Plex · For families sharing a Plex server</p>
+  <p class="small muted">Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
+</footer>
+<dialog class="sheet confirm" data-confirm aria-labelledby="confirm-text">
+  <form method="dialog" class="card-body">
+    <p id="confirm-text" data-confirm-text></p>
+    <div class="form-actions"><button class="btn btn-primary" value="yes" data-confirm-yes>Continue</button><button class="btn" value="no">Cancel</button></div>
+  </form>
+</dialog>
+<div class="visually-hidden" role="status" id="status-announcer"></div>
+<div class="visually-hidden" role="alert" id="error-announcer"></div>
+<div class="toasts" id="notifications" role="region" tabindex="-1" aria-label="Notifications">
+  
+</div>
+<script src="/static/app.js?v=43" defer></script>
+
+</body>
+</html>

@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light dark">
-<title>{% block title %}KidsWatch for Plex{% endblock %}</title>
+<title>{% block title %}{{ app_name or "KidsWatch for Plex" }}{% endblock %}</title>
 <link rel="icon" href="/static/icon-favicon.svg?v=4" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=4">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)">
-<meta name="apple-mobile-web-app-title" content="KidsWatch">
+<meta name="apple-mobile-web-app-title" content="{{ app_name or 'KidsWatch' }}">
 <link rel="preload" href="/static/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/static/style.css?v=40">
 </head>
@@ -21,7 +21,7 @@
 {% include "_icons.html" %}
 <header class="app-header">
   <div class="bar">
-    <a class="brand" href="/"><img src="/static/icon.svg?v=4" alt="" width="30" height="30">KidsWatch for Plex</a>
+    <a class="brand" href="/"><img src="/static/icon.svg?v=4" alt="" width="30" height="30">{{ app_name or "KidsWatch for Plex" }}</a>
     {% if user and user.role in ('parent', 'owner') %}
     <nav class="nav" aria-label="Main">
       <a href="/home" {% if nav == 'home' %}aria-current="page"{% endif %}>{{ icon('users') }}My kids</a>
@@ -54,7 +54,7 @@
 </main>
 <footer class="app-footer">
   {% block footer_ask %}{% if user and user.role == 'parent' %}<p class="footer-ask">{{ icon('send') }}Need something changed? <a href="/requests?kind=feature#new">Suggest a feature</a> or <a href="/requests?kind=more_access#new">ask for access</a>.</p>{% endif %}{% endblock %}
-  <p>KidsWatch for Plex · For families sharing a Plex server</p>
+  <p>{{ footer_text or "KidsWatch for Plex · For families sharing a Plex server" }}</p>
   <p class="small muted">Plex is a trademark of Plex, Inc. KidsWatch for Plex is an independent project and is not affiliated with or endorsed by Plex, Inc.</p>
 </footer>
 <dialog class="sheet confirm" data-confirm aria-labelledby="confirm-text">
